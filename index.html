@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>এস্টিক - অনলাইন শপ</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; }
+        .sidebar { width: 250px; background-color: #333; color: white; padding: 15px; height: 100vh; position: fixed; }
+        .sidebar h2 { color: #fff; }
+        .sidebar ul { list-style: none; padding: 0; }
+        .sidebar ul li { padding: 10px; cursor: pointer; }
+        .sidebar ul li:hover { background-color: #555; }
+        .submenu { display: none; padding-left: 15px; }
+        .sidebar li:hover .submenu { display: block; }
+        .content { margin-left: 270px; padding: 20px; width: calc(100% - 270px); }
+        .admin-panel { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; background-color: #f9f9f9; }
+        .product-grid { display: flex; flex-wrap: wrap; gap: 20px; }
+        .product-card { border: 1px solid #ddd; padding: 15px; width: 200px; border-radius: 5px; position: relative; }
+        .price { font-weight: bold; color: green; }
+        .old-price { text-decoration: line-through; color: red; margin-right: 10px; }
+        .order-btn { background-color: blue; color: white; border: none; padding: 10px; cursor: pointer; width: 100%; border-radius: 3px; margin-top: 10px; }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <h2>এস্টিক মেনু</h2>
+        <ul>
+            <li onclick="showSection('collection')">কালেকশন
+                <ul class="submenu">
+                    <li onclick="filterCategory('tshirt')">টি-শার্ট</li>
+                    <li onclick="filterCategory('watch')">ঘড়ি</li>
+                    <li onclick="filterCategory('glasses')">চশমা</li>
+                    <li onclick="filterCategory('car')">গাড়ি</li>
+                </ul>
+            </li>
+            <li onclick="showSection('orders')">মাই অর্ডার</li>
+            <li onclick="showSection('add-money')">টাকা যোগ করুন</li>
+        </ul>
+    </div>
+
+    <div class="content">
+        <div class="admin-panel">
+            <h3>অ্যাডমিন প্যানেল: প্রোডাক্ট যোগ করুন</h3>
+            <input type="text" id="pName" placeholder="প্রোডাক্টের নাম">
+            <input type="text" id="pPrice" placeholder="বর্তমান মূল্য">
+            <input type="text" id="pOldPrice" placeholder="পুরনো মূল্য (ডিসকাউন্ট থাকলে)">
+            <select id="pCategory">
+                <option value="tshirt">টি-শার্ট</option>
+                <option value="watch">ঘড়ি</option>
+                <option value="glasses">চশমা</option>
+                <option value="car">গাড়ি</option>
+            </select>
+            <button onclick="addProduct()">প্রোডাক্ট যোগ করুন</button>
+        </div>
+
+        <h1>আমাদের প্রোডাক্টগুলো</h1>
+        <div class="product-grid" id="productGrid">
+            <!-- প্রোডাক্টগুলো এখানে দেখানো হবে -->
+        </div>
+    </div>
+
+    <script>
+        let products = [
+            { name: "টি-শার্ট", price: "৪০০ টাকা", oldPrice: "৫০০ টাকা", category: "tshirt" },
+            { name: "ঘড়ি", price: "১৫০০ টাকা", oldPrice: "", category: "watch" }
+        ];
+
+        function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = '';
+            products.forEach(p => {
+                const card = document.createElement('div');
+                card.className = `product-card ${p.category}`;
+                card.innerHTML = `
+                    <h3>${p.name}</h3>
+                    <p>
+                        ${p.oldPrice ? `<span class="old-price">${p.oldPrice}</span>` : ''}
+                        <span class="price">${p.price}</span>
+                    </p>
+                    <button class="order-btn">অর্ডার করুন</button>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function addProduct() {
+            const name = document.getElementById('pName').value;
+            const price = document.getElementById('pPrice').value;
+            const oldPrice = document.getElementById('pOldPrice').value;
+            const category = document.getElementById('pCategory').value;
+            
+            if (name && price) {
+                products.push({ name, price: price + " টাকা", oldPrice: oldPrice ? oldPrice + " টাকা" : "", category });
+                renderProducts();
+            }
+        }
+
+        function filterCategory(category) {
+            const cards = document.querySelectorAll('.product-card');
+            cards.forEach(card => {
+                if (card.classList.contains(category)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function showSection(section) {
+            alert(section + " সেকশনটি পরবর্তীতে কার্যকর করা হবে।");
+        }
+
+        renderProducts();
+    </script>
+
+</body>
+</html>
