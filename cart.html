@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>কার্ট - এস্টিক</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            padding: 30px;
+            background-color: #f7f9fc;
+        }
+        .cart-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .cart-container h2 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+        }
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+        .item-name {
+            font-weight: bold;
+        }
+        .item-price {
+            color: #27ae60;
+        }
+        .total-section {
+            display: flex;
+            justify-content: space-between;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-top: 20px;
+            border-top: 2px solid #2c3e50;
+            padding-top: 15px;
+        }
+        .checkout-btn {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 12px;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 4px;
+            margin-top: 20px;
+            font-size: 1.1em;
+            transition: background-color 0.3s;
+        }
+        .checkout-btn:hover {
+            background-color: #2ecc71;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="cart-container">
+        <h2>আপনার শপিং কার্ট</h2>
+        <div id="cartItems">
+            <!-- কার্ট আইটেমগুলো এখানে দেখানো হবে -->
+            <div class="cart-item">
+                <span class="item-name">টি-শার্ট</span>
+                <span class="item-price">৪০০ টাকা</span>
+            </div>
+            <div class="cart-item">
+                <span class="item-name">ঘড়ি</span>
+                <span class="item-price">১৫০০ টাকা</span>
+            </div>
+        </div>
+        <div class="total-section">
+            <span>মোট:</span>
+            <span>১৯০০ টাকা</span>
+        </div>
+        <button class="checkout-btn">অর্ডার নিশ্চিত করুন</button>
+    </div>
+
+</body>
+</html>
