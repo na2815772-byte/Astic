@@ -16,8 +16,8 @@
             color: white;
             padding: 10px 15px;
             display: flex;
+            flex-direction: column; /* সার্চ বক্স ও বাটনের জন্য কলাম করা হলো */
             align-items: center;
-            justify-content: space-between;
             position: fixed;
             top: 0;
             left: 0;
@@ -25,6 +25,15 @@
             z-index: 1000;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             box-sizing: border-box;
+            gap: 10px;
+        }
+
+        /* হেডার টপ অংশ (মেনু, টাইটেল ও সার্চ বক্স) */
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
             gap: 15px;
         }
 
@@ -86,6 +95,26 @@
             cursor: pointer;
         }
 
+        /* সার্চ বক্সের নিচে নতুন দৃশ্যমান অ্যাডমিন বাটন */
+        .admin-trigger-btn {
+            background: linear-gradient(135deg, #11998e, #38ef7d);
+            color: white;
+            border: none;
+            padding: 6px 16px;
+            font-size: 13px;
+            font-weight: bold;
+            border-radius: 15px;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(56, 239, 125, 0.3);
+            transition: all 0.3s ease;
+            margin-bottom: 2px;
+        }
+        .admin-trigger-btn:hover {
+            background: linear-gradient(135deg, #0f837a, #2ec969);
+            box-shadow: 0 5px 12px rgba(56, 239, 125, 0.5);
+            transform: translateY(-1px);
+        }
+
         /* সাইডবার ডিজাইন */
         .sidebar { 
             width: 260px; 
@@ -100,7 +129,7 @@
             transition: left 0.3s ease; 
             z-index: 999;
             box-sizing: border-box;
-            padding-top: 70px; 
+            padding-top: 120px; /* হেডার বড় হওয়ায় প্যাডিং বাড়ানো হলো */
         }
         
         .sidebar.active { left: 0; }
@@ -128,10 +157,11 @@
         .submenu li:hover { background-color: #333; }
         
         /* মেইন কন্টেন্ট এরিয়া */
-        .content { margin-top: 80px; padding: 20px; width: 100%; box-sizing: border-box; padding-bottom: 80px; }
+        .content { margin-top: 130px; padding: 20px; width: 100%; box-sizing: border-box; padding-bottom: 80px; }
         
-        /* অ্যাডমিন প্যানেল */
+        /* অ্যাডমিন প্যানেল (ডিফল্টভাবে ডিসপ্লে হাইড রাখা হয়েছে) */
         .admin-panel { 
+            display: none; 
             background: linear-gradient(135deg, #ca9e92 0%, #e5b9ad 50%, #b88579 100%); 
             color: #4a2820; 
             padding: 25px; 
@@ -237,9 +267,56 @@
         .nav-item:hover, .nav-item.active { color: blue; }
         .nav-icon { font-size: 20px; margin-bottom: 2px; }
 
+        /* --- আলাদা অ্যাডমিন লগইন পপ-আপ (Modal) স্টাইল --- */
+        .admin-modal {
+            display: none; 
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .admin-box {
+            background: rgba(20, 30, 48, 0.98);
+            border: 2px solid #38ef7d;
+            padding: 35px 30px;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 360px;
+            box-shadow: 0 15px 35px rgba(56, 239, 125, 0.25);
+            position: relative;
+            box-sizing: border-box;
+        }
+        .admin-box h3 {
+            color: #38ef7d;
+            margin-top: 0;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 22px;
+            font-family: Arial, sans-serif;
+        }
+        .admin-box .close-btn {
+            position: absolute;
+            top: 12px; right: 18px;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .admin-box .close-btn:hover {
+            color: #ff4d4d;
+        }
+        .input-group { margin-bottom: 20px; text-align: left; }
+        .input-group label { display: block; margin-bottom: 8px; color: #fff; font-size: 14px; }
+        .input-group input { 
+            width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.4); 
+            box-sizing: border-box; outline: none; font-size: 14px;
+        }
+
         @media (max-width: 480px) {
             .header-title { display: none; } 
-            .header-bar { padding: 10px; }
             .admin-panel input[type="text"] { width: 100% !important; margin-right: 0; }
             .admin-panel select { width: 100% !important; margin-right: 0; }
         }
@@ -248,15 +325,19 @@
 <body>
 
     <div class="header-bar">
-        <div class="header-left">
-            <div class="menu-toggle" onclick="toggleSidebar()">☰</div>
-            <div class="header-title">এস্টিক শপ</div>
+        <div class="header-top">
+            <div class="header-left">
+                <div class="menu-toggle" onclick="toggleSidebar()">☰</div>
+                <div class="header-title">এস্টিক শপ</div>
+            </div>
+            
+            <div class="search-container">
+                <input type="text" id="searchInput" class="search-input" placeholder="প্রোডাক্ট খুঁজুন..." oninput="searchProducts()">
+                <span class="search-icon">🔍</span>
+            </div>
         </div>
         
-        <div class="search-container">
-            <input type="text" id="searchInput" class="search-input" placeholder="প্রোডাক্ট খুঁজুন..." oninput="searchProducts()">
-            <span class="search-icon">🔍</span>
-        </div>
+        <button class="admin-trigger-btn" onclick="openAdminModal()">⚙️ Admin Panel</button>
     </div>
 
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
@@ -281,7 +362,8 @@
     </div>
 
     <div class="content">
-        <div class="admin-panel">
+        
+        <div class="admin-panel" id="mainAdminPanel">
             <h3>🛒 অ্যাডমিন প্যানেল: প্রোডাক্ট যোগ করুন</h3>
             <input type="text" id="pName" placeholder="প্রোডাক্টের নাম" style="width: 170px;">
             <input type="text" id="pPrice" placeholder="বর্তমান মূল্য" style="width: 120px;">
@@ -322,6 +404,25 @@
         </a>
     </div>
 
+    <div id="adminModal" class="admin-modal">
+        <div class="admin-box">
+            <span class="close-btn" onclick="closeAdminModal()">&times;</span>
+            <h3>অ্যাডমিন লগইন</h3>
+            
+            <div class="input-group">
+                <label style="color: #fff;">Phone Number</label>
+                <input type="text" id="adminPhone" value="01315531124" readonly style="background: rgba(255,255,255,0.2); color: #fff; font-weight: bold;">
+            </div>
+
+            <div class="input-group">
+                <label style="color: #fff;">Password</label>
+                <input type="password" id="adminPassword" placeholder="অ্যাডমিন পাসওয়ার্ড দিন" style="background: #fff; color: #333;">
+            </div>
+
+            <button type="button" style="background: linear-gradient(135deg, #11998e, #38ef7d); color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px;" onclick="handleAdminLogin()">ভেরিফাই ও লগইন</button>
+        </div>
+    </div>
+
     <script>
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
@@ -336,13 +437,35 @@
             }
         }
 
-        // ডিফল্ট ডেমো প্রোডাক্ট লিস্ট (এখানে প্লেসহোল্ডার ইমেজ ব্যবহার করা হয়েছে)
+        // পপ-আপ ওপেন এবং ক্লোজ ফাংশন
+        function openAdminModal() {
+            document.getElementById('adminModal').style.display = 'flex';
+        }
+        function closeAdminModal() {
+            document.getElementById('adminModal').style.display = 'none';
+            document.getElementById('adminPassword').value = '';
+        }
+
+        // অ্যাডমিন ভেরিফিকেশন ও প্যানেল শো করা
+        function handleAdminLogin() {
+            const inputPass = document.getElementById('adminPassword').value.trim();
+            const secretPassword = "Admin#@2026!$"; 
+
+            if (inputPass === secretPassword) {
+                alert('অ্যাডমিন লগইন সফল! প্রোডাক্ট যোগ করার ফর্মটি নিচে ওপেন হয়েছে।');
+                closeAdminModal();
+                document.getElementById('mainAdminPanel').style.display = 'block'; // প্যানেলটি দেখাবে
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } else {
+                alert('দুঃখিত! ভুল পাসওয়ার্ড। আবার চেষ্টা করুন।');
+            }
+        }
+
         let defaultProducts = [
             { name: "টি-শার্ট", price: "৪০০ টাকা", oldPrice: "৫০০ টাকা", category: "tshirt", image: "https://via.placeholder.com/200x150?text=T-Shirt" },
             { name: "ঘড়ি", price: "১৫০০ টাকা", oldPrice: "", category: "watch", image: "https://via.placeholder.com/200x150?text=Watch" }
         ];
 
-        // লোকাল স্টোরেজ থেকে ডেটা নিয়ে আসা, না থাকলে ডিফল্ট ডেটা লোড হবে
         let products = JSON.parse(localStorage.getItem('myProducts')) || defaultProducts;
 
         function renderProducts(productsToRender = products) {
@@ -358,12 +481,10 @@
                 const card = document.createElement('div');
                 card.className = `product-card ${p.category}`;
                 
-                // ছবি না থাকলে ধূসর রঙের একটি প্লেসহোল্ডার বক্স আসবে, লেআউট নষ্ট হবে না
                 const imgTag = p.image ? 
                     `<img src="${p.image}" class="product-img" alt="${p.name}">` : 
                     `<div class="product-img" style="display:flex;align-items:center;justify-content:center;color:#aaa;font-size:14px;background-color:#eee;border-radius:4px;">ছবি নেই</div>`;
                 
-                // আপনার স্ক্রিনশটের মতো নিখুঁত অর্ডার (প্রথমে নাম, তারপর ছবি, নিচে প্রাইস ও বাটন)
                 card.innerHTML = `
                     <h3>${p.name}</h3>
                     ${imgTag}
@@ -415,7 +536,6 @@
             }
         }
 
-        // লোকাল স্টোরেজে ডেটা সেভ করে রেন্ডার করার ফাংশন
         function saveAndRender() {
             localStorage.setItem('myProducts', JSON.stringify(products));
             renderProducts();
@@ -454,7 +574,6 @@
             alert(section + " সেকশনটি পরবর্তীতে ডাইনামিক করা হবে।");
         }
 
-        // পেজ রান হওয়ার সাথে সাথে ফাংশন কল হবে
         renderProducts();
     </script>
 
