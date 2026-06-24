@@ -93,7 +93,7 @@
         .product-grid { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
         .product-card { border: 1px solid #ddd; padding: 15px; width: 45%; max-width: 200px; border-radius: 5px; background-color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); box-sizing: border-box; text-align: center; }
         
-        /* নতুন যোগ করা প্রোডাক্ট ইমেজ স্টাইল */
+        /* ছবি দেখানোর নতুন স্টাইল */
         .product-img { width: 100%; height: 150px; object-fit: cover; border-radius: 4px; margin-bottom: 10px; background-color: #eee; }
         
         .price { font-weight: bold; color: green; }
@@ -216,7 +216,7 @@
             }
         }
 
-        // ডেমো প্রোডাক্টে ডিফল্ট খালি ইমেজ রাখা হয়েছে
+        // ডিফল্ট কোনো ছবি না থাকায় খালি রাখা হয়েছে
         let products = [
             { name: "টি-শার্ট", price: "৪০০ টাকা", oldPrice: "৫০০ টাকা", category: "tshirt", image: "" },
             { name: "ঘড়ি", price: "১৫০০ টাকা", oldPrice: "", category: "watch", image: "" }
@@ -229,7 +229,7 @@
                 const card = document.createElement('div');
                 card.className = `product-card ${p.category}`;
                 
-                // যদি ছবি না থাকে তবে একটি ডিফল্ট টেক্সট দেখাবে
+                // ছবি থাকলে তা দেখাবে, না থাকলে 'ছবি নেই' টেক্সট দেখাবে
                 const imgTag = p.image ? `<img src="${p.image}" class="product-img" alt="${p.name}">` : `<div class="product-img" style="display:flex;align-items:center;justify-content:center;color:#aaa;font-size:12px;">ছবি নেই</div>`;
                 
                 card.innerHTML = `
@@ -245,6 +245,7 @@
             });
         }
 
+        // [২] ছবির ফাইল পড়ার এবং এড করার কোড
         function addProduct() {
             const name = document.getElementById('pName').value;
             const price = document.getElementById('pPrice').value;
@@ -253,7 +254,7 @@
             const imageInput = document.getElementById('pImage');
             
             if (name && price) {
-                // ফাইল রিডার ব্যবহার করে ছবিকে ব্রাউজারে দেখানোর উপযোগী করা
+                // ইউজার যদি কোনো ছবি সিলেক্ট করে থাকে
                 if (imageInput.files && imageInput.files[0]) {
                     const reader = new FileReader();
                     reader.onload = function(e) {
@@ -262,14 +263,14 @@
                             price: price + " টাকা", 
                             oldPrice: oldPrice ? oldPrice + " টাকা" : "", 
                             category,
-                            image: e.target.result 
+                            image: e.target.result // এখানে ছবির ডেটা জমা হচ্ছে
                         });
                         renderProducts();
                         clearInputs();
                     };
                     reader.readAsDataURL(imageInput.files[0]);
                 } else {
-                    // ছবি ছাড়া প্রোডাক্ট যোগ করলে
+                    // ছবি ছাড়া এড করলে
                     products.push({ 
                         name, 
                         price: price + " টাকা", 
