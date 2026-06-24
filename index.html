@@ -28,14 +28,12 @@
             gap: 15px;
         }
 
-        /* বাম পাশের মেনু এবং টাইটেল গ্রুপ */
         .header-left {
             display: flex;
             align-items: center;
             flex-shrink: 0;
         }
 
-        /* থ্রি-ডট আইকন */
         .menu-toggle {
             font-size: 24px;
             cursor: pointer;
@@ -49,7 +47,7 @@
             white-space: nowrap;
         }
 
-        /* আকাশী রঙের সার্চ বক্স ডিজাইন */
+        /* আকাশী রঙের সার্চ বক্স */
         .search-container {
             display: flex;
             align-items: center;
@@ -86,7 +84,7 @@
             cursor: pointer;
         }
 
-        /* সাইডবার ডিজাইন */
+        /* সাইডবার */
         .sidebar { 
             width: 260px; 
             background-color: #222; 
@@ -172,11 +170,6 @@
             color: #333333;
             background-color: #ffffff;
         }
-        .admin-panel input[type="file"] {
-            margin: 12px 0;
-            color: #4a2820;
-            font-size: 14px;
-        }
         .admin-panel button {
             background: linear-gradient(180deg, #802244 0%, #56102a 100%); 
             color: #ffffff;
@@ -205,7 +198,7 @@
         .old-price { text-decoration: line-through; color: red; margin-right: 10px; font-size: 14px; }
         .order-btn { background-color: blue; color: white; border: none; padding: 10px; cursor: pointer; width: 100%; border-radius: 3px; margin-top: 10px; font-weight: bold; }
 
-        /* বটম নেভিগেশন বার */
+        /* বটম বার */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -296,7 +289,7 @@
             <br>
             <input type="file" id="pImage" accept="image/*">
             
-            <button onclick="addProduct()">প্রোডাক্ট যোগ করুন</button>
+            <button id="addBtn" onclick="addProduct()">প্রোডাক্ট যোগ করুন</button>
         </div>
 
         <h1>আমাদের প্রোডাক্টগুলো</h1>
@@ -336,14 +329,68 @@
             }
         }
 
-        // ডিফল্ট ডেমো প্রোডাক্ট লিস্ট (এখানে প্লেসহোল্ডার ইমেজ ব্যবহার করা হয়েছে)
-        let defaultProducts = [
-            { name: "টি-শার্ট", price: "৪০০ টাকা", oldPrice: "৫০০ টাকা", category: "tshirt", image: "https://via.placeholder.com/200x150?text=T-Shirt" },
-            { name: "ঘড়ি", price: "১৫০০ টাকা", oldPrice: "", category: "watch", image: "https://via.placeholder.com/200x150?text=Watch" }
+        // 🌟 সুপারবেস এবং ইমেজিং লিংক কনফিগারেশন 🌟
+        const SUPABASE_URL = "https://mbxkickfugdkgsabizrr.supabase.co/rest/v1/products";
+        const SUPABASE_KEY = "sb_secret_6ZG8KvFiE5-lkiqFi9shUg_Hszettav";
+        const IMGBB_API_KEY = "6d701a91e00e8bc6f807204f3db25838"; // ছবি স্থায়ী লিংকে রূপান্তরের ফ্রি কী
+
+        let products = [];
+
+        // ডিফল্ট ডেমো ডাটা (ডাটাবেজ একদম নতুন বা খালি থাকলে এগুলো পুশ হবে)
+        const defaultProducts = [
+            { name: "টি-শার্ট", price: "৪০০ টাকা", oldPrice: "৫০০ টাকা", category: "tshirt", image: "https://i.ibb.co/6wX6P8F/tshirt-placeholder.jpg" },
+            { name: "ঘড়ি", price: "১৫০০ টাকা", oldPrice: "", category: "watch", image: "https://i.ibb.co/fvXyvX6/watch-placeholder.jpg" }
         ];
 
-        // লোকাল স্টোরেজ থেকে ডেটা নিয়ে আসা, না থাকলে ডিফল্ট ডেটা লোড হবে
-        let products = JSON.parse(localStorage.getItem('myProducts')) || defaultProducts;
+        // ডাটাবেজ থেকে ডাটা রিড করার ফাংশন
+        async function fetchProductsFromSupabase() {
+            try {
+                const response = await fetch(SUPABASE_URL, {
+                    method: 'GET',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                if (response.ok) {
+                    products = await response.json();
+                    
+                    // টেবিল যদি পুরোপুরি ফাঁকা থাকে, তবে ডেমো প্রোডাক্ট দিয়ে পূরণ করবে
+                    if (products.length === 0) {
+                        for (let item of defaultProducts) {
+                            await seedInitialProduct(item);
+                        }
+                        const refetch = await fetch(SUPABASE_URL, {
+                            method: 'GET',
+                            headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+                        });
+                        products = await refetch.json();
+                    }
+                    renderProducts();
+                } else {
+                    renderProducts(defaultProducts);
+                }
+            } catch (error) {
+                console.error("Error fetching data:", error);
+                renderProducts(defaultProducts);
+            }
+        }
+
+        async function seedInitialProduct(item) {
+            try {
+                await fetch(SUPABASE_URL, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(item)
+                });
+            } catch (e) { console.error(e); }
+        }
 
         function renderProducts(productsToRender = products) {
             const grid = document.getElementById('productGrid');
@@ -358,12 +405,10 @@
                 const card = document.createElement('div');
                 card.className = `product-card ${p.category}`;
                 
-                // ছবি না থাকলে ধূসর রঙের একটি প্লেসহোল্ডার বক্স আসবে, লেআউট নষ্ট হবে না
                 const imgTag = p.image ? 
                     `<img src="${p.image}" class="product-img" alt="${p.name}">` : 
                     `<div class="product-img" style="display:flex;align-items:center;justify-content:center;color:#aaa;font-size:14px;background-color:#eee;border-radius:4px;">ছবি নেই</div>`;
                 
-                // আপনার স্ক্রিনশটের মতো নিখুঁত অর্ডার (প্রথমে নাম, তারপর ছবি, নিচে প্রাইস ও বাটন)
                 card.innerHTML = `
                     <h3>${p.name}</h3>
                     ${imgTag}
@@ -377,48 +422,91 @@
             });
         }
 
-        function addProduct() {
+        // সুপারবেসে স্থায়ীভাবে ডাটা পুশ করার ফাংশন
+        async function saveProductToSupabase(newProduct) {
+            try {
+                const response = await fetch(SUPABASE_URL, {
+                    method: 'POST',
+                    headers: {
+                        'apikey': SUPABASE_KEY,
+                        'Authorization': `Bearer ${SUPABASE_KEY}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(newProduct)
+                });
+
+                if (response.ok) {
+                    alert("প্রোডাক্টটি ডাটাবেজে স্থায়ীভাবে যুক্ত হয়েছে!");
+                    fetchProductsFromSupabase();
+                } else {
+                    alert("ডাটাবেজে প্রোডাক্ট যোগ করতে সমস্যা হয়েছে!");
+                }
+            } catch (error) {
+                console.error("Error saving data:", error);
+            } finally {
+                // বাটন আবার সচল করা
+                const btn = document.getElementById('addBtn');
+                btn.innerText = "প্রোডাক্ট যোগ করুন";
+                btn.disabled = false;
+            }
+        }
+
+        // প্রোডাক্ট অ্যাড করার মেইন লজিক
+        async function addProduct() {
             const name = document.getElementById('pName').value;
             const price = document.getElementById('pPrice').value;
             const oldPrice = document.getElementById('pOldPrice').value;
             const category = document.getElementById('pCategory').value;
             const imageInput = document.getElementById('pImage');
+            const btn = document.getElementById('addBtn');
             
-            if (name && price) {
-                if (imageInput.files && imageInput.files[0]) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        products.push({ 
-                            name, 
-                            price: price + " টাকা", 
-                            oldPrice: oldPrice ? oldPrice + " টাকা" : "", 
-                            category,
-                            image: e.target.result 
-                        });
-                        saveAndRender();
-                        clearInputs();
-                    };
-                    reader.readAsDataURL(imageInput.files[0]);
-                } else {
-                    products.push({ 
-                        name, 
-                        price: price + " টাকা", 
-                        oldPrice: oldPrice ? oldPrice + " টাকা" : "", 
-                        category,
-                        image: "" 
+            if (!name || !price) {
+                alert("দয়া করে প্রোডাক্টের নাম এবং বর্তমান মূল্য দিন!");
+                return;
+            }
+
+            // আপলোড হওয়ার সময় বাটন লক করা
+            btn.innerText = "আপলোড হচ্ছে...";
+            btn.disabled = true;
+
+            let newProduct = {
+                name: name,
+                price: price + " টাকা",
+                oldPrice: oldPrice ? oldPrice + " টাকা" : "",
+                category: category,
+                image: ""
+            };
+
+            // ইমেজ ফাইল থাকলে সেটিকে স্থায়ী লিংকে কনভার্ট করার প্রসেস
+            if (imageInput.files && imageInput.files[0]) {
+                const formData = new FormData();
+                formData.append("image", imageInput.files[0]);
+
+                try {
+                    const imgbbResponse = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
+                        method: "POST",
+                        body: formData
                     });
-                    saveAndRender();
+                    const imgbbData = await imgbbResponse.json();
+
+                    if (imgbbData.success) {
+                        newProduct.image = imgbbData.data.url; // স্থায়ী ক্লাউড লিংক যুক্ত হলো
+                        saveProductToSupabase(newProduct);
+                        clearInputs();
+                    } else {
+                        alert("ছবি আপলোড ব্যর্থ হয়েছে! সাধারণ টেক্সট হিসেবে সেভ করা হচ্ছে।");
+                        saveProductToSupabase(newProduct);
+                        clearInputs();
+                    }
+                } catch (err) {
+                    console.error("ImgBB Upload Error:", err);
+                    saveProductToSupabase(newProduct);
                     clearInputs();
                 }
             } else {
-                alert("দয়া করে প্রোডাক্টের নাম এবং বর্তমান মূল্য দিন!");
+                saveProductToSupabase(newProduct);
+                clearInputs();
             }
-        }
-
-        // লোকাল স্টোরেজে ডেটা সেভ করে রেন্ডার করার ফাংশন
-        function saveAndRender() {
-            localStorage.setItem('myProducts', JSON.stringify(products));
-            renderProducts();
         }
 
         function clearInputs() {
@@ -454,8 +542,8 @@
             alert(section + " সেকশনটি পরবর্তীতে ডাইনামিক করা হবে।");
         }
 
-        // পেজ রান হওয়ার সাথে সাথে ফাংশন কল হবে
-        renderProducts();
+        // রান টাইম রিকোয়েস্ট
+        fetchProductsFromSupabase();
     </script>
 
 </body>
