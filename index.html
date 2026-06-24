@@ -15,10 +15,11 @@
         /* সাইডবারের ভেতরের লিংকের কালার ও ডিজাইন ঠিক রাখার জন্য */
         .sidebar ul li a { color: white; text-decoration: none; display: block; width: 100%; height: 100%; }
         
-        .submenu { display: none; padding-left: 15px; list-style: none; }
+        /* সাবমেনু ডিজাইন - মাউস নিলে বা ক্লিক করলে দেখাবে */
+        .submenu { display: none; padding-left: 15px; list-style: none; background-color: #2c2c2c; margin-top: 5px; border-radius: 4px; }
         .sidebar li:hover .submenu { display: block; }
         .submenu li { border-bottom: none; padding: 8px 5px; }
-        .submenu li:hover { background-color: #666; }
+        .submenu li:hover { background-color: #444; }
         
         .content { margin-left: 270px; padding: 20px; width: calc(100% - 270px); }
         .admin-panel { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; background-color: #f9f9f9; border-radius: 5px; }
@@ -35,7 +36,7 @@
     <div class="sidebar">
         <h2>এস্টিক মেনু</h2>
         <ul>
-            <li>কালেকশন
+            <li>📁 কালেকশন
                 <ul class="submenu">
                     <li onclick="filterCategory('tshirt')">👕 টি-শার্ট</li>
                     <li onclick="filterCategory('watch')">⌚ ঘড়ি</li>
@@ -43,21 +44,25 @@
                     <li onclick="filterCategory('car')">🚗 গাড়ি</li>
                 </ul>
             </li>
-            <li onclick="showSection('orders')">🛍️ মাই অর্ডার</li>
-            <li onclick="showSection('add-money')">💳 টাকা যোগ করুন</li>
-            
-            <li><a href="my-products.html">📦 মাই প্রোডাক্টস</a></li>
-            <li><a href="wishlists.html">❤️ আমার উইশলিস্ট</a></li>
+
             <li><a href="offers.html">🎁 স্পেশাল অফার</a></li>
             <li><a href="refer.html">👥 রেফার অ্যান্ড আর্ন</a></li>
             <li><a href="notifications.html">🔔 নোটিফিকেশন</a></li>
             <li><a href="prescriptions.html">📄 প্রেসক্রিপশন আপলোড</a></li>
-            <li><a href="address.html">📍 ডেলিভারি অ্যাড্রেস</a></li>
             <li><a href="suggest-products.html">💡 প্রোডাক্ট সাজেস্ট</a></li>
             <li><a href="reports.html">⚠️ রিপোর্ট ও অভিযোগ</a></li>
-            
-            <li><a href="refund-policy.html">🔄 রিটার্ন ও রিফান্ড</a></li>
-            <li><a href="profile.html">👤 মাই প্রোফাইল</a></li>
+
+            <li>👤 আমার অ্যাকাউন্ট
+                <ul class="submenu">
+                    <li><a href="profile.html">👤 মাই প্রোফাইল</a></li>
+                    <li onclick="showSection('orders')">🛍️ মাই অর্ডার</li>
+                    <li><a href="my-products.html">📦 মাই প্রোডাক্টস</a></li>
+                    <li><a href="wishlists.html">❤️ আমার উইশলিস্ট</a></li>
+                    <li onclick="showSection('add-money')">💳 টাকা যোগ করুন</li>
+                    <li><a href="address.html">📍 ডেলিভারি অ্যাড্রেস</a></li>
+                    <li><a href="refund-policy.html">🔄 রিটার্ন ও রিফান্ড</a></li>
+                </ul>
+            </li>
         </ul>
     </div>
 
