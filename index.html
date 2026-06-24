@@ -84,14 +84,23 @@
         
         /* মেইন কন্টেন্ট এরিয়া */
         .content { margin-top: 70px; padding: 20px; width: 100%; box-sizing: border-box; padding-bottom: 80px; }
+        
+        /* অ্যাডমিন প্যানেল */
         .admin-panel { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; background-color: #f9f9f9; border-radius: 5px; }
+        .admin-panel input, .admin-panel select { padding: 6px; margin: 3px 5px 3px 0; }
+        
+        /* প্রোডাক্ট গ্রিড ও কার্ড */
         .product-grid { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
-        .product-card { border: 1px solid #ddd; padding: 15px; width: 45%; max-width: 200px; border-radius: 5px; background-color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); box-sizing: border-box; }
+        .product-card { border: 1px solid #ddd; padding: 15px; width: 45%; max-width: 200px; border-radius: 5px; background-color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); box-sizing: border-box; text-align: center; }
+        
+        /* নতুন যোগ করা প্রোডাক্ট ইমেজ স্টাইল */
+        .product-img { width: 100%; height: 150px; object-fit: cover; border-radius: 4px; margin-bottom: 10px; background-color: #eee; }
+        
         .price { font-weight: bold; color: green; }
         .old-price { text-decoration: line-through; color: red; margin-right: 10px; }
         .order-btn { background-color: blue; color: white; border: none; padding: 10px; cursor: pointer; width: 100%; border-radius: 3px; margin-top: 10px; font-weight: bold; }
 
-        /* অ্যাপের মতো নিচের বটম নেভিগেশন বার */
+        /* নিচের বটম নেভিগেশন বার */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -107,7 +116,6 @@
             box-sizing: border-box;
         }
 
-        /* বটম বারের আইটেম লিংক স্টাইল */
         .nav-item {
             display: flex;
             flex-direction: column;
@@ -121,14 +129,8 @@
             font-family: inherit;
         }
 
-        .nav-item:hover, .nav-item.active {
-            color: blue;
-        }
-
-        .nav-icon {
-            font-size: 20px;
-            margin-bottom: 2px;
-        }
+        .nav-item:hover, .nav-item.active { color: blue; }
+        .nav-icon { font-size: 20px; margin-bottom: 2px; }
     </style>
 </head>
 <body>
@@ -150,7 +152,6 @@
                     <li onclick="filterCategory('car')">🚗 গাড়ি</li>
                 </ul>
             </li>
-
             <li><a href="offers.html">🎁 স্পেশাল অফার</a></li>
             <li><a href="refer.html">👥 রেফার অ্যান্ড আর্ন</a></li>
             <li><a href="notifications.html">🔔 নোটিফিকেশন</a></li>
@@ -163,10 +164,13 @@
     <div class="content">
         <div class="admin-panel">
             <h3>অ্যাডমিন প্যানেল: প্রোডাক্ট যোগ করুন</h3>
-            <input type="text" id="pName" placeholder="প্রোডাক্টের নাম" style="padding: 6px; margin: 3px 5px 3px 0; width: 140px;">
-            <input type="text" id="pPrice" placeholder="বর্তমান মূল্য" style="padding: 6px; margin: 3px 5px 3px 0; width: 100px;">
-            <input type="text" id="pOldPrice" placeholder="পুরনো মূল্য" style="padding: 6px; margin: 3px 5px 3px 0; width: 100px;">
-            <select id="pCategory" style="padding: 6px; margin: 3px 5px 3px 0;">
+            <input type="text" id="pName" placeholder="প্রোডাক্টের নাম" style="width: 140px;">
+            <input type="text" id="pPrice" placeholder="বর্তমান মূল্য" style="width: 100px;">
+            <input type="text" id="pOldPrice" placeholder="পুরনো মূল্য" style="width: 100px;">
+            
+            <input type="file" id="pImage" accept="image/*" style="width: 180px;">
+            
+            <select id="pCategory">
                 <option value="tshirt">টি-শার্ট</option>
                 <option value="watch">ঘড়ি</option>
                 <option value="glasses">চশমা</option>
@@ -212,9 +216,10 @@
             }
         }
 
+        // ডেমো প্রোডাক্টে ডিফল্ট খালি ইমেজ রাখা হয়েছে
         let products = [
-            { name: "টি-শার্ট", price: "৪০০ টাকা", oldPrice: "৫০০ টাকা", category: "tshirt" },
-            { name: "ঘড়ি", price: "১৫০০ টাকা", oldPrice: "", category: "watch" }
+            { name: "টি-শার্ট", price: "৪০০ টাকা", oldPrice: "৫০০ টাকা", category: "tshirt", image: "" },
+            { name: "ঘড়ি", price: "১৫০০ টাকা", oldPrice: "", category: "watch", image: "" }
         ];
 
         function renderProducts() {
@@ -223,7 +228,12 @@
             products.forEach(p => {
                 const card = document.createElement('div');
                 card.className = `product-card ${p.category}`;
+                
+                // যদি ছবি না থাকে তবে একটি ডিফল্ট টেক্সট দেখাবে
+                const imgTag = p.image ? `<img src="${p.image}" class="product-img" alt="${p.name}">` : `<div class="product-img" style="display:flex;align-items:center;justify-content:center;color:#aaa;font-size:12px;">ছবি নেই</div>`;
+                
                 card.innerHTML = `
+                    ${imgTag}
                     <h3>${p.name}</h3>
                     <p>
                         ${p.oldPrice ? `<span class="old-price">${p.oldPrice}</span>` : ''}
@@ -240,14 +250,44 @@
             const price = document.getElementById('pPrice').value;
             const oldPrice = document.getElementById('pOldPrice').value;
             const category = document.getElementById('pCategory').value;
+            const imageInput = document.getElementById('pImage');
             
             if (name && price) {
-                products.push({ name, price: price + " টাকা", oldPrice: oldPrice ? oldPrice + " টাকা" : "", category });
-                renderProducts();
-                document.getElementById('pName').value = '';
-                document.getElementById('pPrice').value = '';
-                document.getElementById('pOldPrice').value = '';
+                // ফাইল রিডার ব্যবহার করে ছবিকে ব্রাউজারে দেখানোর উপযোগী করা
+                if (imageInput.files && imageInput.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        products.push({ 
+                            name, 
+                            price: price + " টাকা", 
+                            oldPrice: oldPrice ? oldPrice + " টাকা" : "", 
+                            category,
+                            image: e.target.result 
+                        });
+                        renderProducts();
+                        clearInputs();
+                    };
+                    reader.readAsDataURL(imageInput.files[0]);
+                } else {
+                    // ছবি ছাড়া প্রোডাক্ট যোগ করলে
+                    products.push({ 
+                        name, 
+                        price: price + " টাকা", 
+                        oldPrice: oldPrice ? oldPrice + " টাকা" : "", 
+                        category,
+                        image: "" 
+                    });
+                    renderProducts();
+                    clearInputs();
+                }
             }
+        }
+
+        function clearInputs() {
+            document.getElementById('pName').value = '';
+            document.getElementById('pPrice').value = '';
+            document.getElementById('pOldPrice').value = '';
+            document.getElementById('pImage').value = '';
         }
 
         function filterCategory(category) {
