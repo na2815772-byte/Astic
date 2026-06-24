@@ -27,28 +27,6 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* সার্চ বক্স বা মেনুর নিচে দৃশ্যমান অ্যাডমিন বাটন স্টাইল */
-        .admin-menu-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            color: #ffffff;
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: bold;
-            margin-bottom: 20px;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(5px);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-        }
-        .admin-menu-btn:hover {
-            background: #38ef7d;
-            color: #0f2027;
-            border-color: #38ef7d;
-            box-shadow: 0 4px 15px rgba(56, 239, 125, 0.4);
-        }
-
         /* আধুনিক আল্ট্রা-প্রিমিয়াম গ্লাস লুক (ইউজার লগইন বক্স) */
         .login-container { 
             background: rgba(255, 255, 255, 0.12); 
@@ -135,51 +113,9 @@
             text-decoration: none; 
             font-weight: bold; 
         }
-
-        /* --- অ্যাডমিন পপ-আপ (Modal) স্টাইল --- */
-        .admin-modal {
-            display: none; 
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(8px);
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-        }
-        .admin-box {
-            background: rgba(20, 30, 48, 0.98);
-            border: 2px solid #38ef7d;
-            padding: 35px 30px;
-            border-radius: 16px;
-            width: 90%;
-            max-width: 360px;
-            box-shadow: 0 15px 35px rgba(56, 239, 125, 0.25);
-            position: relative;
-        }
-        .admin-box h3 {
-            color: #38ef7d;
-            margin-top: 0;
-            text-align: center;
-            margin-bottom: 25px;
-            font-size: 22px;
-        }
-        .admin-box .close-btn {
-            position: absolute;
-            top: 12px; right: 18px;
-            color: #fff;
-            font-size: 24px;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-        .admin-box .close-btn:hover {
-            color: #ff4d4d;
-        }
     </style>
 </head>
 <body>
-
-<button class="admin-menu-btn" onclick="openAdminModal()">⚙️ Admin Panel</button>
 
 <div class="login-container">
     <h2>লগইন করুন</h2>
@@ -208,50 +144,7 @@
     </form>
 </div>
 
-<div id="adminModal" class="admin-modal">
-    <div class="admin-box">
-        <span class="close-btn" onclick="closeAdminModal()">&times;</span>
-        <h3>অ্যাডমিন লগইন</h3>
-        
-        <div class="input-group">
-            <label>Phone Number</label>
-            <input type="text" id="adminPhone" value="01315531124" readonly style="background: rgba(255,255,255,0.3); color: #fff; font-weight: bold; border-color: rgba(255,255,255,0.2);">
-        </div>
-
-        <div class="input-group">
-            <label>Password</label>
-            <input type="password" id="adminPassword" placeholder="অ্যাডমিন পাসওয়ার্ড দিন" required>
-        </div>
-
-        <button type="button" class="btn-login" onclick="handleAdminLogin()">ভেরিফাই ও লগইন</button>
-    </div>
-</div>
-
 <script>
-    // পপ-আপ খোলার ফাংশন
-    function openAdminModal() {
-        document.getElementById('adminModal').style.display = 'flex';
-    }
-
-    // পপ-আপ বন্ধ করার ফাংশন
-    function closeAdminModal() {
-        document.getElementById('adminModal').style.display = 'none';
-    }
-
-    // অ্যাডমিন লগইন ভেরিফিকেশন
-    function handleAdminLogin() {
-        const inputPass = document.getElementById('adminPassword').value.trim();
-        // আপনার দেওয়া অতিরিক্ত স্ট্রং পাসওয়ার্ড
-        const secretPassword = "Admin#@2026!$"; 
-
-        if (inputPass === secretPassword) {
-            alert('অ্যাডমিন ভেরিফিকেশন সফল! প্যানেল ওপেন হচ্ছে...');
-            window.location.href = 'admin.html'; // সরাসরি আপনার ফুল অ্যাডমিন পেজে নিয়ে যাবে
-        } else {
-            alert('দুঃখিত! ভুল পাসওয়ার্ড। আবার চেষ্টা করুন।');
-        }
-    }
-
     // সাধারণ ইউজারদের সাধারণ লগইন সিস্টেম (কোনো পরিবর্তন করা হয়নি)
     function handleLogin(event) {
         event.preventDefault(); 
