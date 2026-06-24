@@ -8,30 +8,11 @@
     
     <title>এস্টিক - অনলাইন শপ</title>
     <style>
-        /* লগইন পেজের সাথে ম্যাচিং প্রিমিয়াম মিক্সড গ্রেডিয়েন্ট ব্যাকগ্রাউন্ড */
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            margin: 0; 
-            padding: 0; 
-            display: flex; 
-            flex-direction: column; 
-            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364, #11998e, #38ef7d);
-            background-size: 400% 400%;
-            animation: gradientAnimation 12s ease infinite;
-            min-height: 100vh;
-        }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; background-color: #f4f4f4; }
         
-        @keyframes gradientAnimation {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        
-        /* ওপরের বার (Header) - গ্লাস লুক */
+        /* ওপরের বার (Header) */
         .header-bar {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
+            background-color: #333;
             color: white;
             padding: 15px;
             display: flex;
@@ -41,10 +22,11 @@
             left: 0;
             width: 100%;
             z-index: 1000;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             box-sizing: border-box;
         }
 
+        /* থ্রি-ডট আইকন */
         .menu-toggle {
             font-size: 24px;
             cursor: pointer;
@@ -55,13 +37,12 @@
         .header-title {
             font-size: 20px;
             font-weight: bold;
-            letter-spacing: 0.5px;
         }
 
         /* সাইডবার ডিজাইন */
         .sidebar { 
             width: 260px; 
-            background-color: #111e24; 
+            background-color: #222; 
             color: white; 
             padding: 15px; 
             height: 100vh; 
@@ -73,7 +54,6 @@
             z-index: 999;
             box-sizing: border-box;
             padding-top: 70px; 
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .sidebar.active { left: 0; }
@@ -86,147 +66,68 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.5);
             z-index: 998;
         }
         .sidebar-overlay.active { display: block; }
 
         .sidebar ul { list-style: none; padding: 0; margin: 0; }
-        .sidebar ul li { padding: 14px 10px; cursor: pointer; transition: background 0.2s; border-bottom: 1px solid #1a2a30; font-size: 15px; }
-        .sidebar ul li:hover { background-color: #1a3039; color: #38ef7d; }
+        .sidebar ul li { padding: 12px 10px; cursor: pointer; transition: background 0.2s; border-bottom: 1px solid #333; }
+        .sidebar ul li:hover { background-color: #444; }
         .sidebar ul li a { color: white; text-decoration: none; display: block; width: 100%; }
         
         /* কালেকশন সাবমেনু */
-        .submenu { display: none; padding-left: 15px; list-style: none; background-color: #0b1418; margin-top: 5px; border-radius: 4px; }
+        .submenu { display: none; padding-left: 15px; list-style: none; background-color: #1a1a1a; margin-top: 5px; border-radius: 4px; }
         .submenu.open { display: block; } 
-        .submenu li { border-bottom: none; padding: 10px 5px; }
-        .submenu li:hover { background-color: #11222b; }
+        .submenu li { border-bottom: none; padding: 8px 5px; }
+        .submenu li:hover { background-color: #333; }
         
         /* মেইন কন্টেন্ট এরিয়া */
-        .content { margin-top: 70px; padding: 20px; width: 100%; box-sizing: border-box; padding-bottom: 90px; }
-        
-        h1 { color: #ffffff; font-size: 26px; text-shadow: 0 2px 4px rgba(0,0,0,0.2); margin-top: 10px; }
+        .content { margin-top: 70px; padding: 20px; width: 100%; box-sizing: border-box; padding-bottom: 80px; }
+        .admin-panel { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; background-color: #f9f9f9; border-radius: 5px; }
+        .product-grid { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
+        .product-card { border: 1px solid #ddd; padding: 15px; width: 45%; max-width: 200px; border-radius: 5px; background-color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); box-sizing: border-box; }
+        .price { font-weight: bold; color: green; }
+        .old-price { text-decoration: line-through; color: red; margin-right: 10px; }
+        .order-btn { background-color: blue; color: white; border: none; padding: 10px; cursor: pointer; width: 100%; border-radius: 3px; margin-top: 10px; font-weight: bold; }
 
-        /* অ্যাডমিন প্যানেল গ্লাস মরফিজম লুক */
-        .admin-panel { 
-            background: rgba(255, 255, 255, 0.12);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2); 
-            padding: 20px; 
-            margin-bottom: 25px; 
-            border-radius: 12px; 
-            color: white;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-        }
-        .admin-panel h3 { margin-top: 0; color: #ffffff; font-size: 18px; }
-        .admin-panel input, .admin-panel select {
-            background: rgba(255, 255, 255, 0.9);
-            border: none;
-            border-radius: 6px;
-            padding: 8px 10px;
-            outline: none;
-            color: #333;
-        }
-        .admin-panel button {
-            background: linear-gradient(135deg, #11998e, #38ef7d);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 9px 15px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 4px 12px rgba(56, 239, 125, 0.3);
-            transition: all 0.2s;
-        }
-        .admin-panel button:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 15px rgba(56, 239, 125, 0.4);
-        }
-
-        /* প্রোডাক্ট গ্রিড ও কার্ডের গ্লাস ইফেক্ট (কালারের সাথে ফিক্সড মিশে যাওয়া) */
-        .product-grid { display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; }
-        .product-card { 
-            background: rgba(255, 255, 255, 0.14);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.2); 
-            padding: 15px; 
-            width: 46%; 
-            max-width: 180px; 
-            border-radius: 12px; 
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); 
-            box-sizing: border-box; 
-            text-align: center;
-            color: white;
-            transition: transform 0.3s ease;
-        }
-        .product-card:hover {
-            transform: translateY(-3px);
-        }
-        .product-card h3 { font-size: 18px; margin: 10px 0; font-weight: 600; }
-        .price { font-weight: bold; color: #38ef7d; font-size: 16px; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
-        .old-price { text-decoration: line-through; color: #ff6b6b; margin-right: 8px; font-size: 13px; }
-        
-        /* প্রিমিয়াম বাটন */
-        .order-btn { 
-            background: linear-gradient(135deg, #11998e, #38ef7d); 
-            color: white; 
-            border: none; 
-            padding: 10px; 
-            cursor: pointer; 
-            width: 100%; 
-            border-radius: 6px; 
-            margin-top: 12px; 
-            font-weight: bold; 
-            font-size: 14px;
-            box-shadow: 0 4px 12px rgba(56, 239, 125, 0.2);
-            transition: all 0.2s;
-        }
-        .order-btn:hover { 
-            box-shadow: 0 6px 15px rgba(56, 239, 125, 0.4);
-            transform: translateY(-1px);
-        }
-
-        /* প্রিমিয়াম বটম নেভিগেশন বার */
+        /* অ্যাপের মতো নিচের বটম নেভিগেশন বার */
         .bottom-nav {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            background: rgba(20, 35, 41, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            background-color: #ffffff;
             display: flex;
             justify-content: space-around;
             align-items: center;
             padding: 10px 0;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
             z-index: 1000;
             box-sizing: border-box;
         }
 
+        /* বটম বারের আইটেম লিংক স্টাইল */
         .nav-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: #b0bec5;
+            color: #555;
             text-decoration: none;
             font-size: 12px;
             cursor: pointer;
             background: none;
             border: none;
             font-family: inherit;
-            transition: color 0.2s;
         }
 
         .nav-item:hover, .nav-item.active {
-            color: #38ef7d;
+            color: blue;
         }
 
         .nav-icon {
             font-size: 20px;
-            margin-bottom: 3px;
+            margin-bottom: 2px;
         }
     </style>
 </head>
@@ -262,16 +163,16 @@
     <div class="content">
         <div class="admin-panel">
             <h3>অ্যাডমিন প্যানেল: প্রোডাক্ট যোগ করুন</h3>
-            <input type="text" id="pName" placeholder="প্রোডাক্টের নাম" style="padding: 7px; margin: 3px 5px 3px 0; width: 140px;">
-            <input type="text" id="pPrice" placeholder="বর্তমান মূল্য" style="padding: 7px; margin: 3px 5px 3px 0; width: 100px;">
-            <input type="text" id="pOldPrice" placeholder="পুরনো মূল্য" style="padding: 7px; margin: 3px 5px 3px 0; width: 100px;">
-            <select id="pCategory" style="padding: 7px; margin: 3px 5px 3px 0;">
+            <input type="text" id="pName" placeholder="প্রোডাক্টের নাম" style="padding: 6px; margin: 3px 5px 3px 0; width: 140px;">
+            <input type="text" id="pPrice" placeholder="বর্তমান মূল্য" style="padding: 6px; margin: 3px 5px 3px 0; width: 100px;">
+            <input type="text" id="pOldPrice" placeholder="পুরনো মূল্য" style="padding: 6px; margin: 3px 5px 3px 0; width: 100px;">
+            <select id="pCategory" style="padding: 6px; margin: 3px 5px 3px 0;">
                 <option value="tshirt">টি-শার্ট</option>
                 <option value="watch">ঘড়ি</option>
                 <option value="glasses">চশমা</option>
                 <option value="car">গাড়ি</option>
             </select>
-            <button onclick="addProduct()">প্রোডাক্ট যোগ করুন</button>
+            <button onclick="addProduct()" style="padding: 7px 12px; cursor: pointer; margin-top: 5px;">প্রোডাক্ট যোগ করুন</button>
         </div>
 
         <h1>আমাদের প্রোডাক্টগুলো</h1>
@@ -291,7 +192,7 @@
             <span class="nav-icon">💬</span>
             <span>ইনবক্স</span>
         </button>
-        <a href="login.html" class="nav-item">
+        <a href="register.html" class="nav-item">
             <span class="nav-icon">👤</span>
             <span>অ্যাকাউন্ট</span>
         </a>
