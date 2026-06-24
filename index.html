@@ -125,7 +125,7 @@
             }
         }
 
-        // 🌟 কনফিগারেশন সেকশন 🌟
+        // 🌟 আপডেট করা কনফিগারেশন সেকশন 🌟
         const SUPABASE_URL = "https://mbxkickfugdkgsabizrr.supabase.co/rest/v1/products";
         const SUPABASE_KEY = "sb_publishable_ButTVVb8ZxL7QeaL919qJg_gZ2HDjfb"; 
         const IMGBB_API_KEY = "6d701a91e00e8bc6f807204f3db25838"; 
@@ -230,12 +230,12 @@
 
                 if (response.status === 201 || response.ok) {
                     alert("প্রোডাক্টটি ডাটাবেজে স্থায়ীভাবে যুক্ত হয়েছে!");
-                    clearInputs(); // ডাটাবেজে সেভ সফল হলে ইনপুটগুলো খালি করা হবে
+                    clearInputs();
                     fetchProductsFromSupabase();
                 } else {
                     const errText = await response.text();
                     console.error("Supabase error response:", errText);
-                    alert("ডাটাবেজে প্রোডাক্ট যোগ করতে সমস্যা হয়েছে! টেবিলের RLS পলিসি বা ডাটা টাইপ চেক করুন।");
+                    alert("ডাটাবেজে প্রোডাক্ট যোগ করতে সমস্যা হয়েছে! টেবিলের নাম বা কলামের স্ট্রাকচার সঠিক আছে কিনা নিশ্চিত করুন।");
                 }
             } catch (error) {
                 console.error("Error saving data:", error);
@@ -275,7 +275,6 @@
                 formData.append("image", imageInput.files[0]);
 
                 try {
-                    // ফিক্সড ImgBB API লিংক
                     const imgbbResponse = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
                         method: "POST",
                         body: formData
