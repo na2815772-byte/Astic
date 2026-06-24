@@ -61,30 +61,32 @@
             transition: background-color 0.3s;
         }
         .checkout-btn:hover {
-            background-color: #2ecc71;
+            background-color: #219653;
         }
     </style>
 </head>
 <body>
 
     <div class="cart-container">
-        <h2>আপনার শপিং কার্ট</h2>
-        <div id="cartItems">
-            <!-- কার্ট আইটেমগুলো এখানে দেখানো হবে -->
-            <div class="cart-item">
-                <span class="item-name">টি-শার্ট</span>
-                <span class="item-price">৪০০ টাকা</span>
-            </div>
-            <div class="cart-item">
-                <span class="item-name">ঘড়ি</span>
-                <span class="item-price">১৫০০ টাকা</span>
-            </div>
+        <h2>আপনার কার্ট</h2>
+        
+        <div class="cart-item">
+            <span class="item-name">পণ্য ১</span>
+            <span class="item-price">৳ ৫০০</span>
         </div>
+        <div class="cart-item">
+            <span class="item-name">পণ্য ২</span>
+            <span class="item-price">৳ ৩০০</span>
+        </div>
+
         <div class="total-section">
             <span>মোট:</span>
-            <span>১৯০০ টাকা</span>
+            <span>৳ ৮००</span>
         </div>
-        <button class="checkout-btn">অর্ডার নিশ্চিত করুন</button>
+
+        <a href="checkout.html" style="text-decoration: none;">
+            <button class="checkout-btn">চেকআউট করুন</button>
+        </a>
     </div>
 
 </body>
