@@ -13,22 +13,19 @@
         .input-group label { display: block; font-weight: bold; margin-bottom: 5px; color: #555; font-size: 14px; }
         .input-group input { width: 100%; padding: 10px 35px 10px 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; outline: none; }
         
-        /* নীল টিক মার্কের জন্য স্টাইল */
         .tick-mark { position: absolute; right: 10px; top: 35px; color: #007bff; font-weight: bold; font-size: 16px; display: none; }
         
-        /* পাসওয়ার্ডের শর্তাবলীর লিস্ট */
         .password-requirements { font-size: 12px; color: #666; margin-top: 5px; padding-left: 15px; }
         .requirements-title { font-weight: bold; font-size: 12px; margin-top: 5px; color: #444; }
         .req-item { color: red; }
         .req-item.valid { color: #007bff; }
 
-        /* ভেরিফিকেশন ও রেজিস্ট্রি বাটন */
         .btn-verify { background-color: #ff9800; color: white; border: none; padding: 10px; width: 100%; border-radius: 4px; font-weight: bold; cursor: pointer; margin-bottom: 10px; font-size: 15px; }
         .btn-register { background-color: #007bff; color: white; border: none; padding: 12px; width: 100%; border-radius: 4px; font-weight: bold; cursor: not-allowed; font-size: 16px; opacity: 0.5; }
         .btn-register.active { cursor: pointer; opacity: 1; }
         
         .login-link { text-align: center; margin-top: 15px; font-size: 13px; }
-        .login-link a { color: #007bff; text-decoration: none; }
+        .login-link a { color: #007bff; text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -76,7 +73,6 @@
         </div>
 
         <button type="button" class="btn-verify" id="verifyBtn" onclick="verifyData()">যাচাই (Verify) করুন</button>
-
         <button type="submit" class="btn-register" id="registerBtn" disabled onclick="submitRegistration()">রেজিস্ট্রি করুন</button>
 
         <div class="login-link">
@@ -86,7 +82,6 @@
 </div>
 
 <script>
-    // সাধারণ টেক্সট ফিল্ড ভ্যালিডেশন (ফার্স্ট ও লাস্ট নেম)
     function validateField(id) {
         const input = document.getElementById(id);
         const tick = document.getElementById(id + 'Tick');
@@ -99,7 +94,6 @@
         }
     }
 
-    // ইমেইল ভ্যালিডেশন
     function validateEmail() {
         const email = document.getElementById('email').value;
         const tick = document.getElementById('emailTick');
@@ -114,7 +108,6 @@
         }
     }
 
-    // ফোন নাম্বার ভ্যালিডেশন (বাংলাদেশী স্ট্যান্ডার্ড ১১ ডিজিট)
     function validatePhone() {
         const phone = document.getElementById('phone').value;
         const tick = document.getElementById('phoneTick');
@@ -129,7 +122,6 @@
         }
     }
 
-    // পাসওয়ার্ড ভ্যালিডেশন ও শর্ত পরীক্ষা
     function validatePassword() {
         const password = document.getElementById('password').value;
         const tick = document.getElementById('passwordTick');
@@ -157,7 +149,6 @@
         }
     }
 
-    // ভেরিফিকেশন বোতামের কাজ
     function verifyData() {
         const isFirstValid = validateField('firstName');
         const isLastValid = validateField('lastName');
@@ -175,19 +166,17 @@
         }
     }
 
-    // সাবমিট করার পর ডেটা ব্রাউজারে সেভ করার ফাংশন
     function submitRegistration() {
         const email = document.getElementById('email').value.trim();
         const phone = document.getElementById('phone').value.trim();
         const password = document.getElementById('password').value;
 
-        // লোকাল মেমোরিতে ডেটা সেভ করা হচ্ছে যাতে লগইন পেজ এটা পড়তে পারে
         localStorage.setItem('userEmail', email);
         localStorage.setItem('userPhone', phone);
         localStorage.setItem('userPassword', password);
 
         alert('অভিনন্দন! আপনার রেজিস্ট্রেশন সফলভাবে সম্পন্ন হয়েছে।');
-        window.location.href = 'login.html'; // সরাসরি লগইন পেজে নিয়ে যাবে
+        window.location.href = 'login.html'; 
     }
 </script>
 
