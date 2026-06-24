@@ -184,10 +184,10 @@
     </div>
 
     <script>
-        // API কনফিগারেশন
-        const IMGBB_API_KEY = 'YOUR_IMGBB_API_KEY'; // এখানে আপনার সঠিক ImgBB API কি বসাবেন
-        const SUPABASE_URL = 'https://mbxkickfugdkgsabizrr.supabase.co/rest/v1/myProducts';
+        // আপনার দেওয়া সমস্ত API Credentials এখানে সফলভাবে বসিয়ে দেওয়া হয়েছে
+        const SUPABASE_URL = 'https://mbxkickfugdkgsabizrr.supabase.co/rest/v1/Product';
         const SUPABASE_KEY = 'Sb_publishable_ButTVVb8ZxL7QeaL919qJg_gZ2HDjfb';
+        const IMGBB_API_KEY = '5ccdf3f54bf699479b69f6e690044998'; 
 
         let products = [];
 
@@ -204,7 +204,7 @@
             }
         }
 
-        // Supabase থেকে ডেটা নিয়ে আসার ফাংশন (Read)
+        // Supabase থেকে ডেটা রিড করা
         async function fetchProducts() {
             try {
                 const response = await fetch(SUPABASE_URL, {
@@ -220,7 +220,7 @@
                 renderProducts(products);
             } catch (error) {
                 console.error(error);
-                document.getElementById('productGrid').innerHTML = '<div style="color:red; padding: 20px;">প্রোডাক্ট লোড করতে ব্যর্থ হয়েছে!</div>';
+                document.getElementById('productGrid').innerHTML = '<div style="color:red; padding: 20px;">প্রোডাক্ট লোড করতে ব্যর্থ হয়েছে! RLS Policy ও টেবিল চেক করুন।</div>';
             }
         }
 
@@ -254,7 +254,7 @@
             });
         }
 
-        // ImgBB-তে ইমেজ আপলোড করার ফাংশন
+        // ImgBB-তে ইমেজ আপলোড করা
         async function uploadImageToImgBB(file) {
             const formData = new FormData();
             formData.append('image', file);
@@ -266,13 +266,13 @@
 
             const data = await response.json();
             if (data.success) {
-                return data.data.url; // আপলোড করা ডিরেক্ট ছবির URL
+                return data.data.url;
             } else {
-                throw new Error('ইমেজ আপলোড ব্যর্থ হয়েছে');
+                throw new Error('ইমেজ আপলোড ব্যর্থ হয়েছে! অনুগ্রহ করে ImgBB Key চেক করুন।');
             }
         }
 
-        // Supabase-এ প্রোডাক্ট ডাটা পাঠানোর ফাংশن (Insert)
+        // Supabase-এ প্রোডাক্ট ডেটা ইনসার্ট করা
         async function saveProductToSupabase(productData) {
             const response = await fetch(SUPABASE_URL, {
                 method: 'POST',
@@ -285,11 +285,13 @@
                 body: JSON.stringify(productData)
             });
 
-            if (!response.ok) throw new Error('ডাটাবেজে সেভ করতে সমস্যা হয়েছে');
+            if (!response.ok) {
+                throw new Error('ডাটাবেজে প্রোডাক্ট যোগ করতে সমস্যা হয়েছে! টেবিলের RLS Policy 'Disable' বা Allow করা আছে কি না নিশ্চিত হোন।');
+            }
             return await response.json();
         }
 
-        // মূল অ্যাডমিন প্রোডাক্ট অ্যাড ফাংশন
+        // বাটন ক্লিক হ্যান্ডলার
         async function addProduct() {
             const name = document.getElementById('pName').value.trim();
             const price = document.getElementById('pPrice').value.trim();
@@ -303,19 +305,16 @@
                 return;
             }
 
-            // বাটন ডিজেবল ও লোডিং টেক্সট দেওয়া হলো যেন ডাবল ক্লিক না পড়ে
             submitBtn.disabled = true;
             submitBtn.innerText = "আপলোড হচ্ছে...";
 
             let imageUrl = "";
 
             try {
-                // ১. যদি ইমেজ ফাইল সিলেক্ট করা থাকে তবে আগে ImgBB তে আপলোড হবে
                 if (imageInput.files && imageInput.files[0]) {
                     imageUrl = await uploadImageToImgBB(imageInput.files[0]);
                 }
 
-                // ২. ডেটাবেজ ফরম্যাট রেডি করা
                 const newProduct = {
                     name: name,
                     price: price + " টাকা",
@@ -324,16 +323,15 @@
                     image: imageUrl
                 };
 
-                // ৩. Supabase এ ডাটা পুশ
                 await saveProductToSupabase(newProduct);
                 
                 alert("প্রোডাক্টটি সফলভাবে লাইভ সার্ভারে যোগ করা হয়েছে!");
                 clearInputs();
-                fetchProducts(); // নতুন ডেটাসহ গ্রিড রিলোড করা
+                fetchProducts(); 
                 
             } catch (error) {
                 console.error(error);
-                alert("দুঃখিত, কোনো একটি ত্রুটি ঘটেছে: " + error.message);
+                alert(error.message);
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.innerText = "প্রোডাক্ট যোগ করুন";
@@ -368,7 +366,6 @@
             alert(section + " সেকশনটি পরবর্তীতে ডাইনামিক করা হবে।");
         }
 
-        // পেজ লোড হওয়ার সাথে সাথে ডেটাবেজ থেকে ডাটা আসবে
         window.onload = fetchProducts;
     </script>
 </body>
