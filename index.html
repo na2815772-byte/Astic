@@ -7,12 +7,14 @@
     <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; }
         .sidebar { width: 250px; background-color: #333; color: white; padding: 15px; height: 100vh; position: fixed; }
-        .sidebar h2 { color: #fff; }
+        .sidebar h2 { color: #fff; margin-bottom: 20px; }
         .sidebar ul { list-style: none; padding: 0; }
-        .sidebar ul li { padding: 10px; cursor: pointer; }
+        .sidebar ul li { padding: 10px; cursor: pointer; transition: background 0.2s; }
         .sidebar ul li:hover { background-color: #555; }
+        
         /* সাইডবারের ভেতরের লিংকের কালার ও ডিজাইন ঠিক রাখার জন্য */
         .sidebar ul li a { color: white; text-decoration: none; display: block; width: 100%; height: 100%; }
+        
         .submenu { display: none; padding-left: 15px; }
         .sidebar li:hover .submenu { display: block; }
         .content { margin-left: 270px; padding: 20px; width: calc(100% - 270px); }
@@ -39,7 +41,10 @@
             </li>
             <li onclick="showSection('orders')">মাই অর্ডার</li>
             <li onclick="showSection('add-money')">টাকা যোগ করুন</li>
-            <li><a href="registry.html">মাই প্রোফাইল</a></li>
+            
+            <li><a href="offers.html">🎁 স্পেশাল অফার</a></li>
+            
+            <li><a href="registry.html">👤 মাই প্রোফাইল</a></li>
         </ul>
     </div>
 
