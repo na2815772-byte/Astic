@@ -5,12 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>লগইন - এস্টিক শপ</title>
     <style>
-        /* এখানে আপনার পছন্দের সবুজ ও নীল রঙের মিক্সড গ্রেডিয়েন্ট ব্যাকগ্রাউন্ড দেওয়া হয়েছে */
+        /* আপনার দেখানো স্ক্রিনের মতো নিখুঁত সবুজ ও নীল রঙের মিক্সড গ্রেডিয়েন্ট ব্যাকগ্রাউন্ড */
         body { 
-            font-family: Arial, sans-serif; 
-            background: linear-gradient(135deg, #00b4db, #0083b0, #11998e, #38ef7d);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364, #11998e, #38ef7d);
             background-size: 400% 400%;
-            animation: gradientBG 10s ease infinite;
+            animation: gradientAnimation 12s ease infinite;
             display: flex; 
             justify-content: center; 
             align-items: center; 
@@ -20,70 +20,112 @@
             box-sizing: border-box; 
         }
 
-        /* ব্যাকগ্রাউন্ডটা যাতে হালকা নড়াচড়া করে তার জন্য অ্যানিমেশন */
-        @keyframes gradientBG {
+        @keyframes gradientAnimation {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
 
-        /* লগইন বক্সের স্টাইল */
+        /* স্ক্রিনের মতো আধুনিক আল্ট্রা-প্রিমিয়াম গ্লাস লুক (ব্যাকগ্রাউন্ডের সাথে ফিক্সড মিশে যাওয়া বক্স) */
         .login-container { 
-            background: rgba(255, 255, 255, 0.95); /* হালকা স্বচ্ছ সাদা */
-            padding: 30px; 
-            border-radius: 12px; 
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); 
+            background: rgba(255, 255, 255, 0.12); 
+            backdrop-filter: blur(15px); 
+            -webkit-backdrop-filter: blur(15px);
+            padding: 35px 30px; 
+            border-radius: 16px; 
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3); 
             width: 100%; 
-            max-width: 400px; 
+            max-width: 380px; 
+            box-sizing: border-box;
         }
         
         .login-container h2 { 
             text-align: center; 
-            color: #333; 
-            margin-bottom: 25px; 
-            font-size: 24px;
+            color: #ffffff; 
+            margin-bottom: 30px; 
+            font-size: 26px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         
-        .input-group { margin-bottom: 20px; }
-        .input-group label { display: block; font-weight: bold; margin-bottom: 7px; color: #444; font-size: 14px; }
+        .input-group { margin-bottom: 22px; }
+        
+        /* ইনপুট লেবেল স্টাইল */
+        .input-group label { 
+            display: block; 
+            font-weight: 500; 
+            margin-bottom: 8px; 
+            color: #ffffff; 
+            font-size: 14px; 
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        /* গ্লাস লুকের সাথে ম্যাচিং ইনপুট বক্স */
         .input-group input { 
             width: 100%; 
-            padding: 12px; 
-            border: 1px solid #ccc; 
-            border-radius: 6px; 
+            padding: 12px 15px; 
+            background: rgba(255, 255, 255, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.5); 
+            border-radius: 8px; 
             box-sizing: border-box; 
             font-size: 14px; 
             outline: none; 
-            transition: all 0.3s;
-        }
-        .input-group input:focus { 
-            border-color: #0083b0; 
-            box-shadow: 0 0 8px rgba(0, 131, 176, 0.3);
+            color: #333333;
+            transition: all 0.3s ease;
         }
         
-        /* লগইন বাটন */
+        /* ইনপুট বক্সে ক্লিক করলে গ্লোয়িং ইফেক্ট */
+        .input-group input:focus { 
+            background: #ffffff;
+            border-color: #38ef7d; 
+            box-shadow: 0 0 12px rgba(56, 239, 125, 0.5);
+        }
+        
+        /* ব্যাকগ্রাউন্ড কালারের সাথে ম্যাচ করা প্রিমিয়াম সাইন-ইন বাটন */
         .btn-login { 
-            background: linear-gradient(135deg, #0083b0, #11998e); 
+            background: linear-gradient(135deg, #11998e, #38ef7d); 
             color: white; 
             border: none; 
-            padding: 12px; 
+            padding: 14px; 
             width: 100%; 
-            border-radius: 6px; 
+            border-radius: 8px; 
             font-weight: bold; 
             cursor: pointer; 
             font-size: 16px; 
-            transition: background 0.3s, transform 0.1s; 
-        }
-        .btn-login:hover { 
-            background: linear-gradient(135deg, #0056b3, #0b7367); 
-        }
-        .btn-login:active {
-            transform: scale(0.98);
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(56, 239, 125, 0.3);
+            transition: all 0.3s ease; 
         }
         
-        .register-link { text-align: center; margin-top: 20px; font-size: 13px; color: #555; }
-        .register-link a { color: #0083b0; text-decoration: none; font-weight: bold; }
-        .register-link a:hover { text-decoration: underline; }
+        .btn-login:hover { 
+            background: linear-gradient(135deg, #0f837a, #2ec969); 
+            box-shadow: 0 6px 20px rgba(56, 239, 125, 0.5);
+            transform: translateY(-1px);
+        }
+        
+        .btn-login:active {
+            transform: translateY(1px);
+        }
+        
+        /* রেজিস্ট্রেশন লিংক স্টাইল */
+        .register-link { 
+            text-align: center; 
+            margin-top: 25px; 
+            font-size: 13.5px; 
+            color: #e0e0e0; 
+        }
+        .register-link a { 
+            color: #38ef7d; 
+            text-decoration: none; 
+            font-weight: bold; 
+            transition: color 0.2s;
+        }
+        .register-link a:hover { 
+            color: #ffffff;
+            text-decoration: underline; 
+        }
     </style>
 </head>
 <body>
@@ -123,6 +165,7 @@
         const inputPhone = document.getElementById('loginPhone').value.trim();
         const inputPassword = document.getElementById('loginPassword').value;
 
+        // রেজিস্ট্রেশন পেজ থেকে ব্রাউজারে সেভ হওয়া তথ্যগুলো আনা হচ্ছে
         const registeredEmail = localStorage.getItem('userEmail');
         const registeredPhone = localStorage.getItem('userPhone');
         const registeredPassword = localStorage.getItem('userPassword');
@@ -133,6 +176,7 @@
             return;
         }
 
+        // ৩টি তথ্যই মিললে তবেই index.html এ যাবে
         if (inputEmail === registeredEmail && inputPhone === registeredPhone && inputPassword === registeredPassword) {
             alert('লগইন সফল হয়েছে! আপনাকে হোম পেজে নিয়ে যাওয়া হচ্ছে।');
             window.location.href = 'index.html'; 
