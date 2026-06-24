@@ -266,7 +266,7 @@
             </li>
             <li><a href="offers.html">🎁 স্পেশাল অফার</a></li>
             <li><a href="refer.html">👥 রেফার অ্যান্ড আর্ন</a></li>
-            <li><a href="notifications.html">🔔 নোটিফিকেশন</a></li>
+            <li><a href="notifications.html">🔔 নোটিফিケーション</a></li>
             <li><a href="prescriptions.html">📄 প্রেসক্রিপশন আপলোড</a></li>
             <li><a href="suggest-products.html">💡 প্রোডাক্ট সাজেস্ট</a></li>
             <li><a href="reports.html">⚠️ রিপোর্ট ও অভিযোগ</a></li>
@@ -330,9 +330,10 @@
         }
 
         // 🌟 সুপারবেস এবং ইমেজিং লিংক কনফিগারেশন 🌟
-        const SUPABASE_URL = "https://mbxkickfugdkgsabizrr.supabase.co/rest/v1/products";
-        const SUPABASE_KEY = "sb_secret_6ZG8KvFiE5-lkiqFi9shUg_Hszettav";
-        const IMGBB_API_KEY = "6d701a91e00e8bc6f807204f3db25838"; // ছবি স্থায়ী লিংকে রূপান্তরের ফ্রি কী
+        const SUPABASE_BASE_URL = "https://mbxkickfugdkgsabizrr.supabase.co";
+        const SUPABASE_URL = `${SUPABASE_BASE_URL}/rest/v1/products`;
+        const SUPABASE_KEY = "sb_publishable_ButTVVb8ZxL7QeaL919qJg_gZ2HDjfb";
+        const IMGBB_API_KEY = "6d701a91e00e8bc6f807204f3db25838"; 
 
         let products = [];
 
@@ -385,7 +386,8 @@
                     headers: {
                         'apikey': SUPABASE_KEY,
                         'Authorization': `Bearer ${SUPABASE_KEY}`,
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
                     },
                     body: JSON.stringify(item)
                 });
@@ -430,7 +432,8 @@
                     headers: {
                         'apikey': SUPABASE_KEY,
                         'Authorization': `Bearer ${SUPABASE_KEY}`,
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'Prefer': 'return=minimal'
                     },
                     body: JSON.stringify(newProduct)
                 });
