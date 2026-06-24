@@ -14,12 +14,11 @@
         .input-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; outline: none; }
         .input-group input:focus { border-color: #007bff; }
         
-        /* লগইন বোতাম */
         .btn-login { background-color: #007bff; color: white; border: none; padding: 12px; width: 100%; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 16px; transition: background 0.2s; }
         .btn-login:hover { background-color: #0056b3; }
         
         .register-link { text-align: center; margin-top: 15px; font-size: 13px; }
-        .register-link a { color: #007bff; text-decoration: none; }
+        .register-link a { color: #007bff; text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -53,31 +52,27 @@
 
 <script>
     function handleLogin(event) {
-        event.preventDefault(); // পেজ রিফ্রেশ হওয়া বন্ধ করবে
+        event.preventDefault(); 
 
-        // ইউজার লগইন ফর্মে যা ইনপুট দিল
         const inputEmail = document.getElementById('loginEmail').value.trim();
         const inputPhone = document.getElementById('loginPhone').value.trim();
         const inputPassword = document.getElementById('loginPassword').value;
 
-        // রেজিস্ট্রেশন পেজ থেকে ব্রাউজারে সেভ হওয়া তথ্যগুলো নিয়ে আসা
         const registeredEmail = localStorage.getItem('userEmail');
         const registeredPhone = localStorage.getItem('userPhone');
         const registeredPassword = localStorage.getItem('userPassword');
 
-        // যদি ব্রাউজারে কোনো অ্যাকাউন্ট সেভ করা না থাকে
         if (!registeredEmail || !registeredPhone || !registeredPassword) {
             alert('আপনার কোনো অ্যাকাউন্ট খুঁজে পাওয়া যায়নি! দয়া করে আগে রেজিস্ট্রেশন করুন।');
             window.location.href = 'register.html';
             return;
         }
 
-        // আপনার শর্ত অনুযায়ী ৩টি তথ্যই (ইমেইল, ফোন, পাসওয়ার্ড) হুবহু মিলতে হবে
         if (inputEmail === registeredEmail && inputPhone === registeredPhone && inputPassword === registeredPassword) {
             alert('লগইন সফল হয়েছে! আপনাকে হোম পেজে নিয়ে যাওয়া হচ্ছে।');
-            window.location.href = 'index.html'; // লগইন সফল হলে মেইন হোম পেজে নিয়ে যাবে
+            window.location.href = 'index.html'; 
         } else {
-            alert('দুঃখিত! আপনার ইমেইল, ফোন নাম্বার অথবা পাসওয়ার্ড ভুল হয়েছে। আবার চেষ্টা করুন।');
+            alert('দুঃখিত! আপনার ইমেইল, phone number অথবা পাসওয়ার্ড ভুল হয়েছে। আবার চেষ্টা করুন।');
         }
     }
 </script>
