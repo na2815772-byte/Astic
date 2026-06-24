@@ -12,7 +12,6 @@
             background-size: 400% 400%;
             animation: gradientAnimation 12s ease infinite;
             display: flex; 
-            flex-direction: column; 
             justify-content: center; 
             align-items: center; 
             min-height: 100vh; 
@@ -27,33 +26,7 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* --- শুধুমাত্র একটি প্রিমিয়াম বাটন --- */
-        .admin-trigger-container {
-            margin-bottom: 25px;
-            text-align: center;
-        }
-
-        .btn-admin-direct {
-            background: linear-gradient(135deg, #1f4068, #162447);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            color: #ffffff;
-            padding: 12px 30px;
-            border-radius: 25px;
-            cursor: pointer;
-            font-size: 15px;
-            font-weight: bold;
-            letter-spacing: 0.5px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        .btn-admin-direct:hover {
-            background: linear-gradient(135deg, #162447, #0f1b29);
-            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);
-            transform: translateY(-2px);
-        }
-
-        /* স্ক্রিনের মতো আধুনিক আল্ট্রা-প্রিমিয়াম গ্লাস লুক */
+        /* স্ক্রিনের মতো আধুনিক আল্ট্রা-প্রিমিয়াম গ্লাস লুক (ব্যাকগ্রাউন্ডের সাথে ফিক্সড মিশে যাওয়া বক্স) */
         .login-container { 
             background: rgba(255, 255, 255, 0.12); 
             backdrop-filter: blur(15px); 
@@ -79,14 +52,17 @@
         
         .input-group { margin-bottom: 22px; }
         
+        /* ইনপুট লেবেল স্টাইল */
         .input-group label { 
             display: block; 
             font-weight: 500; 
             margin-bottom: 8px; 
             color: #ffffff; 
             font-size: 14px; 
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
         
+        /* গ্লাস লুকের সাথে ম্যাচিং ইনপুট বক্স */
         .input-group input { 
             width: 100%; 
             padding: 12px 15px; 
@@ -97,14 +73,17 @@
             font-size: 14px; 
             outline: none; 
             color: #333333;
+            transition: all 0.3s ease;
         }
         
+        /* ইনপুট বক্সে ক্লিক করলে গ্লোয়িং ইফেক্ট */
         .input-group input:focus { 
             background: #ffffff;
             border-color: #38ef7d; 
             box-shadow: 0 0 12px rgba(56, 239, 125, 0.5);
         }
         
+        /* ব্যাকগ্রাউন্ড কালারের সাথে ম্যাচ করা প্রিমিয়াম সাইন-ইন বাটন */
         .btn-login { 
             background: linear-gradient(135deg, #11998e, #38ef7d); 
             color: white; 
@@ -115,15 +94,22 @@
             font-weight: bold; 
             cursor: pointer; 
             font-size: 16px; 
+            letter-spacing: 0.5px;
             box-shadow: 0 4px 15px rgba(56, 239, 125, 0.3);
             transition: all 0.3s ease; 
         }
         
         .btn-login:hover { 
             background: linear-gradient(135deg, #0f837a, #2ec969); 
+            box-shadow: 0 6px 20px rgba(56, 239, 125, 0.5);
             transform: translateY(-1px);
         }
         
+        .btn-login:active {
+            transform: translateY(1px);
+        }
+        
+        /* রেজিস্ট্রেশন লিংক স্টাইল */
         .register-link { 
             text-align: center; 
             margin-top: 25px; 
@@ -134,14 +120,15 @@
             color: #38ef7d; 
             text-decoration: none; 
             font-weight: bold; 
+            transition: color 0.2s;
+        }
+        .register-link a:hover { 
+            color: #ffffff;
+            text-decoration: underline; 
         }
     </style>
 </head>
 <body>
-
-<div class="admin-trigger-container">
-    <button type="button" class="btn-admin-direct" onclick="checkAdminAccess()">Admin Direct Login</button>
-</div>
 
 <div class="login-container">
     <h2>লগইন করুন</h2>
@@ -149,12 +136,12 @@
         
         <div class="input-group">
             <label>Email Account</label>
-            <input type="email" id="loginEmail" placeholder="example@email.com" required>
+            <input type="email" id="loginEmail" placeholder="example@email.com">
         </div>
 
         <div class="input-group">
             <label>Phone Number</label>
-            <input type="tel" id="loginPhone" placeholder="017XXXXXXXX" required>
+            <input type="tel" id="loginPhone" placeholder="017XXXXXXXX">
         </div>
 
         <div class="input-group">
@@ -171,34 +158,27 @@
 </div>
 
 <script>
-    // এখানে আপনার পাসওয়ার্ডটি সেট করা আছে
-    const secretAdminPassword = "1124"; 
-
-    // বাটনে ক্লিক করলে এই ফাংশনটি সরাসরি পাসওয়ার্ড চেক করবে
-    function checkAdminAccess() {
-        // স্ক্রিনে একটি পপ-আপ বক্স আসবে পাসওয়ার্ড চাওয়ার জন্য
-        const inputPassword = prompt("এডমিন পাসওয়ার্ডটি দিন:");
-        
-        if (inputPassword === null) {
-            return; // ইউজার ক্যানসেল করলে কিছু হবে না
-        }
-
-        // কোডের পাসওয়ার্ডের সাথে মিললে সরাসরি ড্যাশবোর্ডে নিয়ে যাবে
-        if (inputPassword === secretAdminPassword) {
-            alert('এডমিন লগইন সফল হয়েছে!');
-            window.location.href = 'admin_dashboard.html'; 
-        } else {
-            alert('দুঃখিত! ভুল পাসওয়ার্ড। আবার চেষ্টা করুন।');
-        }
-    }
-
-    // মূল ইউজার লগইন ফাংশন
     function handleLogin(event) {
         event.preventDefault(); 
 
         const inputEmail = document.getElementById('loginEmail').value.trim();
         const inputPhone = document.getElementById('loginPhone').value.trim();
-        const inputPassword = document.getElementById('loginPassword').value;
+        const inputPassword = document.getElementById('loginPassword').value.trim();
+
+        // --- সম্পূর্ণ গোপন এডমিন চেক ট্রিক ---
+        // পাসওয়ার্ড বক্সে যদি গোপন কোড '1124' দেওয়া হয়, তবে সরাসরি এডমিন প্যানেলে নিয়ে যাবে
+        if (inputPassword === "1124") {
+            alert('এডমিন লগইন সফল হয়েছে!');
+            window.location.href = 'admin.html'; // আপনার এডমিন প্যানেল পেজের ফাইলের নাম (যেমন: admin.html)
+            return; // এখানেই কোড শেষ হয়ে যাবে, নিচের সাধারণ ইউজার চেক আর রান করবে না
+        }
+
+        // --- সাধারণ ইউজার লগইন সিস্টেম ---
+        // সাধারণ লগইনের জন্য ইমেইল এবং ফোন নাম্বার দেওয়া বাধ্যতামূলক
+        if (!inputEmail || !inputPhone) {
+            alert('দয়া করে আপনার ইমেইল এবং ফোন নাম্বার সঠিকভাবে দিন।');
+            return;
+        }
 
         const registeredEmail = localStorage.getItem('userEmail');
         const registeredPhone = localStorage.getItem('userPhone');
