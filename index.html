@@ -6,24 +6,28 @@
     <title>এস্টিক - অনলাইন শপ</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; }
-        .sidebar { width: 250px; background-color: #333; color: white; padding: 15px; height: 100vh; position: fixed; }
-        .sidebar h2 { color: #fff; margin-bottom: 20px; }
+        .sidebar { width: 250px; background-color: #333; color: white; padding: 15px; height: 100vh; position: fixed; overflow-y: auto; }
+        .sidebar h2 { color: #fff; margin-bottom: 20px; text-align: center; border-bottom: 1px solid #555; padding-bottom: 10px; }
         .sidebar ul { list-style: none; padding: 0; }
-        .sidebar ul li { padding: 10px; cursor: pointer; transition: background 0.2s; }
+        .sidebar ul li { padding: 12px 10px; cursor: pointer; transition: background 0.2s; border-bottom: 1px solid #444; }
         .sidebar ul li:hover { background-color: #555; }
         
         /* সাইডবারের ভেতরের লিংকের কালার ও ডিজাইন ঠিক রাখার জন্য */
         .sidebar ul li a { color: white; text-decoration: none; display: block; width: 100%; height: 100%; }
         
-        .submenu { display: none; padding-left: 15px; }
+        .submenu { display: none; padding-left: 15px; list-style: none; }
         .sidebar li:hover .submenu { display: block; }
+        .submenu li { border-bottom: none; padding: 8px 5px; }
+        .submenu li:hover { background-color: #666; }
+        
         .content { margin-left: 270px; padding: 20px; width: calc(100% - 270px); }
-        .admin-panel { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; background-color: #f9f9f9; }
+        .admin-panel { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; background-color: #f9f9f9; border-radius: 5px; }
         .product-grid { display: flex; flex-wrap: wrap; gap: 20px; }
-        .product-card { border: 1px solid #ddd; padding: 15px; width: 200px; border-radius: 5px; position: relative; }
+        .product-card { border: 1px solid #ddd; padding: 15px; width: 200px; border-radius: 5px; position: relative; background-color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         .price { font-weight: bold; color: green; }
         .old-price { text-decoration: line-through; color: red; margin-right: 10px; }
-        .order-btn { background-color: blue; color: white; border: none; padding: 10px; cursor: pointer; width: 100%; border-radius: 3px; margin-top: 10px; }
+        .order-btn { background-color: blue; color: white; border: none; padding: 10px; cursor: pointer; width: 100%; border-radius: 3px; margin-top: 10px; font-weight: bold; }
+        .order-btn:hover { background-color: darkblue; }
     </style>
 </head>
 <body>
@@ -31,19 +35,26 @@
     <div class="sidebar">
         <h2>এস্টিক মেনু</h2>
         <ul>
-            <li onclick="showSection('collection')">কালেকশন
+            <li>কালেকশন
                 <ul class="submenu">
-                    <li onclick="filterCategory('tshirt')">টি-শার্ট</li>
-                    <li onclick="filterCategory('watch')">ঘড়ি</li>
-                    <li onclick="filterCategory('glasses')">চশমা</li>
-                    <li onclick="filterCategory('car')">গাড়ি</li>
+                    <li onclick="filterCategory('tshirt')">👕 টি-শার্ট</li>
+                    <li onclick="filterCategory('watch')">⌚ ঘড়ি</li>
+                    <li onclick="filterCategory('glasses')">🕶️ চশমা</li>
+                    <li onclick="filterCategory('car')">🚗 গাড়ি</li>
                 </ul>
             </li>
-            <li onclick="showSection('orders')">মাই অর্ডার</li>
-            <li onclick="showSection('add-money')">টাকা যোগ করুন</li>
+            <li onclick="showSection('orders')">🛍️ মাই অর্ডার</li>
+            <li onclick="showSection('add-money')">💳 টাকা যোগ করুন</li>
             
+            <li><a href="my-products.html">📦 মাই প্রোডাক্টস</a></li>
+            <li><a href="wishlists.html">❤️ আমার উইশলিস্ট</a></li>
             <li><a href="offers.html">🎁 স্পেশাল অফার</a></li>
-            
+            <li><a href="refer.html">👥 রেফার অ্যান্ড আর্ন</a></li>
+            <li><a href="notifications.html">🔔 নোটিফিকেশন</a></li>
+            <li><a href="prescriptions.html">📄 প্রেসক্রিপশন আপলোড</a></li>
+            <li><a href="address.html">📍 ডেলিভারি অ্যাড্রেস</a></li>
+            <li><a href="suggest-products.html">💡 প্রোডাক্ট সাজেস্ট</a></li>
+            <li><a href="reports.html">⚠️ রিপোর্ট ও অভিযোগ</a></li>
             <li><a href="registry.html">👤 মাই প্রোফাইল</a></li>
         </ul>
     </div>
@@ -51,16 +62,16 @@
     <div class="content">
         <div class="admin-panel">
             <h3>অ্যাডমিন প্যানেল: প্রোডাক্ট যোগ করুন</h3>
-            <input type="text" id="pName" placeholder="প্রোডাক্টের নাম">
-            <input type="text" id="pPrice" placeholder="বর্তমান মূল্য">
-            <input type="text" id="pOldPrice" placeholder="পুরনো মূল্য (ডিসকাউন্ট থাকলে)">
-            <select id="pCategory">
+            <input type="text" id="pName" placeholder="প্রোডাক্টের নাম" style="padding: 6px; margin-right: 5px;">
+            <input type="text" id="pPrice" placeholder="বর্তমান মূল্য" style="padding: 6px; margin-right: 5px;">
+            <input type="text" id="pOldPrice" placeholder="পুরনো মূল্য (ডিসকাউন্ট থাকলে)" style="padding: 6px; margin-right: 5px;">
+            <select id="pCategory" style="padding: 6px; margin-right: 5px;">
                 <option value="tshirt">টি-শার্ট</option>
                 <option value="watch">ঘড়ি</option>
                 <option value="glasses">চশমা</option>
                 <option value="car">গাড়ি</option>
             </select>
-            <button onclick="addProduct()">প্রোডাক্ট যোগ করুন</button>
+            <button onclick="addProduct()" style="padding: 7px 12px; cursor: pointer;">প্রোডাক্ট যোগ করুন</button>
         </div>
 
         <h1>আমাদের প্রোডাক্টগুলো</h1>
@@ -101,6 +112,10 @@
             if (name && price) {
                 products.push({ name, price: price + " টাকা", oldPrice: oldPrice ? oldPrice + " টাকা" : "", category });
                 renderProducts();
+                // ইনপুট বক্স খালি করার জন্য
+                document.getElementById('pName').value = '';
+                document.getElementById('pPrice').value = '';
+                document.getElementById('pOldPrice').value = '';
             }
         }
 
