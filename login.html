@@ -1,62 +1,25 @@
-<!DOCTYPE html>
-<html lang="bn">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>লগইন - এস্টিক</title>
-    <link rel="stylesheet" href="style.css">
-    <style>
-        body {
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #f7f9fc;
-        }
-        .login-container {
-            background-color: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 300px;
-        }
-        .login-container h2 {
-            text-align: center;
-            margin-bottom: 20px;
-            color: #2c3e50;
-        }
-        .login-container input {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        .login-container button {
-            width: 100%;
-            padding: 10px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .login-container button:hover {
-            background-color: #2980b9;
-        }
-    </style>
-</head>
-<body>
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+    e.preventDefault();
 
-    <div class="login-container">
-        <h2>লগইন করুন</h2>
-        <form action="#" method="POST">
-            <input type="text" placeholder="ইউজারনেম বা ইমেইল" required>
-            <input type="password" placeholder="পাসওয়ার্ড" required>
-            <button type="submit">লগইন</button>
-        </form>
-    </div>
+    const loginIdentifier = document.getElementById('loginIdentifier').value;
+    const loginPassword = document.getElementById('loginPassword').value;
 
-</body>
-</html>
+    // LocalStorage থেকে রেজিস্টার্ড ইউজারের ডেটা আনা হচ্ছে
+    const savedData = localStorage.getItem('registeredUser');
+
+    if (savedData) {
+        const user = JSON.parse(savedData);
+
+        // ইমেইল অথবা ফোন নম্বর এবং পাসওয়ার্ড চেক করা হচ্ছে
+        if ((loginIdentifier === user.email || loginIdentifier === user.phone) && loginPassword === user.password) {
+            alert(`স্বাগতম, ${user.fullName}! লগইন সফল হয়েছে।`);
+            // সফলভাবে লগইন হলে ইউজারকে মূল হোমে (index.html) ফেরত পাঠানো হচ্ছে
+            window.location.href = 'index.html'; 
+        } else {
+            alert('ভুল ইমেইল/ফোন নম্বর অথবা পাসওয়ার্ড! আবার চেষ্টা করুন।');
+        }
+    } else {
+        alert('কোনো অ্যাকাউন্ট খুঁজে পাওয়া যায়নি! প্রথমে একটি অ্যাকাউন্ট তৈরি করুন।');
+        window.location.href = 'registry.html';
+    }
+});
