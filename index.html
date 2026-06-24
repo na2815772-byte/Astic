@@ -125,10 +125,8 @@
             }
         }
 
-        // 🌟 সুপারবেস এবং ইমেজিং লিংক কনফিগারেশন 🌟
+        // 🌟 কনফিগারেশন সেকশন 🌟
         const SUPABASE_URL = "https://mbxkickfugdkgsabizrr.supabase.co/rest/v1/products";
-        
-        // এখানে আপনার সেই নতুন anon কী-টি দিন (যেমন: sb_publishable_ButTVVb...)
         const SUPABASE_KEY = "sb_publishable_ButTVVb8ZxL7QeaL919qJg_gZ2HDjfb"; 
         const IMGBB_API_KEY = "6d701a91e00e8bc6f807204f3db25838"; 
 
@@ -232,11 +230,12 @@
 
                 if (response.status === 201 || response.ok) {
                     alert("প্রোডাক্টটি ডাটাবেজে স্থায়ীভাবে যুক্ত হয়েছে!");
+                    clearInputs(); // ডাটাবেজে সেভ সফল হলে ইনপুটগুলো খালি করা হবে
                     fetchProductsFromSupabase();
                 } else {
                     const errText = await response.text();
                     console.error("Supabase error response:", errText);
-                    alert("ডাটাবেজে প্রোডাক্ট যোগ করতে সমস্যা হয়েছে! টেবিলের RLS পলিসি চেক করুন।");
+                    alert("ডাটাবেজে প্রোডাক্ট যোগ করতে সমস্যা হয়েছে! টেবিলের RLS পলিসি বা ডাটা টাইপ চেক করুন।");
                 }
             } catch (error) {
                 console.error("Error saving data:", error);
@@ -248,9 +247,9 @@
         }
 
         async function addProduct() {
-            const name = document.getElementById('pName').value;
-            const price = document.getElementById('pPrice').value;
-            const oldPrice = document.getElementById('pOldPrice').value;
+            const name = document.getElementById('pName').value.trim();
+            const price = document.getElementById('pPrice').value.trim();
+            const oldPrice = document.getElementById('pOldPrice').value.trim();
             const category = document.getElementById('pCategory').value;
             const imageInput = document.getElementById('pImage');
             const btn = document.getElementById('addBtn');
@@ -265,8 +264,8 @@
 
             let newProduct = {
                 name: name,
-                price: price + " টাকা",
-                oldPrice: oldPrice ? oldPrice + " টাকা" : "",
+                price: price.includes("টাকা") ? price : price + " টাকা",
+                oldPrice: oldPrice ? (oldPrice.includes("টাকা") ? oldPrice : oldPrice + " টাকা") : "",
                 category: category,
                 image: ""
             };
@@ -276,6 +275,7 @@
                 formData.append("image", imageInput.files[0]);
 
                 try {
+                    // ফিক্সড ImgBB API লিংক
                     const imgbbResponse = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_API_KEY}`, {
                         method: "POST",
                         body: formData
@@ -284,21 +284,17 @@
 
                     if (imgbbData.success) {
                         newProduct.image = imgbbData.data.url;
-                        saveProductToSupabase(newProduct);
-                        clearInputs();
+                        await saveProductToSupabase(newProduct);
                     } else {
                         alert("ছবি আপলোড ব্যর্থ হয়েছে! সাধারণ টেক্সট হিসেবে সেভ করা হচ্ছে।");
-                        saveProductToSupabase(newProduct);
-                        clearInputs();
+                        await saveProductToSupabase(newProduct);
                     }
                 } catch (err) {
                     console.error("ImgBB Upload Error:", err);
-                    saveProductToSupabase(newProduct);
-                    clearInputs();
+                    await saveProductToSupabase(newProduct);
                 }
             } else {
-                saveProductToSupabase(newProduct);
-                clearInputs();
+                await saveProductToSupabase(newProduct);
             }
         }
 
