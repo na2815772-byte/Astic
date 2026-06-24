@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>মাই প্রোডাক্টস - এস্টিক</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background-color: #f7f9fc; padding: 20px; }
+        .container { max-width: 700px; margin: 0 auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        h1 { color: #2c3e50; text-align: center; margin-bottom: 20px; font-size: 24px; }
+        .product-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee; }
+        .product-item:last-child { border-bottom: none; }
+        .prod-details h3 { color: #333; font-size: 18px; margin-bottom: 5px; }
+        .prod-details p { color: #7f8c8d; font-size: 14px; }
+        .status { background: #2ecc71; color: white; padding: 5px 10px; border-radius: 4px; font-size: 12px; font-weight: bold; }
+        .back-btn { display: inline-block; margin-top: 20px; text-decoration: none; color: #3498db; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>📦 আমার প্রোডাক্টসমূহ (My Products)</h1>
+        
+        <div class="product-list">
+            <div class="product-item">
+                <div class="prod-details">
+                    <h3>প্রিমিয়াম টি-শার্ট</h3>
+                    <p>অর্ডার আইডি: #AST-9874</p>
+                </div>
+                <span class="status">ডেলিভারড</span>
+            </div>
+
+            <div class="product-item">
+                <div class="prod-details">
+                    <h3>স্মার্ট এনালগ ঘড়ি</h3>
+                    <p>অর্ডার আইডি: #AST-9852</p>
+                </div>
+                <span class="status" style="background: #f1c40f;">চলতি পথে</span>
+            </div>
+        </div>
+
+        <a href="index.html" class="back-btn">← মূল শপ-এ ফিরে যান</a>
+    </div>
+
+</body>
+</html>
