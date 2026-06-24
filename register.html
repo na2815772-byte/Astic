@@ -90,7 +90,6 @@
     function validateField(id) {
         const input = document.getElementById(id);
         const tick = document.getElementById(id + 'Tick');
-        // নাম কমপক্ষে ২ অক্ষরের হলে নীল টিক আসবে
         if (input.value.trim().length >= 2) {
             tick.style.display = 'block';
             return true;
@@ -104,7 +103,7 @@
     function validateEmail() {
         const email = document.getElementById('email').value;
         const tick = document.getElementById('emailTick');
-        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // সঠিক ইমেইল ফরম্যাট চেক
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         
         if (emailPattern.test(email)) {
             tick.style.display = 'block';
@@ -119,7 +118,7 @@
     function validatePhone() {
         const phone = document.getElementById('phone').value;
         const tick = document.getElementById('phoneTick');
-        const phonePattern = /^(01)[3-9]\d{8}$/; // ০১ দিয়ে শুরু এবং মোট ১১ ডিজিট
+        const phonePattern = /^(01)[3-9]\d{8}$/;
         
         if (phonePattern.test(phone)) {
             tick.style.display = 'block';
@@ -141,20 +140,17 @@
         const hasNumber = /[0-9]/.test(password);
         const hasSpecial = /[!@#$%^&*(),.?":{}|<>_]/.test(password);
 
-        // শর্তের কালার চেঞ্জ (সঠিক হলে নীল হবে)
         document.getElementById('reqLength').className = hasLength ? 'req-item valid' : 'req-item';
         document.getElementById('reqUpper').className = hasUpper ? 'req-item valid' : 'req-item';
         document.getElementById('reqLower').className = hasLower ? 'req-item valid' : 'req-item';
         document.getElementById('reqNumber').className = hasNumber ? 'req-item valid' : 'req-item';
         document.getElementById('reqSpecial').className = hasSpecial ? 'req-item valid' : 'req-item';
 
-        // সব শর্ত পূরণ হলে পাসওয়ার্ডের পাশে নীল টিক আসবে
         if (hasLength && hasUpper && hasLower && hasNumber && hasSpecial) {
             tick.style.display = 'block';
             return true;
         } else {
             tick.style.display = 'none';
-            // পাসওয়ার্ড এডিট করলে রেজিস্ট্রি বাটন আবার লক হয়ে যাবে
             document.getElementById('registerBtn').disabled = true;
             document.getElementById('registerBtn').classList.remove('active');
             return false;
@@ -169,21 +165,29 @@
         const isPhoneValid = validatePhone();
         const isPassValid = validatePassword();
 
-        // সব ঠিক থাকলে রেজিস্ট্রি বাটন অন হবে
         if (isFirstValid && isLastValid && isEmailValid && isPhoneValid && isPassValid) {
             alert('আপনার সকল তথ্য সঠিক আছে! এখন নিচের "রেজিস্ট্রি করুন" বোতামে ক্লিক করুন।');
             const regBtn = document.getElementById('registerBtn');
             regBtn.disabled = false;
             regBtn.classList.add('active');
         } else {
-            alert('অনুগ্রহ করে ফরমের সব তথ্য সঠিকভাবে পূরণ করুন (সবুজ বা নীল সংকেতগুলো খেয়াল করুন)।');
+            alert('অনুগ্রহ করে ফরমের সব তথ্য সঠিকভাবে পূরণ করুন (নীল সংকেতগুলো খেয়াল করুন)।');
         }
     }
 
-    // সাবমিট করার পর
+    // সাবমিট করার পর ডেটা ব্রাউজারে সেভ করার ফাংশন
     function submitRegistration() {
+        const email = document.getElementById('email').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const password = document.getElementById('password').value;
+
+        // লোকাল মেমোরিতে ডেটা সেভ করা হচ্ছে যাতে লগইন পেজ এটা পড়তে পারে
+        localStorage.setItem('userEmail', email);
+        localStorage.setItem('userPhone', phone);
+        localStorage.setItem('userPassword', password);
+
         alert('অভিনন্দন! আপনার রেজিস্ট্রেশন সফলভাবে সম্পন্ন হয়েছে।');
-        window.location.href = 'login.html'; // সফল হলে লগইন পেজে নিয়ে যাবে
+        window.location.href = 'login.html'; // সরাসরি লগইন পেজে নিয়ে যাবে
     }
 </script>
 
