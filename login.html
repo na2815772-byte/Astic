@@ -1,25 +1,86 @@
-document.getElementById('loginForm').addEventListener('submit', function(e) {
-    e.preventDefault();
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>লগইন - এস্টিক শপ</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+        .login-container { background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        .login-container h2 { text-align: center; color: #333; margin-bottom: 20px; }
+        
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; font-weight: bold; margin-bottom: 5px; color: #555; font-size: 14px; }
+        .input-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; outline: none; }
+        .input-group input:focus { border-color: #007bff; }
+        
+        /* লগইন বোতাম */
+        .btn-login { background-color: #007bff; color: white; border: none; padding: 12px; width: 100%; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 16px; transition: background 0.2s; }
+        .btn-login:hover { background-color: #0056b3; }
+        
+        .register-link { text-align: center; margin-top: 15px; font-size: 13px; }
+        .register-link a { color: #007bff; text-decoration: none; }
+    </style>
+</head>
+<body>
 
-    const loginIdentifier = document.getElementById('loginIdentifier').value;
-    const loginPassword = document.getElementById('loginPassword').value;
+<div class="login-container">
+    <h2>লগইন করুন</h2>
+    <form id="loginForm" onsubmit="handleLogin(event)">
+        
+        <div class="input-group">
+            <label>Email Account</label>
+            <input type="email" id="loginEmail" placeholder="example@email.com" required>
+        </div>
 
-    // LocalStorage থেকে রেজিস্টার্ড ইউজারের ডেটা আনা হচ্ছে
-    const savedData = localStorage.getItem('registeredUser');
+        <div class="input-group">
+            <label>Phone Number</label>
+            <input type="tel" id="loginPhone" placeholder="017XXXXXXXX" required>
+        </div>
 
-    if (savedData) {
-        const user = JSON.parse(savedData);
+        <div class="input-group">
+            <label>Password</label>
+            <input type="password" id="loginPassword" placeholder="আপনার পাসওয়ার্ডটি দিন" required>
+        </div>
 
-        // ইমেইল অথবা ফোন নম্বর এবং পাসওয়ার্ড চেক করা হচ্ছে
-        if ((loginIdentifier === user.email || loginIdentifier === user.phone) && loginPassword === user.password) {
-            alert(`স্বাগতম, ${user.fullName}! লগইন সফল হয়েছে।`);
-            // সফলভাবে লগইন হলে ইউজারকে মূল হোমে (index.html) ফেরত পাঠানো হচ্ছে
-            window.location.href = 'index.html'; 
-        } else {
-            alert('ভুল ইমেইল/ফোন নম্বর অথবা পাসওয়ার্ড! আবার চেষ্টা করুন।');
+        <button type="submit" class="btn-login">লগইন করুন</button>
+
+        <div class="register-link">
+            নতুন অ্যাকাউন্ট তৈরি করবেন? <a href="register.html">রেজিস্ট্রেশন করুন</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    function handleLogin(event) {
+        event.preventDefault(); // পেজ রিফ্রেশ হওয়া বন্ধ করবে
+
+        // ইউজার লগইন ফর্মে যা ইনপুট দিল
+        const inputEmail = document.getElementById('loginEmail').value.trim();
+        const inputPhone = document.getElementById('loginPhone').value.trim();
+        const inputPassword = document.getElementById('loginPassword').value;
+
+        // রেজিস্ট্রেশন পেজ থেকে ব্রাউজারে সেভ হওয়া তথ্যগুলো নিয়ে আসা
+        const registeredEmail = localStorage.getItem('userEmail');
+        const registeredPhone = localStorage.getItem('userPhone');
+        const registeredPassword = localStorage.getItem('userPassword');
+
+        // যদি ব্রাউজারে কোনো অ্যাকাউন্ট সেভ করা না থাকে
+        if (!registeredEmail || !registeredPhone || !registeredPassword) {
+            alert('আপনার কোনো অ্যাকাউন্ট খুঁজে পাওয়া যায়নি! দয়া করে আগে রেজিস্ট্রেশন করুন।');
+            window.location.href = 'register.html';
+            return;
         }
-    } else {
-        alert('কোনো অ্যাকাউন্ট খুঁজে পাওয়া যায়নি! প্রথমে একটি অ্যাকাউন্ট তৈরি করুন।');
-        window.location.href = 'registry.html';
+
+        // আপনার শর্ত অনুযায়ী ৩টি তথ্যই (ইমেইল, ফোন, পাসওয়ার্ড) হুবহু মিলতে হবে
+        if (inputEmail === registeredEmail && inputPhone === registeredPhone && inputPassword === registeredPassword) {
+            alert('লগইন সফল হয়েছে! আপনাকে হোম পেজে নিয়ে যাওয়া হচ্ছে।');
+            window.location.href = 'index.html'; // লগইন সফল হলে মেইন হোম পেজে নিয়ে যাবে
+        } else {
+            alert('দুঃখিত! আপনার ইমেইল, ফোন নাম্বার অথবা পাসওয়ার্ড ভুল হয়েছে। আবার চেষ্টা করুন।');
+        }
     }
-});
+</script>
+
+</body>
+</html>
