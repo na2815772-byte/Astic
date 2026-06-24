@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>রেফার অ্যান্ড আর্ন - এস্টিক</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            background-color: #f7f9fc;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+        }
+        p {
+            color: #7f8c8d;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        .referral-box {
+            background: #f1f2f6;
+            border: 2px dashed #bdc3c7;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #3498db;
+            margin-bottom: 20px;
+            word-break: break-all;
+        }
+        .btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .back-btn {
+            display: block;
+            margin-top: 30px;
+            text-decoration: none;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        .back-btn:hover {
+            color: #2c3e50;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>👥 রেফার অ্যান্ড আর্ন</h1>
+        <p>আপনার বন্ধুদের সাথে আপনার রেফারেল লিংক শেয়ার করুন। প্রতিটি সফল রেফারেলের জন্য আপনি পাবেন আকর্ষণীয় ক্যাশব্যাক!</p>
+        
+        <div class="referral-box" id="refLink">ASTIC-REF-12345</div>
+        
+        <button class="btn" onclick="copyRefLink()">লিংক কপি করুন</button>
+        
+        <a href="index.html" class="back-btn">← মূল শপ-এ ফিরে যান</a>
+    </div>
+
+    <script>
+        function copyRefLink() {
+            const linkText = document.getElementById('refLink').innerText;
+            navigator.clipboard.writeText(linkText);
+            alert("রেফারেল লিংক কপি করা হয়েছে!");
+        }
+    </script>
+
+</body>
+</html>
