@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Payment</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f6f9;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .checkout-container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .instruction-box {
+            background-color: #e3f2fd;
+            border-left: 5px solid #2196f3;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: #0d47a1;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+            font-size: 14px;
+        }
+        input[type="text"], input[type="email"], select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 15px;
+        }
+        input:focus, select:focus {
+            border-color: #2196f3;
+            outline: none;
+        }
+        .submit-btn {
+            background-color: #4caf50;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            width: 100%;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+        .submit-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+
+<div class="checkout-container">
+    <h2>অর্ডার ও পেমেন্ট ফরম</h2>
+    
+    <div class="instruction-box">
+        <strong>পেমেন্ট নিয়ম:</strong> আমাদের বিকাশ/নগদ/রকেট নম্বরে টাকা Send Money করার পর, নিচের ফরমে আপনার নাম, মোবাইল নম্বর এবং ট্রানজেকশন আইডি (TxnID) দিয়ে সাবমিট করুন।
+    </div>
+
+    <form action="https://formspree.io/f/YOUR_ENDPOINT_HERE" method="POST">
+        
+        <div class="form-group">
+            <label for="name">আপনার নাম:</label>
+            <input type="text" id="name" name="Customer Name" placeholder="যেমন: নিলয়" required>
+        </div>
+
+        <div class="form-group">
+            <label for="phone">মোবাইল নম্বর:</label>
+            <input type="text" id="phone" name="Customer Phone" placeholder="যেমন: 017XXXXXXXX" required>
+        </div>
+
+        <div class="form-group">
+            <label for="method">কোন মাধ্যমে টাকা পাঠিয়েছেন?</label>
+            <select id="method" name="Payment Method" required>
+                <option value="">সিলেক্ট করুন</option>
+                <option value="bKash">বিকাশ (bKash)</option>
+                <option value="Nagad">নগদ (Nagad)</option>
+                <option value="Rocket">রকেট (Rocket)</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="txnid">ট্রানজেকশন আইডি (TxnID):</label>
+            <input type="text" id="txnid" name="Transaction ID" placeholder="যেমন: TRX12345678" required>
+        </div>
+
+        <button type="submit" class="submit-btn">পেমেন্ট নিশ্চিত করুন</button>
+    </form>
+</div>
+
+</body>
+</html>
