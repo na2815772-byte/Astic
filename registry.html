@@ -1,44 +1,191 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Account - My Profile</title>
-    <link rel="stylesheet" href="auth-style.css">
+    <title>রেজিস্ট্রেশন - এস্টিক শপ</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f4f4; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
+        .register-container { background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
+        .register-container h2 { text-align: center; color: #333; margin-bottom: 20px; }
+        
+        .input-group { position: relative; margin-bottom: 20px; }
+        .input-group label { display: block; font-weight: bold; margin-bottom: 5px; color: #555; font-size: 14px; }
+        .input-group input { width: 100%; padding: 10px 35px 10px 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; outline: none; }
+        
+        /* নীল টিক মার্কের জন্য স্টাইল */
+        .tick-mark { position: absolute; right: 10px; top: 35px; color: #007bff; font-weight: bold; font-size: 16px; display: none; }
+        
+        /* পাসওয়ার্ডের শর্তাবলীর লিস্ট */
+        .password-requirements { font-size: 12px; color: #666; margin-top: 5px; padding-left: 15px; }
+        .requirements-title { font-weight: bold; font-size: 12px; margin-top: 5px; color: #444; }
+        .req-item { color: red; }
+        .req-item.valid { color: #007bff; }
+
+        /* ভেরিফিকেশন ও রেজিস্ট্রি বাটন */
+        .btn-verify { background-color: #ff9800; color: white; border: none; padding: 10px; width: 100%; border-radius: 4px; font-weight: bold; cursor: pointer; margin-bottom: 10px; font-size: 15px; }
+        .btn-register { background-color: #007bff; color: white; border: none; padding: 12px; width: 100%; border-radius: 4px; font-weight: bold; cursor: not-allowed; font-size: 16px; opacity: 0.5; }
+        .btn-register.active { cursor: pointer; opacity: 1; }
+        
+        .login-link { text-align: center; margin-top: 15px; font-size: 13px; }
+        .login-link a { color: #007bff; text-decoration: none; }
+    </style>
 </head>
 <body>
 
-    <div class="auth-container">
-        <h2>Create Account</h2>
-        <p>Sign up to manage your profile, balance, and orders.</p>
+<div class="register-container">
+    <h2>নিবন্ধন করুন</h2>
+    <form id="regForm" onsubmit="event.preventDefault();">
         
-        <form id="signupForm">
-            <div class="input-group">
-                <label for="fullName">Full Name</label>
-                <input type="text" id="fullName" placeholder="Enter your full name" required>
-            </div>
+        <div class="input-group">
+            <label>First Name (ইংরেজিতে)</label>
+            <input type="text" id="firstName" placeholder="Enter first name" oninput="validateField('firstName')">
+            <span class="tick-mark" id="firstNameTick">✓</span>
+        </div>
 
-            <div class="input-group">
-                <label for="email">Email Address</label>
-                <input type="email" id="email" placeholder="Enter your email" required>
-            </div>
+        <div class="input-group">
+            <label>Last Name (ইংরেজিতে)</label>
+            <input type="text" id="lastName" placeholder="Enter last name" oninput="validateField('lastName')">
+            <span class="tick-mark" id="lastNameTick">✓</span>
+        </div>
 
-            <div class="input-group">
-                <label for="phone">Phone Number</label>
-                <input type="tel" id="phone" placeholder="Enter your phone number" required>
-            </div>
+        <div class="input-group">
+            <label>Email Account</label>
+            <input type="email" id="email" placeholder="example@email.com" oninput="validateEmail()">
+            <span class="tick-mark" id="emailTick">✓</span>
+        </div>
 
-            <div class="input-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" placeholder="Create a password" required>
-            </div>
+        <div class="input-group">
+            <label>Phone Number</label>
+            <input type="tel" id="phone" placeholder="017XXXXXXXX" oninput="validatePhone()">
+            <span class="tick-mark" id="phoneTick">✓</span>
+        </div>
 
-            <button type="submit" class="btn">Create Now</button>
-        </form>
+        <div class="input-group">
+            <label>Password</label>
+            <input type="password" id="password" placeholder="সর্বনিম্ন ৮ অক্ষরের পাসওয়ার্ড" oninput="validatePassword()">
+            <span class="tick-mark" id="passwordTick">✓</span>
+            <div class="requirements-title">পাসওয়ার্ডের শর্তাবলী:</div>
+            <ul class="password-requirements">
+                <li id="reqLength" class="req-item">সর্বনিম্ন ৮টি অক্ষর হতে হবে</li>
+                <li id="reqUpper" class="req-item">কমপক্ষে ১টি বড় হাতের অক্ষর (A-Z)</li>
+                <li id="reqLower" class="req-item">কমপক্ষে ১টি ছোট হাতের অক্ষর (a-z)</li>
+                <li id="reqNumber" class="req-item">কমপক্ষে ১টি সংখ্যা (0-9)</li>
+                <li id="reqSpecial" class="req-item">কমপক্ষে ১টি চিহ্ন (?, !, @, #, $, ইত্যাদি)</li>
+            </ul>
+        </div>
 
-        <p class="switch-form">Already have an account? <a href="login.html">Login here</a></p>
-    </div>
+        <button type="button" class="btn-verify" id="verifyBtn" onclick="verifyData()">যাচাই (Verify) করুন</button>
 
-    <script src="signup.js"></script>
+        <button type="submit" class="btn-register" id="registerBtn" disabled onclick="submitRegistration()">রেজিস্ট্রি করুন</button>
+
+        <div class="login-link">
+            ইতিমধ্যে অ্যাকাউন্ট আছে? <a href="login.html">লগইন করুন</a>
+        </div>
+    </form>
+</div>
+
+<script>
+    // সাধারণ টেক্সট ফিল্ড ভ্যালিডেশন (ফার্স্ট ও লাস্ট নেম)
+    function validateField(id) {
+        const input = document.getElementById(id);
+        const tick = document.getElementById(id + 'Tick');
+        // নাম কমপক্ষে ২ অক্ষরের হলে নীল টিক আসবে
+        if (input.value.trim().length >= 2) {
+            tick.style.display = 'block';
+            return true;
+        } else {
+            tick.style.display = 'none';
+            return false;
+        }
+    }
+
+    // ইমেইল ভ্যালিডেশন
+    function validateEmail() {
+        const email = document.getElementById('email').value;
+        const tick = document.getElementById('emailTick');
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // সঠিক ইমেইল ফরম্যাট চেক
+        
+        if (emailPattern.test(email)) {
+            tick.style.display = 'block';
+            return true;
+        } else {
+            tick.style.display = 'none';
+            return false;
+        }
+    }
+
+    // ফোন নাম্বার ভ্যালিডেশন (বাংলাদেশী স্ট্যান্ডার্ড ১১ ডিজিট)
+    function validatePhone() {
+        const phone = document.getElementById('phone').value;
+        const tick = document.getElementById('phoneTick');
+        const phonePattern = /^(01)[3-9]\d{8}$/; // ০১ দিয়ে শুরু এবং মোট ১১ ডিজিট
+        
+        if (phonePattern.test(phone)) {
+            tick.style.display = 'block';
+            return true;
+        } else {
+            tick.style.display = 'none';
+            return false;
+        }
+    }
+
+    // পাসওয়ার্ড ভ্যালিডেশন ও শর্ত পরীক্ষা
+    function validatePassword() {
+        const password = document.getElementById('password').value;
+        const tick = document.getElementById('passwordTick');
+        
+        const hasLength = password.length >= 8;
+        const hasUpper = /[A-Z]/.test(password);
+        const hasLower = /[a-z]/.test(password);
+        const hasNumber = /[0-9]/.test(password);
+        const hasSpecial = /[!@#$%^&*(),.?":{}|<>_]/.test(password);
+
+        // শর্তের কালার চেঞ্জ (সঠিক হলে নীল হবে)
+        document.getElementById('reqLength').className = hasLength ? 'req-item valid' : 'req-item';
+        document.getElementById('reqUpper').className = hasUpper ? 'req-item valid' : 'req-item';
+        document.getElementById('reqLower').className = hasLower ? 'req-item valid' : 'req-item';
+        document.getElementById('reqNumber').className = hasNumber ? 'req-item valid' : 'req-item';
+        document.getElementById('reqSpecial').className = hasSpecial ? 'req-item valid' : 'req-item';
+
+        // সব শর্ত পূরণ হলে পাসওয়ার্ডের পাশে নীল টিক আসবে
+        if (hasLength && hasUpper && hasLower && hasNumber && hasSpecial) {
+            tick.style.display = 'block';
+            return true;
+        } else {
+            tick.style.display = 'none';
+            // পাসওয়ার্ড এডিট করলে রেজিস্ট্রি বাটন আবার লক হয়ে যাবে
+            document.getElementById('registerBtn').disabled = true;
+            document.getElementById('registerBtn').classList.remove('active');
+            return false;
+        }
+    }
+
+    // ভেরিফিকেশন বোতামের কাজ
+    function verifyData() {
+        const isFirstValid = validateField('firstName');
+        const isLastValid = validateField('lastName');
+        const isEmailValid = validateEmail();
+        const isPhoneValid = validatePhone();
+        const isPassValid = validatePassword();
+
+        // সব ঠিক থাকলে রেজিস্ট্রি বাটন অন হবে
+        if (isFirstValid && isLastValid && isEmailValid && isPhoneValid && isPassValid) {
+            alert('আপনার সকল তথ্য সঠিক আছে! এখন নিচের "রেজিস্ট্রি করুন" বোতামে ক্লিক করুন।');
+            const regBtn = document.getElementById('registerBtn');
+            regBtn.disabled = false;
+            regBtn.classList.add('active');
+        } else {
+            alert('অনুগ্রহ করে ফরমের সব তথ্য সঠিকভাবে পূরণ করুন (সবুজ বা নীল সংকেতগুলো খেয়াল করুন)।');
+        }
+    }
+
+    // সাবমিট করার পর
+    function submitRegistration() {
+        alert('অভিনন্দন! আপনার রেজিস্ট্রেশন সফলভাবে সম্পন্ন হয়েছে।');
+        window.location.href = 'login.html'; // সফল হলে লগইন পেজে নিয়ে যাবে
+    }
+</script>
+
 </body>
 </html>
