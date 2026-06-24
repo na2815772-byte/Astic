@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>উইশলিস্ট - এস্টিক</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background-color: #f7f9fc; padding: 20px; }
+        .container { max-width: 700px; margin: 0 auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        h1 { color: #2c3e50; text-align: center; margin-bottom: 20px; font-size: 24px; }
+        .wishlist-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border-bottom: 1px solid #eee; }
+        .wishlist-item:last-child { border-bottom: none; }
+        .item-details h3 { color: #333; font-size: 18px; margin-bottom: 5px; }
+        .item-details p { color: #e67e22; font-size: 14px; font-weight: bold; }
+        .actions button { background: #3498db; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; font-size: 14px; transition: 0.2s; }
+        .actions button:hover { background: #2980b9; }
+        .actions .remove-btn { background: #e74c3c; margin-left: 10px; }
+        .actions .remove-btn:hover { background: #c0392b; }
+        .back-btn { display: inline-block; margin-top: 20px; text-decoration: none; color: #3498db; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>❤️ আমার উইশলিস্ট</h1>
+        
+        <div class="wishlist-list">
+            <div class="wishlist-item">
+                <div class="item-details">
+                    <h3>আকর্ষণীয় ডিজাইনের পাঞ্জাবি</h3>
+                    <p>১২০০ টাকা</p>
+                </div>
+                <div class="actions">
+                    <button>কার্ট-এ যোগ করুন</button>
+                    <button class="remove-btn">মুছে ফেলুন</button>
+                </div>
+            </div>
+
+            <div class="wishlist-item">
+                <div class="item-details">
+                    <h3>লেটেস্ট মডেলের সানগ্লাস</h3>
+                    <p>৭৫০ টাকা</p>
+                </div>
+                <div class="actions">
+                    <button>কার্ট-এ যোগ করুন</button>
+                    <button class="remove-btn">মুছে ফেলুন</button>
+                </div>
+            </div>
+        </div>
+
+        <a href="index.html" class="back-btn">← মূল শপ-এ ফিরে যান</a>
+    </div>
+
+</body>
+</html>
