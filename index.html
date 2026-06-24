@@ -5,23 +5,87 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>এস্টিক - অনলাইন শপ</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; }
-        .sidebar { width: 250px; background-color: #333; color: white; padding: 15px; height: 100vh; position: fixed; overflow-y: auto; }
-        .sidebar h2 { color: #fff; margin-bottom: 20px; text-align: center; border-bottom: 1px solid #555; padding-bottom: 10px; }
-        .sidebar ul { list-style: none; padding: 0; }
-        .sidebar ul li { padding: 12px 10px; cursor: pointer; transition: background 0.2s; border-bottom: 1px solid #444; }
-        .sidebar ul li:hover { background-color: #555; }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; }
         
-        /* সাইডবারের ভেতরের লিংকের কালার ও ডিজাইন ঠিক রাখার জন্য */
-        .sidebar ul li a { color: white; text-decoration: none; display: block; width: 100%; height: 100%; }
+        /* ওপরের বার (Header) যেখানে থ্রি-ডট বাটন থাকবে */
+        .header-bar {
+            background-color: #333;
+            color: white;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* থ্রি-ডট / হ্যামবার্গার আইকন */
+        .menu-toggle {
+            font-size: 24px;
+            cursor: pointer;
+            margin-right: 15px;
+            user-select: none;
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        /* সাইডবার ডিজাইন (শুরুতে এটা স্ক্রিনের বাইরে বামে লুকিয়ে থাকবে) */
+        .sidebar { 
+            width: 260px; 
+            background-color: #222; 
+            color: white; 
+            padding: 15px; 
+            height: 100vh; 
+            position: fixed; 
+            top: 0;
+            left: -290px; /* স্ক্রিনের বাইরে লুকিয়ে রাখা */
+            overflow-y: auto; 
+            transition: left 0.3s ease; /* স্লাইড অ্যানিমেশন */
+            z-index: 999;
+            box-sizing: border-box;
+            padding-top: 70px; /* হেডার বারের নিচে নামানোর জন্য */
+        }
         
-        /* সাবমেনু ডিজাইন - মাউস নিলে বা ক্লিক করলে দেখাবে */
-        .submenu { display: none; padding-left: 15px; list-style: none; background-color: #2c2c2c; margin-top: 5px; border-radius: 4px; }
-        .sidebar li:hover .submenu { display: block; }
+        /* সাইডবার যখন একটিভ হবে (খুলবে) */
+        .sidebar.active {
+            left: 0;
+        }
+
+        /* স্ক্রিন ঝাপসা করার ব্যাকড্রপ (মেনু খুললে পেছনের অংশ অন্ধকার দেখাবে) */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+        }
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        .sidebar ul { list-style: none; padding: 0; margin: 0; }
+        .sidebar ul li { padding: 12px 10px; cursor: pointer; transition: background 0.2s; border-bottom: 1px solid #333; }
+        .sidebar ul li:hover { background-color: #444; }
+        
+        .sidebar ul li a { color: white; text-decoration: none; display: block; width: 100%; }
+        
+        /* সাবমেনু ডিজাইন - ক্লিক করলে খোলার জন্য */
+        .submenu { display: none; padding-left: 15px; list-style: none; background-color: #1a1a1a; margin-top: 5px; border-radius: 4px; }
+        .submenu.open { display: block; } /* সাবমেনু ওপেন ক্লাস */
         .submenu li { border-bottom: none; padding: 8px 5px; }
-        .submenu li:hover { background-color: #444; }
+        .submenu li:hover { background-color: #333; }
         
-        .content { margin-left: 270px; padding: 20px; width: calc(100% - 270px); }
+        /* মেইন কনটেন্ট এরিয়া */
+        .content { margin-top: 70px; padding: 20px; width: 100%; box-sizing: border-box; }
         .admin-panel { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; background-color: #f9f9f9; border-radius: 5px; }
         .product-grid { display: flex; flex-wrap: wrap; gap: 20px; }
         .product-card { border: 1px solid #ddd; padding: 15px; width: 200px; border-radius: 5px; position: relative; background-color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
@@ -33,11 +97,17 @@
 </head>
 <body>
 
-    <div class="sidebar">
-        <h2>এস্টিক মেনু</h2>
+    <div class="header-bar">
+        <div class="menu-toggle" onclick="toggleSidebar()">☰</div>
+        <div class="header-title">এস্টিক অনলাইন শপ</div>
+    </div>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <div class="sidebar" id="sidebar">
         <ul>
-            <li>📁 কালেকশন
-                <ul class="submenu">
+            <li onclick="toggleSubmenu(event, 'collectionMenu')">📁 কালেকশন ▾
+                <ul class="submenu" id="collectionMenu">
                     <li onclick="filterCategory('tshirt')">👕 টি-শার্ট</li>
                     <li onclick="filterCategory('watch')">⌚ ঘড়ি</li>
                     <li onclick="filterCategory('glasses')">🕶️ চশমা</li>
@@ -52,8 +122,8 @@
             <li><a href="suggest-products.html">💡 প্রোডাক্ট সাজেস্ট</a></li>
             <li><a href="reports.html">⚠️ রিপোর্ট ও অভিযোগ</a></li>
 
-            <li>👤 আমার অ্যাকাউন্ট
-                <ul class="submenu">
+            <li onclick="toggleSubmenu(event, 'accountMenu')">👤 আমার অ্যাকাউন্ট ▾
+                <ul class="submenu" id="accountMenu">
                     <li><a href="profile.html">👤 মাই প্রোফাইল</a></li>
                     <li onclick="showSection('orders')">🛍️ মাই অর্ডার</li>
                     <li><a href="my-products.html">📦 মাই প্রোডাক্টস</a></li>
@@ -71,7 +141,7 @@
             <h3>অ্যাডমিন প্যানেল: প্রোডাক্ট যোগ করুন</h3>
             <input type="text" id="pName" placeholder="প্রোডাক্টের নাম" style="padding: 6px; margin-right: 5px;">
             <input type="text" id="pPrice" placeholder="বর্তমান মূল্য" style="padding: 6px; margin-right: 5px;">
-            <input type="text" id="pOldPrice" placeholder="পুরনো মূল্য (ডিসকাউন্ট থাকলে)" style="padding: 6px; margin-right: 5px;">
+            <input type="text" id="pOldPrice" placeholder="পুরনো মূল্য" style="padding: 6px; margin-right: 5px;">
             <select id="pCategory" style="padding: 6px; margin-right: 5px;">
                 <option value="tshirt">টি-শার্ট</option>
                 <option value="watch">ঘড়ি</option>
@@ -87,6 +157,23 @@
     </div>
 
     <script>
+        // সাইডবার খোলা এবং বন্ধ করার ফাংশন
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('sidebarOverlay').classList.toggle('active');
+        }
+
+        // ড্রপডাউন সাবমেনু (কালেকশন ও আমার অ্যাকাউন্ট) খোলার ফাংশন
+        function toggleSubmenu(event, menuId) {
+            // ভেতরের অপশনে ক্লিক করলে যেন মেনু বন্ধ না হয়ে যায়
+            if (event.target.tagName === 'LI' && event.target.children.length > 0 || event.target.textContent.includes('▾')) {
+                event.stopPropagation();
+                const menu = document.getElementById(menuId);
+                menu.classList.toggle('open');
+            }
+        }
+
+        // প্রোডাক্ট ডাটাবেজ এবং রেন্ডারিং
         let products = [
             { name: "টি-শার্ট", price: "৪০০ টাকা", oldPrice: "৫০০ টাকা", category: "tshirt" },
             { name: "ঘড়ি", price: "১৫০০ টাকা", oldPrice: "", category: "watch" }
@@ -119,7 +206,6 @@
             if (name && price) {
                 products.push({ name, price: price + " টাকা", oldPrice: oldPrice ? oldPrice + " টাকা" : "", category });
                 renderProducts();
-                // ইনপুট বক্স খালি করার জন্য
                 document.getElementById('pName').value = '';
                 document.getElementById('pPrice').value = '';
                 document.getElementById('pOldPrice').value = '';
@@ -135,6 +221,7 @@
                     card.style.display = 'none';
                 }
             });
+            toggleSidebar(); // ক্যাটাগরি সিলেক্ট করলে মেনু বন্ধ হয়ে যাবে
         }
 
         function showSection(section) {
