@@ -201,11 +201,11 @@
         .product-card { border: 1px solid #ddd; padding: 15px; width: 45%; max-width: 200px; border-radius: 5px; background-color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); box-sizing: border-box; text-align: center; }
         .product-img { width: 100%; height: 150px; object-fit: cover; border-radius: 4px; margin-bottom: 10px; background-color: #eee; }
         
-        .price { font-weight: bold; color: green; }
-        .old-price { text-decoration: line-through; color: red; margin-right: 10px; }
+        .price { font-weight: bold; color: green; font-size: 16px; }
+        .old-price { text-decoration: line-through; color: red; margin-right: 10px; font-size: 14px; }
         .order-btn { background-color: blue; color: white; border: none; padding: 10px; cursor: pointer; width: 100%; border-radius: 3px; margin-top: 10px; font-weight: bold; }
 
-        /* বটম নেভিগেশন */
+        /* বটম নেভিগেশন বার */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -336,13 +336,13 @@
             }
         }
 
-        // ফিক্স ১: শুরুতেই কিছু ডেমো ইমেজ লিংক দেওয়া হলো যাতে ব্ল্যাঙ্ক না দেখায়
+        // ডিফল্ট ডেমো প্রোডাক্ট লিস্ট (এখানে প্লেসহোল্ডার ইমেজ ব্যবহার করা হয়েছে)
         let defaultProducts = [
-            { name: "স্টাইলিশ কটন টি-শার্ট", price: "৪০০ টাকা", oldPrice: "৫০০ টাকা", category: "tshirt", image: "https://via.placeholder.com/200x150?text=T-Shirt" },
-            { name: "প্রিমিয়াম স্মার্ট ওয়াচ", price: "১৫০০ টাকা", oldPrice: "২০০০ টাকা", category: "watch", image: "https://via.placeholder.com/200x150?text=Watch" }
+            { name: "টি-শার্ট", price: "৪০০ টাকা", oldPrice: "৫০০ টাকা", category: "tshirt", image: "https://via.placeholder.com/200x150?text=T-Shirt" },
+            { name: "ঘড়ি", price: "১৫০০ টাকা", oldPrice: "", category: "watch", image: "https://via.placeholder.com/200x150?text=Watch" }
         ];
 
-        // ফিক্স ২: LocalStorage থেকে ডেটা লোড করার লজিক যাতে রিফ্রেশ দিলেও ডেটা না হারায়
+        // লোকাল স্টোরেজ থেকে ডেটা নিয়ে আসা, না থাকলে ডিফল্ট ডেটা লোড হবে
         let products = JSON.parse(localStorage.getItem('myProducts')) || defaultProducts;
 
         function renderProducts(productsToRender = products) {
@@ -358,11 +358,15 @@
                 const card = document.createElement('div');
                 card.className = `product-card ${p.category}`;
                 
-                const imgTag = p.image ? `<img src="${p.image}" class="product-img" alt="${p.name}">` : `<div class="product-img" style="display:flex;align-items:center;justify-content:center;color:#aaa;font-size:12px;">ছবি নেই</div>`;
+                // ছবি না থাকলে ধূসর রঙের একটি প্লেসহোল্ডার বক্স আসবে, লেআউট নষ্ট হবে না
+                const imgTag = p.image ? 
+                    `<img src="${p.image}" class="product-img" alt="${p.name}">` : 
+                    `<div class="product-img" style="display:flex;align-items:center;justify-content:center;color:#aaa;font-size:14px;background-color:#eee;border-radius:4px;">ছবি নেই</div>`;
                 
+                // আপনার স্ক্রিনশটের মতো নিখুঁত অর্ডার (প্রথমে নাম, তারপর ছবি, নিচে প্রাইস ও বাটন)
                 card.innerHTML = `
-                    ${imgTag}
                     <h3>${p.name}</h3>
+                    ${imgTag}
                     <p>
                         ${p.oldPrice ? `<span class="old-price">${p.oldPrice}</span>` : ''}
                         <span class="price">${p.price}</span>
@@ -401,17 +405,17 @@
                         price: price + " টাকা", 
                         oldPrice: oldPrice ? oldPrice + " টাকা" : "", 
                         category,
-                        image: "https://via.placeholder.com/200x150?text=No+Image" 
+                        image: "" 
                     });
                     saveAndRender();
                     clearInputs();
                 }
             } else {
-                alert("দয়া করে প্রোডাক্টের নাম এবং বর্তমান মূল্য লিখুন!");
+                alert("দয়া করে প্রোডাক্টের নাম এবং বর্তমান মূল্য দিন!");
             }
         }
 
-        // ফিক্স ৩: প্রোডাক্ট পুশ করার পর তা লোকাল স্টোরেজে সেভ করার ফাংশন
+        // লোকাল স্টোরেজে ডেটা সেভ করে রেন্ডার করার ফাংশন
         function saveAndRender() {
             localStorage.setItem('myProducts', JSON.stringify(products));
             renderProducts();
@@ -450,7 +454,7 @@
             alert(section + " সেকশনটি পরবর্তীতে ডাইনামিক করা হবে।");
         }
 
-        // প্রথমবার পেজ লোড হওয়ার সময় রান হবে
+        // পেজ রান হওয়ার সাথে সাথে ফাংশন কল হবে
         renderProducts();
     </script>
 
