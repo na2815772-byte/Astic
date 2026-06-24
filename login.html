@@ -5,20 +5,85 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>লগইন - এস্টিক শপ</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #f4f4f4; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 20px; box-sizing: border-box; }
-        .login-container { background: #fff; padding: 25px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); width: 100%; max-width: 400px; }
-        .login-container h2 { text-align: center; color: #333; margin-bottom: 20px; }
+        /* এখানে আপনার পছন্দের সবুজ ও নীল রঙের মিক্সড গ্রেডিয়েন্ট ব্যাকগ্রাউন্ড দেওয়া হয়েছে */
+        body { 
+            font-family: Arial, sans-serif; 
+            background: linear-gradient(135deg, #00b4db, #0083b0, #11998e, #38ef7d);
+            background-size: 400% 400%;
+            animation: gradientBG 10s ease infinite;
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            padding: 20px; 
+            box-sizing: border-box; 
+        }
+
+        /* ব্যাকগ্রাউন্ডটা যাতে হালকা নড়াচড়া করে তার জন্য অ্যানিমেশন */
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* লগইন বক্সের স্টাইল */
+        .login-container { 
+            background: rgba(255, 255, 255, 0.95); /* হালকা স্বচ্ছ সাদা */
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2); 
+            width: 100%; 
+            max-width: 400px; 
+        }
+        
+        .login-container h2 { 
+            text-align: center; 
+            color: #333; 
+            margin-bottom: 25px; 
+            font-size: 24px;
+        }
         
         .input-group { margin-bottom: 20px; }
-        .input-group label { display: block; font-weight: bold; margin-bottom: 5px; color: #555; font-size: 14px; }
-        .input-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; font-size: 14px; outline: none; }
-        .input-group input:focus { border-color: #007bff; }
+        .input-group label { display: block; font-weight: bold; margin-bottom: 7px; color: #444; font-size: 14px; }
+        .input-group input { 
+            width: 100%; 
+            padding: 12px; 
+            border: 1px solid #ccc; 
+            border-radius: 6px; 
+            box-sizing: border-box; 
+            font-size: 14px; 
+            outline: none; 
+            transition: all 0.3s;
+        }
+        .input-group input:focus { 
+            border-color: #0083b0; 
+            box-shadow: 0 0 8px rgba(0, 131, 176, 0.3);
+        }
         
-        .btn-login { background-color: #007bff; color: white; border: none; padding: 12px; width: 100%; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 16px; transition: background 0.2s; }
-        .btn-login:hover { background-color: #0056b3; }
+        /* লগইন বাটন */
+        .btn-login { 
+            background: linear-gradient(135deg, #0083b0, #11998e); 
+            color: white; 
+            border: none; 
+            padding: 12px; 
+            width: 100%; 
+            border-radius: 6px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            font-size: 16px; 
+            transition: background 0.3s, transform 0.1s; 
+        }
+        .btn-login:hover { 
+            background: linear-gradient(135deg, #0056b3, #0b7367); 
+        }
+        .btn-login:active {
+            transform: scale(0.98);
+        }
         
-        .register-link { text-align: center; margin-top: 15px; font-size: 13px; }
-        .register-link a { color: #007bff; text-decoration: none; font-weight: bold; }
+        .register-link { text-align: center; margin-top: 20px; font-size: 13px; color: #555; }
+        .register-link a { color: #0083b0; text-decoration: none; font-weight: bold; }
+        .register-link a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -72,7 +137,7 @@
             alert('লগইন সফল হয়েছে! আপনাকে হোম পেজে নিয়ে যাওয়া হচ্ছে।');
             window.location.href = 'index.html'; 
         } else {
-            alert('দুঃখিত! আপনার ইমেইল, phone number অথবা পাসওয়ার্ড ভুল হয়েছে। আবার চেষ্টা করুন।');
+            alert('দুঃখিত! আপনার ইমেইল, ফোন নাম্বার অথবা পাসওয়ার্ড ভুল হয়েছে। আবার চেষ্টা করুন।');
         }
     }
 </script>
