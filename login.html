@@ -12,7 +12,7 @@
             background-size: 400% 400%;
             animation: gradientAnimation 12s ease infinite;
             display: flex; 
-            flex-direction: column; /* বাটন এবং ফর্ম লম্বালম্বি রাখার জন্য */
+            flex-direction: column; 
             justify-content: center; 
             align-items: center; 
             min-height: 100vh; 
@@ -27,43 +27,33 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* --- নতুন এডমিন বাটন ও ফর্মের স্টাইল --- */
+        /* --- শুধুমাত্র একটি প্রিমিয়াম বাটন --- */
         .admin-trigger-container {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             text-align: center;
         }
 
-        .btn-admin-trigger {
-            background: rgba(255, 255, 255, 0.2);
+        .btn-admin-direct {
+            background: linear-gradient(135deg, #1f4068, #162447);
             border: 1px solid rgba(255, 255, 255, 0.4);
             color: #ffffff;
-            padding: 8px 16px;
-            border-radius: 20px;
+            padding: 12px 30px;
+            border-radius: 25px;
             cursor: pointer;
-            font-size: 14px;
-            font-weight: 500;
-            backdrop-filter: blur(5px);
+            font-size: 15px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
             transition: all 0.3s ease;
         }
 
-        .btn-admin-trigger:hover {
-            background: rgba(255, 255, 255, 0.4);
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        .btn-admin-direct:hover {
+            background: linear-gradient(135deg, #162447, #0f1b29);
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
         }
 
-        .admin-box {
-            display: none; /* শুরুতে লুকানো থাকবে */
-            margin-bottom: 25px;
-            animation: fadeIn 0.5s ease;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        /* --- নতুন স্টাইল শেষ --- */
-
-        /* স্ক্রিনের মতো আধুনিক আল্ট্রা-প্রিমিয়াম গ্লাস লুক (ব্যাকগ্রাউন্ডের সাথে ফিক্সড মিশে যাওয়া বক্স) */
+        /* স্ক্রিনের মতো আধুনিক আল্ট্রা-প্রিমিয়াম গ্লাস লুক */
         .login-container { 
             background: rgba(255, 255, 255, 0.12); 
             backdrop-filter: blur(15px); 
@@ -89,17 +79,14 @@
         
         .input-group { margin-bottom: 22px; }
         
-        /* ইনপুট লেবেল স্টাইল */
         .input-group label { 
             display: block; 
             font-weight: 500; 
             margin-bottom: 8px; 
             color: #ffffff; 
             font-size: 14px; 
-            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
         
-        /* গ্লাস লুকের সাথে ম্যাচিং ইনপুট বক্স */
         .input-group input { 
             width: 100%; 
             padding: 12px 15px; 
@@ -110,25 +97,14 @@
             font-size: 14px; 
             outline: none; 
             color: #333333;
-            transition: all 0.3s ease;
         }
         
-        /* ইনপুট বক্সে ক্লিক করলে গ্লোয়িং ইফেক্ট */
         .input-group input:focus { 
             background: #ffffff;
             border-color: #38ef7d; 
             box-shadow: 0 0 12px rgba(56, 239, 125, 0.5);
         }
-
-        /* রিড-অনলি বা লকড ইনপুট ফিল্ডের স্টাইল (যা পরিবর্তন করা যাবে না) */
-        .input-group input[readonly] {
-            background: rgba(240, 240, 240, 0.6);
-            color: #555555;
-            cursor: not-allowed;
-            border-color: rgba(255, 255, 255, 0.3);
-        }
         
-        /* ব্যাকগ্রাউন্ড কালারের সাথে ম্যাচ করা প্রিমিয়াম সাইন-ইন বাটন */
         .btn-login { 
             background: linear-gradient(135deg, #11998e, #38ef7d); 
             color: white; 
@@ -139,22 +115,15 @@
             font-weight: bold; 
             cursor: pointer; 
             font-size: 16px; 
-            letter-spacing: 0.5px;
             box-shadow: 0 4px 15px rgba(56, 239, 125, 0.3);
             transition: all 0.3s ease; 
         }
         
         .btn-login:hover { 
             background: linear-gradient(135deg, #0f837a, #2ec969); 
-            box-shadow: 0 6px 20px rgba(56, 239, 125, 0.5);
             transform: translateY(-1px);
         }
         
-        .btn-login:active {
-            transform: translateY(1px);
-        }
-        
-        /* রেজিস্ট্রেশন লিংক স্টাইল */
         .register-link { 
             text-align: center; 
             margin-top: 25px; 
@@ -165,35 +134,13 @@
             color: #38ef7d; 
             text-decoration: none; 
             font-weight: bold; 
-            transition: color 0.2s;
-        }
-        .register-link a:hover { 
-            color: #ffffff;
-            text-decoration: underline; 
         }
     </style>
 </head>
 <body>
 
 <div class="admin-trigger-container">
-    <button type="button" class="btn-admin-trigger" onclick="toggleAdminPanel()">Admin Panel</button>
-</div>
-
-<div class="login-container admin-box" id="adminBox">
-    <h2>এডমিন লগইন</h2>
-    <form onsubmit="handleAdminLogin(event)">
-        <div class="input-group">
-            <label>Phone Number</label>
-            <input type="tel" id="adminPhone" value="01315531124" readonly>
-        </div>
-
-        <div class="input-group">
-            <label>Password</label>
-            <input type="password" id="adminPassword" placeholder="এডমিন পাসওয়ার্ড দিন" required>
-        </div>
-
-        <button type="submit" class="btn-login" style="background: linear-gradient(135deg, #1f4068, #162447);">এডমিন লগইন</button>
-    </form>
+    <button type="button" class="btn-admin-direct" onclick="checkAdminAccess()">Admin Direct Login</button>
 </div>
 
 <div class="login-container">
@@ -224,38 +171,28 @@
 </div>
 
 <script>
-    // --- এডমিন সেটিংস ---
-    const fixedAdminPhone = "01315531124"; // আপনার স্থায়ী নম্বরটি এখানে সেট করা হয়েছে
-    const secretAdminPassword = "Admin@#Secure$2026"; // আপনার গোপন ও শক্তিশালী পাসওয়ার্ড
+    // এখানে আপনার পাসওয়ার্ডটি সেট করা আছে
+    const secretAdminPassword = "1124"; 
 
-    // পেজ লোড হওয়ার সাথে সাথে ইনপুট বক্সে নম্বরটি সেট করার জন্য
-    document.getElementById('adminPhone').value = fixedAdminPhone;
-
-    // বাটন ক্লিক করলে এডমিন প্যানেল দেখানো বা লুকানোর ফাংশন
-    function toggleAdminPanel() {
-        const adminBox = document.getElementById('adminBox');
-        if (adminBox.style.display === "block") {
-            adminBox.style.display = "none";
-        } else {
-            adminBox.style.display = "block";
+    // বাটনে ক্লিক করলে এই ফাংশনটি সরাসরি পাসওয়ার্ড চেক করবে
+    function checkAdminAccess() {
+        // স্ক্রিনে একটি পপ-আপ বক্স আসবে পাসওয়ার্ড চাওয়ার জন্য
+        const inputPassword = prompt("এডমিন পাসওয়ার্ডটি দিন:");
+        
+        if (inputPassword === null) {
+            return; // ইউজার ক্যানসেল করলে কিছু হবে না
         }
-    }
 
-    // এডমিন লগইন যাচাই করার ফাংশন
-    function handleAdminLogin(event) {
-        event.preventDefault();
-        const inputPassword = document.getElementById('adminPassword').value;
-
-        // পাসওয়ার্ড হুবহু মিললে এডমিন ড্যাশবোর্ডে নিয়ে যাবে
+        // কোডের পাসওয়ার্ডের সাথে মিললে সরাসরি ড্যাশবোর্ডে নিয়ে যাবে
         if (inputPassword === secretAdminPassword) {
-            alert('এডমিন লগইন সফল হয়েছে! ড্যাশবোর্ডে নিয়ে যাওয়া হচ্ছে।');
-            window.location.href = 'admin_dashboard.html'; // আপনার এডমিন প্যানেলের মেইন ফাইলটির নাম এখানে দিন
+            alert('এডমিন লগইন সফল হয়েছে!');
+            window.location.href = 'admin_dashboard.html'; 
         } else {
             alert('দুঃখিত! ভুল পাসওয়ার্ড। আবার চেষ্টা করুন।');
         }
     }
 
-    // আপনার পূর্বের মূল ইউজার লগইন ফাংশন (যা অপরিবর্তিত আছে)
+    // মূল ইউজার লগইন ফাংশন
     function handleLogin(event) {
         event.preventDefault(); 
 
