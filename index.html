@@ -14,9 +14,10 @@
         .header-bar {
             background-color: #333;
             color: white;
-            padding: 15px;
+            padding: 10px 15px;
             display: flex;
             align-items: center;
+            justify-content: space-between;
             position: fixed;
             top: 0;
             left: 0;
@@ -24,6 +25,14 @@
             z-index: 1000;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
             box-sizing: border-box;
+            gap: 15px;
+        }
+
+        /* বাম পাশের মেনু এবং টাইটেল গ্রুপ */
+        .header-left {
+            display: flex;
+            align-items: center;
+            flex-shrink: 0;
         }
 
         /* থ্রি-ডট আইকন */
@@ -35,8 +44,47 @@
         }
 
         .header-title {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
+            white-space: nowrap;
+        }
+
+        /* আকাশী রঙের সার্চ বক্স ডিজাইন */
+        .search-container {
+            display: flex;
+            align-items: center;
+            background-color: #e3f2fd; /* হালকা আকাশী ব্যাকগ্রাউন্ড */
+            border: 2px solid #81d4fa; /* আকাশী বর্ডার */
+            border-radius: 25px; /* গোল শেপ */
+            padding: 5px 15px;
+            flex-grow: 1;
+            max-width: 500px; 
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+            transition: all 0.3s ease; /* অ্যানিমেশন ইফেক্ট */
+        }
+
+        /* সার্চ বক্সে ক্লিক করলে (Focus) সুন্দর উজ্জ্বল আকাশী গ্লো ছড়াবে */
+        .search-container:focus-within {
+            background-color: #ffffff; /* ক্লিক করলে ব্যাকগ্রাউন্ড সাদা হবে */
+            border-color: #0288d1; /* বর্ডার গাঢ় আকাশী হবে */
+            box-shadow: 0 0 10px rgba(2, 136, 209, 0.5); /* চারপাশে উজ্জ্বল আকাশী আলো ছড়াবে */
+        }
+
+        .search-input {
+            border: none;
+            outline: none;
+            width: 100%;
+            font-size: 14px;
+            color: #333;
+            padding: 5px 0;
+            background: transparent; /* কন্টেইনারের কালার দেখানোর জন্য */
+        }
+
+        .search-icon {
+            color: #0288d1; /* আকাশী রঙের আইকন */
+            font-size: 16px;
+            margin-left: 8px;
+            cursor: pointer;
         }
 
         /* সাইডবার ডিজাইন */
@@ -83,7 +131,7 @@
         .submenu li:hover { background-color: #333; }
         
         /* মেইন কন্টেন্ট এরিয়া */
-        .content { margin-top: 70px; padding: 20px; width: 100%; box-sizing: border-box; padding-bottom: 80px; }
+        .content { margin-top: 80px; padding: 20px; width: 100%; box-sizing: border-box; padding-bottom: 80px; }
         
         /* অ্যাডমিন প্যানেল */
         .admin-panel { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; background-color: #f9f9f9; border-radius: 5px; }
@@ -131,13 +179,26 @@
 
         .nav-item:hover, .nav-item.active { color: blue; }
         .nav-icon { font-size: 20px; margin-bottom: 2px; }
+
+        /* মোবাইল স্ক্রিনের জন্য রেসপনসিভ ডিজাইন */
+        @media (max-width: 480px) {
+            .header-title { display: none; } /* মোবাইলে জায়গা বাঁচাতে শুধু টাইটেল হাইড হবে, সার্চ বার বড় দেখাবে */
+            .header-bar { padding: 10px; }
+        }
     </style>
 </head>
 <body>
 
     <div class="header-bar">
-        <div class="menu-toggle" onclick="toggleSidebar()">☰</div>
-        <div class="header-title">এস্টিক অনলাইন শপ</div>
+        <div class="header-left">
+            <div class="menu-toggle" onclick="toggleSidebar()">☰</div>
+            <div class="header-title">এস্টিক শপ</div>
+        </div>
+        
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-input" placeholder="প্রোডাক্ট খুঁজুন..." oninput="searchProducts()">
+            <span class="search-icon">🔍</span>
+        </div>
     </div>
 
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
@@ -221,20 +282,26 @@
             { name: "ঘড়ি", price: "১৫০০ টাকা", oldPrice: "", category: "watch", image: "" }
         ];
 
-        function renderProducts() {
+        function renderProducts(productsToRender = products) {
             const grid = document.getElementById('productGrid');
             grid.innerHTML = '';
-            products.forEach(p => {
+            
+            if(productsToRender.length === 0) {
+                grid.innerHTML = '<div style="color:#666; padding: 20px;">কোনো প্রোডাক্ট পাওয়া যায়নি!</div>';
+                return;
+            }
+
+            productsToRender.forEach(p => {
                 const card = document.createElement('div');
-                card.className = `product-card ${p.category}`;
+                card.className = product-card ${p.category};
                 
-                const imgTag = p.image ? `<img src="${p.image}" class="product-img" alt="${p.name}">` : `<div class="product-img" style="display:flex;align-items:center;justify-content:center;color:#aaa;font-size:12px;">ছবি নেই</div>`;
+                const imgTag = p.image ? <img src="${p.image}" class="product-img" alt="${p.name}"> : <div class="product-img" style="display:flex;align-items:center;justify-content:center;color:#aaa;font-size:12px;">ছবি নেই</div>;
                 
                 card.innerHTML = `
                     ${imgTag}
                     <h3>${p.name}</h3>
                     <p>
-                        ${p.oldPrice ? `<span class="old-price">${p.oldPrice}</span>` : ''}
+                        ${p.oldPrice ? <span class="old-price">${p.oldPrice}</span> : ''}
                         <span class="price">${p.price}</span>
                     </p>
                     <button class="order-btn">অর্ডার করুন</button>
@@ -287,15 +354,26 @@
         }
 
         function filterCategory(category) {
-            const cards = document.querySelectorAll('.product-card');
-            cards.forEach(card => {
-                if (card.classList.contains(category)) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
+            document.getElementById('searchInput').value = '';
+            const filtered = products.filter(p => p.category === category);
+            renderProducts(filtered);
             toggleSidebar();
+        }
+
+        // লাইভ সার্চ ফাংশন
+        function searchProducts() {
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
+            
+            if (query === '') {
+                renderProducts(products);
+                return;
+            }
+            
+            const filtered = products.filter(product => {
+                return product.name.toLowerCase().includes(query);
+            });
+            
+            renderProducts(filtered);
         }
 
         function showSection(section) {
