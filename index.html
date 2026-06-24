@@ -293,15 +293,15 @@
 
             productsToRender.forEach(p => {
                 const card = document.createElement('div');
-                card.className = product-card ${p.category};
+                card.className = `product-card ${p.category}`;
                 
-                const imgTag = p.image ? <img src="${p.image}" class="product-img" alt="${p.name}"> : <div class="product-img" style="display:flex;align-items:center;justify-content:center;color:#aaa;font-size:12px;">ছবি নেই</div>;
+                const imgTag = p.image ? `<img src="${p.image}" class="product-img" alt="${p.name}">` : `<div class="product-img" style="display:flex;align-items:center;justify-content:center;color:#aaa;font-size:12px;">ছবি নেই</div>`;
                 
                 card.innerHTML = `
                     ${imgTag}
                     <h3>${p.name}</h3>
                     <p>
-                        ${p.oldPrice ? <span class="old-price">${p.oldPrice}</span> : ''}
+                        ${p.oldPrice ? `<span class="old-price">${p.oldPrice}</span>` : ''}
                         <span class="price">${p.price}</span>
                     </p>
                     <button class="order-btn">অর্ডার করুন</button>
