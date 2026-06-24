@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>প্রোডাক্ট রিকোয়েস্ট - এস্টিক</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background-color: #f7f9fc; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        h1 { color: #2c3e50; text-align: center; margin-bottom: 20px; font-size: 24px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
+        .form-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+        .btn { background: #3498db; color: white; border: none; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; }
+        .btn:hover { background: #2980b9; }
+        .back-btn { display: inline-block; margin-top: 20px; text-decoration: none; color: #3498db; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>💡 নতুন প্রোডাক্ট সাজেস্ট করুন</h1>
+        
+        <div class="form-group">
+            <label>প্রোডাক্টের নাম</label>
+            <input type="text" placeholder="যে প্রোডাক্টটি চান তার নাম লিখুন">
+        </div>
+        <div class="form-group">
+            <label>ব্র্যান্ড বা কোম্পানির নাম (যদি জানা থাকে)</label>
+            <input type="text" placeholder="ব্র্যান্ডের নাম লিখুন">
+        </div>
+        <div class="form-group">
+            <label>আনুমানিক মূল্য</label>
+            <input type="text" placeholder="যেমন: ৫০০ টাকা">
+        </div>
+
+        <button class="btn" onclick="alert('আপনার সাজেস্ট করা প্রোডাক্টের তথ্যটি আমরা পেয়েছি। ধন্যবাদ!')">রিকোয়েস্ট পাঠান</button>
+
+        <a href="index.html" class="back-btn">← মূল শপ-এ ফিরে যান</a>
+    </div>
+
+</body>
+</html>
