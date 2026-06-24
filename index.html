@@ -7,8 +7,6 @@
     <meta name="google-site-verification" content="IMb7MgqSTUegXy7l5rwad6jEChES7J_Cdw-m_XXLLx0" />
     
     <title>এস্টিক - অনলাইন শপ</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
     <style>
         body { font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; background-color: #f4f4f4; }
         
@@ -278,10 +276,9 @@
         <ul>
             <li onclick="toggleSubmenu(event, 'collectionMenu')">📁 কালেকশন ▾
                 <ul class="submenu" id="collectionMenu">
-                    <li onclick="filterCategory('all')">সব প্রোডাক্ট</li>
                     <li onclick="filterCategory('tshirt')">👕 টি-শার্ট</li>
                     <li onclick="filterCategory('watch')">⌚ ঘড়ি</li>
-                    <li onclick="filterCategory('glasses')">🕶️ চশমা</li>
+                    <li onclick="filterCategory('glasses')">🕶️ चশমা</li>
                     <li onclick="filterCategory('car')">🚗 গাড়ি</li>
                 </ul>
             </li>
@@ -314,7 +311,7 @@
         </div>
 
         <h1>আমাদের প্রোডাক্টগুলো</h1>
-        <div class="product-grid" id="productGrid">লোডিং হচ্ছে...</div>
+        <div class="product-grid" id="productGrid"></div>
     </div>
 
     <div class="bottom-nav">
@@ -337,14 +334,6 @@
     </div>
 
     <script>
-        // ১. সুপাবেস কানেকশন কনফিগারেশন (আপনার দেওয়া ইউআরএল এবং কি এখানে বসানো হয়েছে)
-        const SUPABASE_URL = "https://mbxkickfugdkgsabizrr.supabase.co";
-        const SUPABASE_ANON_KEY = "Sb_secret_6ZG8KvFiE5-lkiqFi9shUg_Hszettav"; 
-        
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
-        let allProducts = [];
-
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
             document.getElementById('sidebarOverlay').classList.toggle('active');
@@ -358,26 +347,12 @@
             }
         }
 
-        // ২. সুপাবেস থেকে ডাটা নিয়ে এসে রেন্ডার করা
-        async function fetchProducts() {
-            const grid = document.getElementById('productGrid');
-            try {
-                let { data, error } = await _supabase
-                    .from('products')
-                    .select('*')
-                    .order('id', { ascending: false });
+        let products = [
+            { name: "টি-শার্ট", price: "৪০০ টাকা", oldPrice: "৫০০ টাকা", category: "tshirt", image: "" },
+            { name: "ঘড়ি", price: "১৫০০ টাকা", oldPrice: "", category: "watch", image: "" }
+        ];
 
-                if (error) throw error;
-
-                allProducts = data || [];
-                renderProducts(allProducts);
-            } catch (err) {
-                console.error("ডাটা লোড করতে সমস্যা:", err);
-                grid.innerHTML = '<div style="color:red; padding: 20px;">প্রোডাক্ট লোড করতে ব্যর্থ হয়েছে!</div>';
-            }
-        }
-
-        function renderProducts(productsToRender) {
+        function renderProducts(productsToRender = products) {
             const grid = document.getElementById('productGrid');
             grid.innerHTML = '';
             
@@ -390,13 +365,13 @@
                 const card = document.createElement('div');
                 card.className = `product-card ${p.category}`;
                 
-                const imgTag = p.image_url ? `<img src="${p.image_url}" class="product-img" alt="${p.name}">` : `<div class="product-img" style="display:flex;align-items:center;justify-content:center;color:#aaa;font-size:12px;">ছবি নেই</div>`;
+                const imgTag = p.image ? `<img src="${p.image}" class="product-img" alt="${p.name}">` : `<div class="product-img" style="display:flex;align-items:center;justify-content:center;color:#aaa;font-size:12px;">ছবি নেই</div>`;
                 
                 card.innerHTML = `
                     ${imgTag}
                     <h3>${p.name}</h3>
                     <p>
-                        ${p.old_price ? `<span class="old-price">${p.old_price}</span>` : ''}
+                        ${p.oldPrice ? `<span class="old-price">${p.oldPrice}</span>` : ''}
                         <span class="price">${p.price}</span>
                     </p>
                     <button class="order-btn">অর্ডার করুন</button>
@@ -405,71 +380,39 @@
             });
         }
 
-        // ৩. সুপাবেসে ছবি আপলোড এবং ডাটাবেজে ডাটা সেভ করা
-        async function addProduct() {
-            const name = document.getElementById('pName').value.trim();
-            const price = document.getElementById('pPrice').value.trim();
-            const oldPrice = document.getElementById('pOldPrice').value.trim();
+        function addProduct() {
+            const name = document.getElementById('pName').value;
+            const price = document.getElementById('pPrice').value;
+            const oldPrice = document.getElementById('pOldPrice').value;
             const category = document.getElementById('pCategory').value;
             const imageInput = document.getElementById('pImage');
             
-            if (!name || !price) {
-                alert("দয়া করে নাম এবং বর্তমান মূল্য লিখুন!");
-                return;
-            }
-
-            let imageUrl = "";
-
-            // ছবি থাকলে প্রথমে সুপাবেস স্টোরেজে আপলোড হবে
-            if (imageInput.files && imageInput.files[0]) {
-                const file = imageInput.files[0];
-                const fileExt = file.name.split('.').pop();
-                const fileName = `${Date.now()}.${fileExt}`;
-                const filePath = `${fileName}`;
-
-                try {
-                    // ছবি আপলোড 'product-images' নামক বাকেটে
-                    let { error: uploadError } = await _supabase.storage
-                        .from('product-images')
-                        .upload(filePath, file);
-
-                    if (uploadError) throw uploadError;
-
-                    // পাবলিক ইউআরএল তৈরি
-                    const { data: publicUrlData } = _supabase.storage
-                        .from('product-images')
-                        .getPublicUrl(filePath);
-                        
-                    imageUrl = publicUrlData.publicUrl;
-                } catch (err) {
-                    console.error("ছবি আপলোড ব্যর্থ:", err);
-                    alert("ছবি আপলোড করা যায়নি।");
-                    return;
-                }
-            }
-
-            // ডাটাবেজে তথ্য ইনসার্ট করা
-            try {
-                const { error } = await _supabase
-                    .from('products')
-                    .insert([
-                        { 
-                            name: name, 
+            if (name && price) {
+                if (imageInput.files && imageInput.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        products.push({ 
+                            name, 
                             price: price + " টাকা", 
-                            old_price: oldPrice ? oldPrice + " টাকা" : null, 
-                            category: category,
-                            image_url: imageUrl 
-                        }
-                    ]);
-
-                if (error) throw error;
-
-                alert("প্রোডাক্ট স্থায়ীভাবে সফলভাবে যোগ হয়েছে!");
-                clearInputs();
-                fetchProducts(); // নতুন লিস্ট রিফ্রেশ করা
-            } catch (err) {
-                console.error("ডাটাবেজে সেভ করতে সমস্যা:", err);
-                alert("ডাটাবেজে প্রোডাক্ট সেভ করা যায়নি।");
+                            oldPrice: oldPrice ? oldPrice + " টাকা" : "", 
+                            category,
+                            image: e.target.result 
+                        });
+                        renderProducts();
+                        clearInputs();
+                    };
+                    reader.readAsDataURL(imageInput.files[0]);
+                } else {
+                    products.push({ 
+                        name, 
+                        price: price + " টাকা", 
+                        oldPrice: oldPrice ? oldPrice + " টাকা" : "", 
+                        category,
+                        image: "" 
+                    });
+                    renderProducts();
+                    clearInputs();
+                }
             }
         }
 
@@ -482,12 +425,8 @@
 
         function filterCategory(category) {
             document.getElementById('searchInput').value = '';
-            if (category === 'all') {
-                renderProducts(allProducts);
-            } else {
-                const filtered = allProducts.filter(p => p.category === category);
-                renderProducts(filtered);
-            }
+            const filtered = products.filter(p => p.category === category);
+            renderProducts(filtered);
             toggleSidebar();
         }
 
@@ -495,11 +434,11 @@
             const query = document.getElementById('searchInput').value.toLowerCase().trim();
             
             if (query === '') {
-                renderProducts(allProducts);
+                renderProducts(products);
                 return;
             }
             
-            const filtered = allProducts.filter(product => {
+            const filtered = products.filter(product => {
                 return product.name.toLowerCase().includes(query);
             });
             
@@ -510,8 +449,7 @@
             alert(section + " সেকশনটি পরবর্তীতে ডাইনামিক করা হবে।");
         }
 
-        // পেজ লোড হওয়ার সাথে সাথে সুপাবেস থেকে ডাটা নিয়ে আসা
-        window.onload = fetchProducts;
+        renderProducts();
     </script>
 
 </body>
