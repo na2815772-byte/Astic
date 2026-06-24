@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>লগইন - এস্টিক শপ</title>
     <style>
-        /* আপনার দেখানো স্ক্রিনের মতো নিখুঁত সবুজ ও নীল রঙের মিক্সড গ্রেডিয়েন্ট ব্যাকগ্রাউন্ড */
+        /* নিখুঁত সবুজ ও নীল রঙের মিক্সড গ্রেডিয়েন্ট ব্যাকগ্রাউন্ড */
         body { 
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             background: linear-gradient(135deg, #0f2027, #203a43, #2c5364, #11998e, #38ef7d);
@@ -18,6 +18,7 @@
             margin: 0; 
             padding: 20px; 
             box-sizing: border-box; 
+            position: relative;
         }
 
         @keyframes gradientAnimation {
@@ -26,7 +27,7 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* স্ক্রিনের মতো আধুনিক আল্ট্রা-প্রিমিয়াম গ্লাস লুক (ব্যাকগ্রাউন্ডের সাথে ফিক্সড মিশে যাওয়া বক্স) */
+        /* আধুনিক আল্ট্রা-প্রিমিয়াম গ্লাস লুক */
         .login-container { 
             background: rgba(255, 255, 255, 0.12); 
             backdrop-filter: blur(15px); 
@@ -38,21 +39,36 @@
             width: 100%; 
             max-width: 380px; 
             box-sizing: border-box;
+            position: relative;
         }
         
         .login-container h2 { 
             text-align: center; 
             color: #ffffff; 
-            margin-bottom: 30px; 
+            margin-bottom: 15px; 
             font-size: 26px;
             font-weight: 600;
             letter-spacing: 0.5px;
             text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         
+        /* টাইটেলের নিচে একদম ছোট গোপন বাটন (বিন্দু) */
+        .secret-admin-trigger {
+            display: block;
+            width: 10px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.02); /* প্রায় ১০০% অদৃশ্য */
+            border-radius: 50%;
+            margin: 0 auto 20px auto;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .secret-admin-trigger:hover {
+            background: rgba(255, 255, 255, 0.2); /* মাউস নিলে হালকা গ্লো করবে */
+        }
+
         .input-group { margin-bottom: 22px; }
         
-        /* ইনপুট লেবেল স্টাইল */
         .input-group label { 
             display: block; 
             font-weight: 500; 
@@ -62,7 +78,6 @@
             text-shadow: 0 1px 2px rgba(0,0,0,0.1);
         }
         
-        /* গ্লাস লুকের সাথে ম্যাচিং ইনপুট বক্স */
         .input-group input { 
             width: 100%; 
             padding: 12px 15px; 
@@ -76,14 +91,12 @@
             transition: all 0.3s ease;
         }
         
-        /* ইনপুট বক্সে ক্লিক করলে গ্লোয়িং ইফেক্ট */
         .input-group input:focus { 
             background: #ffffff;
             border-color: #38ef7d; 
             box-shadow: 0 0 12px rgba(56, 239, 125, 0.5);
         }
         
-        /* ব্যাকগ্রাউন্ড কালারের সাথে ম্যাচ করা প্রিমিয়াম সাইন-ইন বাটন */
         .btn-login { 
             background: linear-gradient(135deg, #11998e, #38ef7d); 
             color: white; 
@@ -105,11 +118,6 @@
             transform: translateY(-1px);
         }
         
-        .btn-login:active {
-            transform: translateY(1px);
-        }
-        
-        /* রেজিস্ট্রেশন লিংক স্টাইল */
         .register-link { 
             text-align: center; 
             margin-top: 25px; 
@@ -120,11 +128,41 @@
             color: #38ef7d; 
             text-decoration: none; 
             font-weight: bold; 
-            transition: color 0.2s;
         }
-        .register-link a:hover { 
-            color: #ffffff;
-            text-decoration: underline; 
+
+        /* গোপন এডমিন পপ-আপ (Modal) স্টাইল */
+        .admin-modal {
+            display: none; 
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(8px);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .admin-box {
+            background: rgba(20, 30, 48, 0.98);
+            border: 2px solid #38ef7d;
+            padding: 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 340px;
+            box-shadow: 0 10px 25px rgba(56, 239, 125, 0.3);
+            position: relative;
+        }
+        .admin-box h3 {
+            color: #38ef7d;
+            margin-top: 0;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .admin-box .close-btn {
+            position: absolute;
+            top: 10px; right: 15px;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -132,8 +170,10 @@
 
 <div class="login-container">
     <h2>লগইন করুন</h2>
+    
+    <div class="secret-admin-trigger" onclick="openAdminModal()"></div>
+
     <form id="loginForm" onsubmit="handleLogin(event)">
-        
         <div class="input-group">
             <label>Email Account</label>
             <input type="email" id="loginEmail" placeholder="example@email.com">
@@ -157,7 +197,48 @@
     </form>
 </div>
 
+<div id="adminModal" class="admin-modal">
+    <div class="admin-box">
+        <span class="close-btn" onclick="closeAdminModal()">&times;</span>
+        <h3>অ্যাডমিন লগইন</h3>
+        
+        <div class="input-group">
+            <label>Phone Number</label>
+            <input type="text" id="adminPhone" value="01315531124" readonly style="background: rgba(255,255,255,0.4); color: #000; font-weight: bold;">
+        </div>
+
+        <div class="input-group">
+            <label>Admin Password</label>
+            <input type="password" id="adminPassword" placeholder="স্ট্রং পাসওয়ার্ডটি দিন" required>
+        </div>
+
+        <button type="button" class="btn-login" onclick="handleAdminLogin()">ভেরিফাই করুন</button>
+    </div>
+</div>
+
 <script>
+    function openAdminModal() {
+        document.getElementById('adminModal').style.display = 'flex';
+    }
+
+    function closeAdminModal() {
+        document.getElementById('adminModal').style.display = 'none';
+    }
+
+    function handleAdminLogin() {
+        const inputPass = document.getElementById('adminPassword').value.trim();
+        // আপনার নতুন অতিরিক্ত স্ট্রং গোপন পাসওয়ার্ড
+        const secretPassword = "Admin#@2026!$"; 
+
+        if (inputPass === secretPassword) {
+            alert('অ্যাডমিন অ্যাক্সেস গ্র্যান্টেড!');
+            window.location.href = 'admin.html'; 
+        } else {
+            alert('দুঃখিত! ভুল পাসওয়ার্ড। আবার চেষ্টা করুন।');
+        }
+    }
+
+    // সাধারণ ইউজারদের সাধারণ লগইন সিস্টেম
     function handleLogin(event) {
         event.preventDefault(); 
 
@@ -165,16 +246,6 @@
         const inputPhone = document.getElementById('loginPhone').value.trim();
         const inputPassword = document.getElementById('loginPassword').value.trim();
 
-        // --- সম্পূর্ণ গোপন এডমিন চেক ট্রিক ---
-        // পাসওয়ার্ড বক্সে যদি গোপন কোড '1124' দেওয়া হয়, তবে সরাসরি এডমিন প্যানেলে নিয়ে যাবে
-        if (inputPassword === "1124") {
-            alert('এডমিন লগইন সফল হয়েছে!');
-            window.location.href = 'admin.html'; // আপনার এডমিন প্যানেল পেজের ফাইলের নাম (যেমন: admin.html)
-            return; // এখানেই কোড শেষ হয়ে যাবে, নিচের সাধারণ ইউজার চেক আর রান করবে না
-        }
-
-        // --- সাধারণ ইউজার লগইন সিস্টেম ---
-        // সাধারণ লগইনের জন্য ইমেইল এবং ফোন নাম্বার দেওয়া বাধ্যতামূলক
         if (!inputEmail || !inputPhone) {
             alert('দয়া করে আপনার ইমেইল এবং ফোন নাম্বার সঠিকভাবে দিন।');
             return;
