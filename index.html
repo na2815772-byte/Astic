@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>এস্টিক - অনলাইন শপ</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; background-color: #f4f4f4; }
         
-        /* ওপরের বার (Header) যেখানে থ্রি-ডট বাটন থাকবে */
+        /* ওপরের বার (Header) */
         .header-bar {
             background-color: #333;
             color: white;
@@ -20,6 +20,7 @@
             width: 100%;
             z-index: 1000;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            box-sizing: border-box;
         }
 
         /* থ্রি-ডট / হ্যামবার্গার আইকন */
@@ -35,7 +36,7 @@
             font-weight: bold;
         }
 
-        /* সাইডবার ডিজাইন (শুরুতে এটা স্ক্রিনের বাইরে বামে লুকিয়ে থাকবে) */
+        /* সাইডবার ডিজাইন (এখান থেকে অ্যাকাউন্ট মেনু বাদ দেওয়া হয়েছে) */
         .sidebar { 
             width: 260px; 
             background-color: #222; 
@@ -44,20 +45,17 @@
             height: 100vh; 
             position: fixed; 
             top: 0;
-            left: -290px; /* স্ক্রিনের বাইরে লুকিয়ে রাখা */
+            left: -290px; 
             overflow-y: auto; 
-            transition: left 0.3s ease; /* স্লাইড অ্যানিমেশন */
+            transition: left 0.3s ease; 
             z-index: 999;
             box-sizing: border-box;
-            padding-top: 70px; /* হেডার বারের নিচে নামানোর জন্য */
+            padding-top: 70px; 
         }
         
-        /* সাইডবার যখন একটিভ হবে (খুলবে) */
-        .sidebar.active {
-            left: 0;
-        }
+        .sidebar.active { left: 0; }
 
-        /* স্ক্রিন ঝাপসা করার ব্যাকড্রপ (মেনু খুললে পেছনের অংশ অন্ধকার দেখাবে) */
+        /* ব্যাকড্রপ ওভারলে */
         .sidebar-overlay {
             display: none;
             position: fixed;
@@ -68,31 +66,66 @@
             background: rgba(0, 0, 0, 0.5);
             z-index: 998;
         }
-        .sidebar-overlay.active {
-            display: block;
-        }
+        .sidebar-overlay.active { display: block; }
 
         .sidebar ul { list-style: none; padding: 0; margin: 0; }
         .sidebar ul li { padding: 12px 10px; cursor: pointer; transition: background 0.2s; border-bottom: 1px solid #333; }
         .sidebar ul li:hover { background-color: #444; }
-        
         .sidebar ul li a { color: white; text-decoration: none; display: block; width: 100%; }
         
-        /* সাবমেনু ডিজাইন - ক্লিক করলে খোলার জন্য */
+        /* কালেকশন সাবমেনু */
         .submenu { display: none; padding-left: 15px; list-style: none; background-color: #1a1a1a; margin-top: 5px; border-radius: 4px; }
-        .submenu.open { display: block; } /* সাবমেনু ওপেন ক্লাস */
+        .submenu.open { display: block; } 
         .submenu li { border-bottom: none; padding: 8px 5px; }
         .submenu li:hover { background-color: #333; }
         
-        /* মেইন কনটেন্ট এরিয়া */
-        .content { margin-top: 70px; padding: 20px; width: 100%; box-sizing: border-box; }
+        /* মেইন কন্টেন্ট এরিয়া (নিচে বটম বারের জন্য ফাঁকা রাখা হয়েছে) */
+        .content { margin-top: 70px; padding: 20px; width: 100%; box-sizing: border-box; padding-bottom: 80px; }
         .admin-panel { border: 1px solid #ccc; padding: 15px; margin-bottom: 20px; background-color: #f9f9f9; border-radius: 5px; }
-        .product-grid { display: flex; flex-wrap: wrap; gap: 20px; }
-        .product-card { border: 1px solid #ddd; padding: 15px; width: 200px; border-radius: 5px; position: relative; background-color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .product-grid { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
+        .product-card { border: 1px solid #ddd; padding: 15px; width: 45%; max-width: 200px; border-radius: 5px; background-color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); box-sizing: border-box; }
         .price { font-weight: bold; color: green; }
         .old-price { text-decoration: line-through; color: red; margin-right: 10px; }
         .order-btn { background-color: blue; color: white; border: none; padding: 10px; cursor: pointer; width: 100%; border-radius: 3px; margin-top: 10px; font-weight: bold; }
-        .order-btn:hover { background-color: darkblue; }
+
+        /* অ্যাপের মতো নিচের বটম নেভিগেশন বার */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #ffffff;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 10px 0;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            z-index: 1000;
+            box-sizing: border-box;
+        }
+
+        /* বটম বারের প্রতিটি আইটেম */
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #555;
+            text-decoration: none;
+            font-size: 12px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: inherit;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: blue; /* একটিভ বা হোভার করলে কালার চেঞ্জ হবে */
+        }
+
+        .nav-icon {
+            font-size: 20px;
+            margin-bottom: 2px;
+        }
     </style>
 </head>
 <body>
@@ -121,34 +154,22 @@
             <li><a href="prescriptions.html">📄 প্রেসক্রিপশন আপলোড</a></li>
             <li><a href="suggest-products.html">💡 প্রোডাক্ট সাজেস্ট</a></li>
             <li><a href="reports.html">⚠️ রিপোর্ট ও অভিযোগ</a></li>
-
-            <li onclick="toggleSubmenu(event, 'accountMenu')">👤 আমার অ্যাকাউন্ট ▾
-                <ul class="submenu" id="accountMenu">
-                    <li><a href="profile.html">👤 মাই প্রোফাইল</a></li>
-                    <li onclick="showSection('orders')">🛍️ মাই অর্ডার</li>
-                    <li><a href="my-products.html">📦 মাই প্রোডাক্টস</a></li>
-                    <li><a href="wishlists.html">❤️ আমার উইশলিস্ট</a></li>
-                    <li onclick="showSection('add-money')">💳 টাকা যোগ করুন</li>
-                    <li><a href="address.html">📍 ডেলিভারি অ্যাড্রেস</a></li>
-                    <li><a href="refund-policy.html">🔄 রিটার্ন ও রিফান্ড</a></li>
-                </ul>
-            </li>
         </ul>
     </div>
 
     <div class="content">
         <div class="admin-panel">
             <h3>অ্যাডমিন প্যানেল: প্রোডাক্ট যোগ করুন</h3>
-            <input type="text" id="pName" placeholder="প্রোডাক্টের নাম" style="padding: 6px; margin-right: 5px;">
-            <input type="text" id="pPrice" placeholder="বর্তমান মূল্য" style="padding: 6px; margin-right: 5px;">
-            <input type="text" id="pOldPrice" placeholder="পুরনো মূল্য" style="padding: 6px; margin-right: 5px;">
-            <select id="pCategory" style="padding: 6px; margin-right: 5px;">
+            <input type="text" id="pName" placeholder="প্রোডাক্টের নাম" style="padding: 6px; margin: 3px 5px 3px 0; width: 140px;">
+            <input type="text" id="pPrice" placeholder="বর্তমান মূল্য" style="padding: 6px; margin: 3px 5px 3px 0; width: 100px;">
+            <input type="text" id="pOldPrice" placeholder="পুরনো মূল্য" style="padding: 6px; margin: 3px 5px 3px 0; width: 100px;">
+            <select id="pCategory" style="padding: 6px; margin: 3px 5px 3px 0;">
                 <option value="tshirt">টি-শার্ট</option>
                 <option value="watch">ঘড়ি</option>
                 <option value="glasses">চশমা</option>
                 <option value="car">গাড়ি</option>
             </select>
-            <button onclick="addProduct()" style="padding: 7px 12px; cursor: pointer;">প্রোডাক্ট যোগ করুন</button>
+            <button onclick="addProduct()" style="padding: 7px 12px; cursor: pointer; margin-top: 5px;">প্রোডাক্ট যোগ করুন</button>
         </div>
 
         <h1>আমাদের প্রোডাক্টগুলো</h1>
@@ -156,16 +177,32 @@
             </div>
     </div>
 
+    <div class="bottom-nav">
+        <button class="nav-item active" onclick="location.reload()">
+            <span class="nav-icon">🏠</span>
+            <span>হোম</span>
+        </button>
+        <button class="nav-item" onclick="showSection('অর্ডার')">
+            <span class="nav-icon">🛍️</span>
+            <span>অর্ডার</span>
+        </button>
+        <button class="nav-item" onclick="showSection('ইনবক্স')">
+            <span class="nav-icon">💬</span>
+            <span>ইনবক্স</span>
+        </button>
+        <button class="nav-item" onclick="showSection('অ্যাকাউন্ট')">
+            <span class="nav-icon">👤</span>
+            <span>অ্যাকাউন্ট</span>
+        </button>
+    </div>
+
     <script>
-        // সাইডবার খোলা এবং বন্ধ করার ফাংশন
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
             document.getElementById('sidebarOverlay').classList.toggle('active');
         }
 
-        // ড্রপডাউন সাবমেনু (কালেকশন ও আমার অ্যাকাউন্ট) খোলার ফাংশন
         function toggleSubmenu(event, menuId) {
-            // ভেতরের অপশনে ক্লিক করলে যেন মেনু বন্ধ না হয়ে যায়
             if (event.target.tagName === 'LI' && event.target.children.length > 0 || event.target.textContent.includes('▾')) {
                 event.stopPropagation();
                 const menu = document.getElementById(menuId);
@@ -173,7 +210,6 @@
             }
         }
 
-        // প্রোডাক্ট ডাটাবেজ এবং রেন্ডারিং
         let products = [
             { name: "টি-শার্ট", price: "৪০০ টাকা", oldPrice: "৫০০ টাকা", category: "tshirt" },
             { name: "ঘড়ি", price: "১৫০০ টাকা", oldPrice: "", category: "watch" }
@@ -221,11 +257,11 @@
                     card.style.display = 'none';
                 }
             });
-            toggleSidebar(); // ক্যাটাগরি সিলেক্ট করলে মেনু বন্ধ হয়ে যাবে
+            toggleSidebar();
         }
 
         function showSection(section) {
-            alert(section + " সেকশনটি পরবর্তীতে কার্যকর করা হবে।");
+            alert(section + " সেকশনটি পরবর্তীতে ডাইনামিক করা হবে।");
         }
 
         renderProducts();
