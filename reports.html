@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>রিপোর্ট ও অভিযোগ - এস্টিক</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background-color: #f7f9fc; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        h1 { color: #2c3e50; text-align: center; margin-bottom: 20px; font-size: 24px; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; color: #333; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; }
+        .btn { background: #e74c3c; color: white; border: none; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; }
+        .btn:hover { background: #c0392b; }
+        .back-btn { display: inline-block; margin-top: 20px; text-decoration: none; color: #3498db; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>⚠️ রিপোর্ট ও অভিযোগ</h1>
+        
+        <div class="form-group">
+            <label>অর্ডার আইডি (যদি থাকে)</label>
+            <input type="text" placeholder="উদাহরণ: #AST-1234">
+        </div>
+        <div class="form-group">
+            <label>অভিযোগের ধরণ</label>
+            <select>
+                <option value="damage">নষ্ট বা ভাঙা প্রোডাক্ট</option>
+                <option value="wrong">ভুল প্রোডাক্ট এসেছে</option>
+                <option value="delivery">ডেলিভারি অনেক দেরি হচ্ছে</option>
+                <option value="other">অন্যান্য সমস্যা</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>বিস্তারিত লিখুন</label>
+            <textarea rows="4" placeholder="আপনার সমস্যাটি বিস্তারিত এখানে লিখুন..."></textarea>
+        </div>
+
+        <button class="btn" onclick="alert('আপনার অভিযোগটি জমা হয়েছে। আমাদের টিম শীঘ্রই যোগাযোগ করবে।')">অভিযোগ সাবমিট করুন</button>
+
+        <a href="index.html" class="back-btn">← মূল শপ-এ ফিরে যান</a>
+    </div>
+
+</body>
+</html>
