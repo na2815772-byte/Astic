@@ -93,3 +93,45 @@ p {
 .switch-form a:hover {
     text-decoration: underline;
 }
+
+
+/* ==========================================================================
+   নতুন যুক্ত করা অংশ: অ্যাডমিন ডিলিট বাটন ও লং প্রেস ইফেক্ট
+   ========================================================================== */
+
+/* প্রোডাক্ট কার্ডের পজিশন রিলেটিভ করা যেন ডিলিট বাটনটি ঠিক কোনায় বসে */
+.product-card {
+    position: relative;
+    user-select: none; /* লং প্রেস করার সময় যেন টেক্সট সিলেক্ট না হয়ে যায় */
+    -webkit-user-select: none; /* মোবাইল ব্রাউজারের জন্য */
+    transition: transform 0.2s ease;
+}
+
+/* লং প্রেস করার সময় কার্ডটি সামান্য একটু ভেতরে দেবে যাবে (Visual Feedback) */
+.product-card:active {
+    transform: scale(0.98);
+}
+
+/* ডিলিট বাটনের চমৎকার ডিজাইন */
+.delete-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #dc3545; /* লাল রঙের বাটন */
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    font-size: 12px;
+    font-weight: bold;
+    border-radius: 4px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 10; /* বাটনটি যেন সবসময় প্রোডাক্টের উপরে থাকে */
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+/* ডিলিট বাটনের ওপর মাউস নিলে কালার গাঢ় হবে */
+.delete-btn:hover {
+    background-color: #bd2130;
+    transform: scale(1.05);
+}
