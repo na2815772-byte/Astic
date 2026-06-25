@@ -171,12 +171,17 @@
         const phone = document.getElementById('phone').value.trim();
         const password = document.getElementById('password').value;
 
+        // লোকাল স্টোরেজে অ্যাকাউন্ট ডাটা সেভ করা হচ্ছে
         localStorage.setItem('userEmail', email);
         localStorage.setItem('userPhone', phone);
         localStorage.setItem('userPassword', password);
 
-        alert('অভিনন্দন! আপনার রেজিস্ট্রেশন সফলভাবে সম্পন্ন হয়েছে।');
-        window.location.href = 'login.html'; 
+        // [নতুন লজিক]: রেজিস্ট্রেশন করার সাথে সাথেই অটো-লগইন সেশন সেট করে দেওয়া হলো
+        localStorage.setItem('isLoggedIn', 'true');
+        localStorage.setItem('loggedInUser', email);
+
+        alert('অভিনন্দন! আপনার রেজিস্ট্রেশন সফলভাবে সম্পন্ন হয়েছে। আপনাকে সরাসরি হোম পেজে নিয়ে যাওয়া হচ্ছে।');
+        window.location.href = 'index.html'; 
     }
 </script>
 
