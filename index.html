@@ -217,7 +217,7 @@
         .next-btn { background: green; color: white; border: none; padding: 10px 20px; border-radius: 5px; width: 100%; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 15px; }
         .back-btn { background: #777; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; margin-bottom: 15px; }
 
-        /* প্রিমিয়াম বটম নেভিগেশন বার */
+        /* প্রিমিয়াম বারটি */
         .bottom-nav { 
             position: fixed; 
             bottom: 0; 
@@ -274,11 +274,7 @@
         .input-group label { display: block; margin-bottom: 8px; color: #fff; font-size: 14px; }
         .input-group input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.4); box-sizing: border-box; outline: none; font-size: 14px;}
 
-        /* ==========================================
-            ✨ আল্ট্রা-প্রিমিয়াম নিউ ডিজাইন ও ইফেক্টস ✨
-           ========================================== */
-        
-        /* প্রিমিয়াম ইন্টারঅ্যাক্টিভ মডাল (নিচ থেকে স্লাইড ও গ্লাস ফিল্ড) */
+        /* প্রিমিয়াম ইন্টারঅ্যাক্টিভ মডাল */
         .daraz-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); justify-content: center; align-items: flex-end; z-index: 2000; }
         .daraz-modal-content { background: rgba(255, 255, 255, 0.95); width: 100%; max-width: 500px; border-top-left-radius: 24px; border-top-right-radius: 24px; padding: 25px; box-sizing: border-box; animation: premiumSlideUp 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); max-height: 85vh; overflow-y: auto; box-shadow: 0 -10px 40px rgba(0,0,0,0.15); }
         @keyframes premiumSlideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
@@ -514,6 +510,9 @@
     </div>
 
     <script>
+        // গ্লোবাল ভেরিয়েবল হিসেবে কারেন্ট সিলেক্টেড প্রোডাক্ট রাখার জন্য
+        let currentSelectedProduct = null;
+
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
             document.getElementById('sidebarOverlay').classList.toggle('active');
@@ -560,17 +559,33 @@
             productsToRender.forEach((p, index) => {
                 const card = document.createElement('div');
                 card.className = `product-card ${p.category}`;
-                card.setAttribute('onclick', 'openDarazModal(' + JSON.stringify(p).replace(/"/g, '&quot;') + ', event)');
+                
+                // সংশোধিত অংশ: ইভেন্ট লিসেনার দিয়ে নিরাপদ উপায়ে ডাটা পাস করা হয়েছে
+                card.addEventListener('click', function(event) {
+                    if (event.target.className !== 'order-btn' && !event.target.classList.contains('card-delete-icon')) {
+                        openDarazModal(p, event);
+                    }
+                });
                 
                 const imgTag = p.image ? `<img src="${p.image}" class="product-img" alt="${p.name}">` : `<div class="product-img" style="display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:13px;">ছবি নেই</div>`;
                 
                 card.innerHTML = `
-                    <button class="card-delete-icon" onclick="triggerCrashDelete(this, event, ${index})">🗑️</button>
+                    <button class="card-delete-icon">🗑️</button>
                     <h3>${p.name}</h3>
                     ${imgTag}
                     <p style="margin: 5px 0;"><span class="price">${p.price}</span>${p.oldPrice ? ` <span class="old-price">${p.oldPrice}</span>` : ''}</p>
-                    <button class="order-btn" onclick="openDarazModalDirectCheckout(${JSON.stringify(p).replace(/"/g, '&quot;')}, event)">অর্ডার করুন</button>
+                    <button class="order-btn">অর্ডার করুন</button>
                 `;
+
+                // ডিলিট এবং অর্ডার বাটনে আলাদা লিসেনার অ্যাড করা
+                card.querySelector('.card-delete-icon').addEventListener('click', function(event) {
+                    triggerCrashDelete(this, event, index);
+                });
+
+                card.querySelector('.order-btn').addEventListener('click', function(event) {
+                    openDarazModalDirectCheckout(p, event);
+                });
+
                 grid.appendChild(card);
             });
         }
@@ -653,26 +668,21 @@
         function searchProducts() { const query = document.getElementById('searchInput').value.toLowerCase().trim(); if (query === '') { renderProducts(products); return; } const filtered = products.filter(p => p.name.toLowerCase().includes(query)); renderProducts(filtered); }
         function showSection(section) { alert(section + " সেকশনটি পরবর্তীতে ডাইনামিক করা হবে।"); }
 
-        // ==========================================
-        //      🔐 লগইন চেকিং ও প্রিমিয়াম অর্ডার লজিক
-        // ==========================================
-        
-        // গ্রাহক লগইন আছে কিনা চেক করার গ্লোবাল ফাংশন
         function isUserLoggedIn() {
             return localStorage.getItem('isLoggedIn') === 'true';
         }
 
         function openDarazModal(product, event) {
-            if (event.target.closest('.product-card') && event.target.closest('.product-card').classList.contains('active-delete') && event.target.className !== 'order-btn') {
+            if (event && event.target.closest('.product-card') && event.target.closest('.product-card').classList.contains('active-delete')) {
                 return;
             }
 
-            // 🛑 লজিক: লগইন না থাকলে নিবন্ধন করার নোটিশ দেখাবে
             if (!isUserLoggedIn()) {
                 alert("প্রথমে নিবন্ধনটি সম্পূর্ণ করুন তারপর অর্ডার করুন।");
                 return;
             }
             
+            currentSelectedProduct = product;
             document.getElementById('darazModalImg').src = product.image || 'https://via.placeholder.com/200x150?text=No+Image';
             document.getElementById('darazModalName').innerText = product.name;
             document.getElementById('darazModalPrice').innerText = product.price;
@@ -684,15 +694,14 @@
         }
 
         function openDarazModalDirectCheckout(product, event) {
-            event.stopPropagation(); 
+            if(event) event.stopPropagation(); 
             
-            // 🛑 লজিক: ডিরেক্ট বাটনে চাপ দিলেও লগইন চেক হবে
             if (!isUserLoggedIn()) {
                 alert("প্রথমে নিবন্ধনটি সম্পূর্ণ করুন তারপর অর্ডার করুন।");
                 return;
             }
 
-            openDarazModal(product, event);
+            openDarazModal(product, null);
             showDarazCheckoutForm(); 
         }
 
@@ -731,14 +740,9 @@
 
             closeDarazModal();
             hideAllViews();
-            // নেক্সট পেজে সম্পূর্ণ প্রিমিয়াম সাকসেস মেসেজ দেখাবে
             document.getElementById('orderSuccessView').style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-
-        // ==========================================
-        //         পেমেন্ট ও প্রোফাইল লজিক 
-        // ==========================================
 
         function checkLoginStatus() {
             const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
@@ -763,7 +767,6 @@
                 hideAllViews();
                 document.getElementById('userProfileCard').style.display = 'block';
             } else {
-                // যদি অ্যাকাউন্ট পেজে যেতে চায় কিন্তু লগইন না থাকে, তবে লগইন পেজে রিডাইরেক্ট করবে
                 window.location.href = 'login.html';
             }
         }
