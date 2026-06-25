@@ -405,7 +405,7 @@
             
             <p>👉 যদি <span class="selected-method-text" style="font-weight: bold; color: blue;">বিকাশে</span> পেমেন্ট করতে চান তাহলে <span class="copyable-num" onclick="copyText('01753446444')">01753446444</span> এই নাম্বারটি কপি করুন।</p>
             
-            <p>👉 এরপর সেন্ড মানি এবং ক্যাশ আউট করে ট্রানজেকশন আইডি জমা দেন, অথবা যদি বিকাশ না থাকে তাহলে—</p>
+            <p>👉 এরপর充 সেন্ড মানি এবং ক্যাশ আউট করে ট্রানজেকশন আইডি জমা দেন, অথবা যদি বিকাশ না থাকে তাহলে—</p>
             
             <p>👉 এই নাম্বারে আপনি বিকাশ, রকেট, নগদ এই তিনটার মাধ্যমে টাকা পাঠাইতে পারবেন।</p>
             
@@ -753,9 +753,9 @@
             document.getElementById('darazCheckoutForm').style.display = 'flex';
         }
 
-        // =======================================================
-        // এখানে কাস্টমার ও প্রোডাক্টের বিবরণ localStorage-এ সেভ করার লজিক যুক্ত করা হয়েছে
-        // =======================================================
+        // =====================================================================
+        // ডাইনামিক ইনবক্স অবজেক্ট তৈরি এবং localStorage-এ অ্যারে সেভ করার আপডেট লজিক
+        // =====================================================================
         function submitDarazOrder() {
             const name = document.getElementById('custName').value.trim();
             const phone = document.getElementById('custPhone').value.trim();
@@ -767,11 +767,34 @@
                 return;
             }
 
-            // ডাইনামিক ইনবক্সের জন্য ডেটা সেভ
+            // ১. একটি র্যান্ডম সিক্স-ডিজিট অর্ডার আইডি তৈরি
+            const orderId = Math.floor(100000 + Math.random() * 900000);
+            
+            // ২. বর্তমান প্রোডাক্টের ইনফরমেশন নির্ধারণ করা
+            const pName = currentSelectedProduct ? currentSelectedProduct.name : "Unknown Product";
+            const pPrice = currentSelectedProduct ? currentSelectedProduct.price : "0 টাকা";
+
+            // ৩. ইনবক্স ড্যাশবোর্ডের রিড করার উপযোগী একটি সুনির্দিষ্ট অবজেক্ট স্ট্রাকচার তৈরি
+            const newOrderMail = {
+                sender: name, 
+                subject: `নতুন অর্ডার নিশ্চিতকরণ #${orderId}`,
+                snippet: `প্রোডাক্ট: ${pName} | মূল্য: ${pPrice} | মোবাইল: ${phone} | ঠিকানা: ${address}, ${city}`,
+                time: "Just Now"
+            };
+
+            // ৪. ব্রাউজারের localStorage থেকে পূর্বের অ্যারেটি তুলে আনা (না থাকলে খালি অ্যারে)
+            let inboxMails = JSON.parse(localStorage.getItem('inboxMails')) || [];
+
+            // ৫. নতুন অর্ডার মেইলটিকে অ্যারের একদম শুরুতে (সবার উপরে) পুশ করা
+            inboxMails.unshift(newOrderMail);
+
+            // ৬. আপডেট হওয়া কমপ্লিট অ্যারেটি পুনরায় মেমরিতে ওভাররাইট করা
+            localStorage.setItem('inboxMails', JSON.stringify(inboxMails));
+
+            // আপনার আগের একক ট্র্যাকিং কি (Key) গুলোও ব্যাকআপ হিসেবে রেখে দেওয়া হলো
             localStorage.setItem("order_name", name);
             localStorage.setItem("order_phone", phone);
             localStorage.setItem("order_address", address + ", " + city);
-            
             if (currentSelectedProduct) {
                 localStorage.setItem("order_product_name", currentSelectedProduct.name);
                 localStorage.setItem("order_product_price", currentSelectedProduct.price);
@@ -860,7 +883,7 @@
         function goToPaymentStep2() {
             const amount = document.getElementById('userAmountInput').value.trim();
             if(!amount) {
-                alert("দয়া করে আপনার হিসাবের ঘরে টাকার পরিমাণটি বসան!");
+                alert("দয়া করে আপনার হিসাবের ঘরে টাকার পরিমাণটি বসান!");
                 return;
             }
             hideAllViews();
@@ -877,7 +900,7 @@
             const amount = document.getElementById('userAmountInput').value.trim();
             
             if(!trxId) {
-                alert("দয়া করে আপনার কাঙ্ক্ষিত ট্রানজেকশন আইডিটি বসան!");
+                alert("দয়া করে আপনার কাঙ্ক্ষিত ট্রানজেকশন আইডিটি বসান!");
                 return;
             }
             
