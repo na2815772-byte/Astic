@@ -145,7 +145,6 @@
 </div>
 
 <script>
-    // সাধারণ ইউজারদের সাধারণ লগইন সিস্টেম (কোনো পরিবর্তন করা হয়নি)
     function handleLogin(event) {
         event.preventDefault(); 
 
@@ -169,6 +168,11 @@
         }
 
         if (inputEmail === registeredEmail && inputPhone === registeredPhone && inputPassword === registeredPassword) {
+            
+            // [সংশোধন ও নতুন লজিক]: লগইন সফল হলে ব্রাউজার মেমোরিতে স্ট্যাটাস ট্রু (true) করে দেওয়া হচ্ছে
+            localStorage.setItem('isLoggedIn', 'true');
+            localStorage.setItem('loggedInUser', inputEmail); // ইনডেক্স ফাইলে প্রোফাইলে দেখানোর জন্য ইমেইলটি সেভ রাখা হলো
+
             alert('লগইন সফল হয়েছে! আপনাকে হোম পেজে নিয়ে যাওয়া হচ্ছে।');
             window.location.href = 'index.html'; 
         } else {
