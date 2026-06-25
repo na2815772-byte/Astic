@@ -8,7 +8,7 @@
     
     <title>এস্টিক - অনলাইন শপ</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; background-color: #f4f4f4; }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; background-color: #f4f4f4; overflow-x: hidden; }
         
         /* ওপরের বার (Header) */
         .header-bar {
@@ -106,11 +106,71 @@
         
         /* প্রোডাক্ট গ্রিড ও কার্ড */
         .product-grid { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
-        .product-card { border: 1px solid #ddd; padding: 15px; width: 45%; max-width: 200px; border-radius: 5px; background-color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); box-sizing: border-box; text-align: center; }
+        
+        /* [আপডেট] প্রোডাক্ট কার্ড স্টাইল */
+        .product-card { 
+            border: 1px solid #ddd; padding: 15px; width: 45%; max-width: 200px; border-radius: 5px; 
+            background-color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); box-sizing: border-box; 
+            text-align: center; position: relative; cursor: pointer; transition: all 0.3s ease;
+        }
+        .product-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        
         .product-img { width: 100%; height: 150px; object-fit: cover; border-radius: 4px; margin-bottom: 10px; background-color: #eee; }
         .price { font-weight: bold; color: green; font-size: 16px; }
         .old-price { text-decoration: line-through; color: red; margin-right: 10px; font-size: 14px; }
         .order-btn { background-color: blue; color: white; border: none; padding: 10px; cursor: pointer; width: 100%; border-radius: 3px; margin-top: 10px; font-weight: bold; }
+
+        /* [নতুন] ডিলিট আইকন স্টাইল (শুরুতে লুকানো থাকবে) */
+        .card-delete-icon {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(231, 76, 60, 0.4);
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10;
+        }
+        
+        /* যখন প্রোডাক্টে ক্লিক করা হবে তখন ডিলিট আইকন পপ-আপ করবে */
+        .product-card.active-delete .card-delete-icon {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        /* [নতুন] ডিলিট হওয়ার ফেড আউট অ্যানিমেশন */
+        .product-card.fade-out {
+            opacity: 0;
+            transform: scale(0.5) rotate(5deg);
+            pointer-events: none;
+        }
+
+        /* [নতুন] আলোর ক্র্যাশ (Particle) স্টাইল */
+        .particle {
+            position: fixed;
+            pointer-events: none;
+            border-radius: 50%;
+            background: radial-gradient(circle, #fff700, #ff3d00);
+            box-shadow: 0 0 8px #ffeb3b, 0 0 15px #ff5722;
+            animation: light-crash-fx 0.6s ease-out forwards;
+            z-index: 9999;
+        }
+
+        @keyframes light-crash-fx {
+            0% { transform: translate(0, 0) scale(1); opacity: 1; }
+            100% { transform: translate(var(--mx), var(--my)) scale(0); opacity: 0; }
+        }
 
         /* ইউজার প্রোফাইল কার্ড স্টাইল */
         .user-profile-card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 450px; margin: 20px auto; display: none; text-align: left; }
@@ -298,7 +358,7 @@
         <button class="nav-item" onclick="showSection('ইনবক্স')">
             <span class="nav-icon">💬</span>
             <span>ইনবক্স</span>
-        </button>
+        </a>
         <a href="#" class="nav-item" id="accountNavBtn" onclick="handleAccountNavigation(event)">
             <span class="nav-icon">👤</span>
             <span>অ্যাকাউন্ট</span>
@@ -358,6 +418,7 @@
 
         let products = JSON.parse(localStorage.getItem('myProducts')) || defaultProducts;
 
+        // [আপডেট] রেন্ডার ফাংশনে ক্লিক এবং ডিলিট লজিক ইনজেক্ট করা হয়েছে
         function renderProducts(productsToRender = products) {
             const grid = document.getElementById('productGrid');
             grid.innerHTML = '';
@@ -365,13 +426,91 @@
                 grid.innerHTML = '<div style="color:#666; padding: 20px;">কোনো প্রোডাক্ট পাওয়া যায়নি!</div>';
                 return;
             }
-            productsToRender.forEach(p => {
+            productsToRender.forEach((p, index) => {
                 const card = document.createElement('div');
                 card.className = `product-card ${p.category}`;
+                
+                // প্রোডাক্ট কার্ডে ক্লিক করলে ডিলিট আইকন টগল হবে
+                card.setAttribute('onclick', 'toggleCardDelete(this, event)');
+                
                 const imgTag = p.image ? `<img src="${p.image}" class="product-img" alt="${p.name}">` : `<div class="product-img">ছবি নেই</div>`;
-                card.innerHTML = `<h3>${p.name}</h3>${imgTag}<p>${p.oldPrice ? `<span class="old-price">${p.oldPrice}</span>` : ''}<span class="price">${p.price}</span></p><button class="order-btn">অর্ডার করুন</button>`;
+                
+                // এখানে ডিলিট আইকন (🗑️) এবং তার ক্লিকের ইভেন্ট হ্যান্ডলার সেট করা হয়েছে
+                card.innerHTML = `
+                    <button class="card-delete-icon" onclick="triggerCrashDelete(this, event, ${index})">🗑️</button>
+                    <h3>${p.name}</h3>
+                    ${imgTag}
+                    <p>${p.oldPrice ? `<span class="old-price">${p.oldPrice}</span>` : ''}<span class="price">${p.price}</span></p>
+                    <button class="order-btn" onclick="event.stopPropagation(); showSection('অর্ডার')">অর্ডার করুন</button>
+                `;
                 grid.appendChild(card);
             });
+        }
+
+        // [নতুন] কার্ডে ক্লিক করলে ডিলিট বাটন দেখানোর ফাংশন
+        function toggleCardDelete(cardElement, event) {
+            // আগের কোনো কার্ডে ডিলিট বাটন অন থাকলে তা রিমুভ করবে
+            document.querySelectorAll('.product-card').forEach(card => {
+                if (card !== cardElement) card.classList.remove('active-delete');
+            });
+            // বর্তমান কার্ডে ডিলিট বাটন টগল করবে
+            cardElement.classList.toggle('active-delete');
+        }
+
+        // [নতুন] আলোর ক্র্যাশ এবং লোকাল স্টোরেজ থেকে ডিলিট করার মেইন ম্যাজিক লজিক
+        function triggerCrashDelete(btnElement, event, productIndex) {
+            event.stopPropagation(); // কার্ডের ক্লিক ইভেন্ট যেন ফায়ার না হয়
+
+            const card = btnElement.closest('.product-card');
+            
+            // মাউস/আঙুলের ক্লিকের পজিশন থেকে ক্র্যাশের কেন্দ্র ঠিক করা
+            const rect = btnElement.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            // ৩৫টি রঙিন আলোর স্ফুলিঙ্গ বা কণা তৈরি করা
+            for (let i = 0; i < 35; i++) {
+                createCrashFX(centerX, centerY);
+            }
+
+            // কার্ডটি ফেড আউট অ্যানিমেশন দিয়ে ছোট করে ভ্যানিশ করা
+            card.classList.add('fade-out');
+            
+            // ৫০০ মিলি-সেকেন্ড পর ডাটাবেজ/মেমোরি থেকে রিমুভ করা
+            setTimeout(() => {
+                // মেইন অ্যারে থেকে প্রোডাক্টটি মুছে ফেলা
+                products.splice(productIndex, 1);
+                // লোকাল স্টোরেজ আপডেট এবং নতুন করে স্ক্রিনে রেন্ডার করা
+                saveAndRender();
+            }, 500);
+        }
+
+        // [নতুন] আলোর কণা তৈরি এবং ছিটকে দেওয়ার সাব-ফাংশন
+        function createCrashFX(x, y) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            document.body.appendChild(particle);
+
+            // র‍্যান্ডম সাইজ (৪ থেকে ১২ পিক্সেল)
+            const size = Math.random() * 8 + 4;
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+
+            // বিস্ফোরণের কেন্দ্রবিন্দু পজিশন করা
+            particle.style.left = `${x - size / 2}px`;
+            particle.style.top = `${y - size / 2}px`;
+
+            // কণাগুলো চারদিকে ছড়িয়ে পড়ার ডিরেকশন ও স্পিড র‍্যান্ডম করা
+            const angle = Math.random() * Math.PI * 2;
+            const velocity = Math.random() * 100 + 50; 
+            const mx = Math.cos(angle) * velocity;
+            const my = Math.sin(angle) * velocity;
+
+            particle.style.setProperty('--mx', `${mx}px`);
+            particle.style.setProperty('--my', `${my}px`);
+
+            // অ্যানিমেশন শেষে র‍্যাম ফাকা করার জন্য এলিমেন্ট রিমুভ করা
+            setTimeout(() => { particle.remove(); }, 600);
         }
 
         function addProduct() {
@@ -429,7 +568,6 @@
                 hideAllViews();
                 document.getElementById('userProfileCard').style.display = 'block';
             } else {
-                // [সংশোধন]: আসল মেমোরি ফাকা থাকলে সরাসরি লগইন/রেজিস্ট্রি ফাইলে পাঠিয়ে দিবে
                 window.location.href = 'login.html';
             }
         }
@@ -510,7 +648,6 @@
         }
 
         function handleLogout() {
-            // [সংশোধন]: সেশন ডাটা রিমুভ করে একদম ফ্রেশ লকআউট করা হচ্ছে
             localStorage.removeItem('isLoggedIn');
             localStorage.removeItem('loggedInUser');
             localStorage.removeItem('userBalance');
