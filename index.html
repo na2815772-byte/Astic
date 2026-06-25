@@ -8,13 +8,13 @@
     
     <title>এস্টিক - অনলাইন শপ</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; background-color: #f4f4f4; overflow-x: hidden; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; background-color: #f8fafc; overflow-x: hidden; color: #334155; }
         
         /* ওপরের বার (Header) */
         .header-bar {
-            background-color: #333;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
             color: white;
-            padding: 10px 15px;
+            padding: 12px 15px;
             display: flex;
             flex-direction: column; 
             align-items: center;
@@ -23,7 +23,7 @@
             left: 0;
             width: 100%;
             z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
             box-sizing: border-box;
             gap: 10px;
         }
@@ -37,63 +37,68 @@
         }
 
         .header-left { display: flex; align-items: center; flex-shrink: 0; }
-        .menu-toggle { font-size: 24px; cursor: pointer; margin-right: 15px; user-select: none; }
-        .header-title { font-size: 18px; font-weight: bold; white-space: nowrap; }
+        .menu-toggle { font-size: 24px; cursor: pointer; margin-right: 15px; user-select: none; color: #cbd5e1; }
+        .header-title { font-size: 19px; font-weight: 700; white-space: nowrap; letter-spacing: 0.5px; background: linear-gradient(to right, #38ef7d, #11998e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
 
         /* সার্চ বক্স ডিজাইন */
         .search-container {
             display: flex;
             align-items: center;
-            background-color: #e3f2fd; 
-            border: 2px solid #81d4fa; 
-            border-radius: 25px; 
-            padding: 5px 15px;
+            background-color: rgba(255, 255, 255, 0.15); 
+            border: 1px solid rgba(255, 255, 255, 0.2); 
+            border-radius: 30px; 
+            padding: 6px 16px;
             flex-grow: 1;
             max-width: 500px; 
-            box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
-            transition: all 0.3s ease; 
+            backdrop-filter: blur(5px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); 
         }
 
         .search-container:focus-within {
             background-color: #ffffff; 
-            border-color: #0288d1; 
-            box-shadow: 0 0 10px rgba(2, 136, 209, 0.5); 
+            border-color: #3b82f6; 
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.3); 
         }
 
-        .search-input { border: none; outline: none; width: 100%; font-size: 14px; color: #333; padding: 5px 0; background: transparent; }
-        .search-icon { color: #0288d1; font-size: 16px; margin-left: 8px; cursor: pointer; }
+        .search-container:focus-within .search-input { color: #1e293b; }
+        .search-container:focus-within .search-icon { color: #3b82f6; }
+
+        .search-input { border: none; outline: none; width: 100%; font-size: 14px; color: #f1f5f9; padding: 5px 0; background: transparent; }
+        .search-input::placeholder { color: #94a3b8; }
+        .search-icon { color: #94a3b8; font-size: 16px; margin-left: 8px; cursor: pointer; transition: color 0.3s; }
 
         .admin-trigger-btn {
             background: linear-gradient(135deg, #11998e, #38ef7d);
-            color: white; border: none; padding: 6px 16px; font-size: 13px; font-weight: bold; border-radius: 15px; cursor: pointer;
-            box-shadow: 0 3px 8px rgba(56, 239, 125, 0.3); transition: all 0.3s ease; margin-bottom: 2px;
+            color: white; border: none; padding: 7px 18px; font-size: 13px; font-weight: 600; border-radius: 20px; cursor: pointer;
+            box-shadow: 0 4px 12px rgba(56, 239, 125, 0.25); transition: all 0.3s ease; margin-bottom: 2px;
         }
         .admin-trigger-btn:hover {
             background: linear-gradient(135deg, #0f837a, #2ec969);
-            box-shadow: 0 5px 12px rgba(56, 239, 125, 0.5); transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(56, 239, 125, 0.4); transform: translateY(-1px);
         }
 
         /* সাইডবার ডিজাইন */
         .sidebar { 
-            width: 260px; background-color: #222; color: white; padding: 15px; height: 100vh; position: fixed; 
-            top: 0; left: -290px; overflow-y: auto; transition: left 0.3s ease; z-index: 999; box-sizing: border-box; padding-top: 120px; 
+            width: 260px; background-color: #0f172a; color: #f1f5f9; padding: 15px; height: 100vh; position: fixed; 
+            top: 0; left: -290px; overflow-y: auto; transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 999; box-sizing: border-box; padding-top: 130px; 
+            box-shadow: 5px 0 25px rgba(0,0,0,0.3);
         }
         .sidebar.active { left: 0; }
-        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 998; }
+        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(4px); z-index: 998; }
         .sidebar-overlay.active { display: block; }
 
         .sidebar ul { list-style: none; padding: 0; margin: 0; }
-        .sidebar ul li { padding: 12px 10px; cursor: pointer; transition: background 0.2s; border-bottom: 1px solid #333; }
-        .sidebar ul li:hover { background-color: #444; }
-        .sidebar ul li a { color: white; text-decoration: none; display: block; width: 100%; }
+        .sidebar ul li { padding: 14px 12px; cursor: pointer; transition: all 0.2s; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 15px; }
+        .sidebar ul li:hover { background-color: rgba(255,255,255,0.08); padding-left: 16px; color: #38ef7d; }
+        .sidebar ul li a { color: inherit; text-decoration: none; display: block; width: 100%; }
         
-        .submenu { display: none; padding-left: 15px; list-style: none; background-color: #1a1a1a; margin-top: 5px; border-radius: 4px; }
+        .submenu { display: none; padding-left: 15px; list-style: none; background-color: #020617; margin-top: 8px; border-radius: 6px; }
         .submenu.open { display: block; } 
-        .submenu li { border-bottom: none; padding: 8px 5px; }
-        .submenu li:hover { background-color: #333; }
+        .submenu li { border-bottom: none; padding: 10px 8px; font-size: 14px; }
+        .submenu li:hover { background-color: rgba(255,255,255,0.05); color: #38ef7d; }
         
         /* মেইন কন্টেন্ট এরিয়া */
-        .content { margin-top: 130px; padding: 20px; width: 100%; box-sizing: border-box; padding-bottom: 80px; }
+        .content { margin-top: 140px; padding: 20px; width: 100%; box-sizing: border-box; padding-bottom: 100px; }
         
         /* অ্যাডমিন প্যানেল */
         .admin-panel { 
@@ -104,59 +109,73 @@
         .admin-panel input[type="text"], .admin-panel select { padding: 10px 12px; margin: 8px 10px 8px 0; border: 1px solid #7c5249; border-radius: 6px; background-color: rgba(255, 255, 255, 0.25); color: #31130c; font-size: 14px; outline: none; }
         .admin-panel button { background: linear-gradient(180deg, #802244 0%, #56102a 100%); color: #ffffff; border: 1px solid #40051b; padding: 12px 25px; cursor: pointer; margin-top: 15px; font-weight: bold; font-size: 16px; border-radius: 6px; }
         
-        /* প্রোডাক্ট গ্রিড ও কার্ড */
+        /* প্রোডাক্ট গ্রিড ও প্রিমিয়াম কার্ড ডিজাইন */
         .product-grid { display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; }
         
-        /* [আপডেট] প্রোডাক্ট কার্ড স্টাইল */
         .product-card { 
-            border: 1px solid #ddd; padding: 15px; width: 45%; max-width: 200px; border-radius: 5px; 
-            background-color: #fff; box-shadow: 0 2px 5px rgba(0,0,0,0.05); box-sizing: border-box; 
-            text-align: center; position: relative; cursor: pointer; transition: all 0.3s ease;
+            border: 1px solid rgba(226, 232, 240, 0.8); 
+            padding: 14px; 
+            width: 46%; 
+            max-width: 210px; 
+            border-radius: 16px; 
+            background-color: #ffffff; 
+            box-shadow: 0 4px 10px rgba(15, 23, 42, 0.03), 0 1px 3px rgba(15, 23, 42, 0.02); 
+            box-sizing: border-box; 
+            text-align: center; 
+            position: relative; 
+            cursor: pointer; 
+            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
-        .product-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
         
-        .product-img { width: 100%; height: 150px; object-fit: cover; border-radius: 4px; margin-bottom: 10px; background-color: #eee; }
-        .price { font-weight: bold; color: green; font-size: 16px; }
-        .old-price { text-decoration: line-through; color: red; margin-right: 10px; font-size: 14px; }
-        .order-btn { background-color: blue; color: white; border: none; padding: 10px; cursor: pointer; width: 100%; border-radius: 3px; margin-top: 10px; font-weight: bold; }
+        /* প্রিমিয়াম হোভার ও চারপাশের ভিজ্যুয়াল ইফেক্ট (ভবিষ্যতের সকল প্রোডাক্টের জন্য কার্যকর) */
+        .product-card:hover { 
+            transform: translateY(-6px); 
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 12px 24px rgba(59, 130, 246, 0.12), 0 4px 8px rgba(0, 0, 0, 0.04); 
+        }
+        
+        .product-img { width: 100%; height: 150px; object-fit: cover; border-radius: 12px; margin-bottom: 12px; background-color: #f1f5f9; transition: transform 0.3s ease; }
+        .product-card:hover .product-img { transform: scale(1.02); }
+        
+        .product-card h3 { font-size: 15px; margin: 8px 0; color: #1e293b; font-weight: 600; }
+        .price { font-weight: 700; color: #10b981; font-size: 16px; }
+        .old-price { text-decoration: line-through; color: #94a3b8; margin-right: 8px; font-size: 13px; }
+        
+        .order-btn { 
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8); 
+            color: white; border: none; padding: 10px; cursor: pointer; width: 100%; 
+            border-radius: 10px; margin-top: 12px; font-weight: 600; font-size: 13px;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2); transition: all 0.2s;
+        }
+        .order-btn:hover { background: linear-gradient(135deg, #2563eb, #1e40af); box-shadow: 0 6px 16px rgba(59, 130, 246, 0.3); }
 
-        /* [নতুন] ডিলিট আইকন স্টাইল (শুরুতে লুকানো থাকবে) */
+        /* ডিলিট আইকন স্টাইল */
         .card-delete-icon {
             position: absolute;
             top: -10px;
             right: -10px;
-            background: #e74c3c;
+            background: #ef4444;
             color: white;
             border: none;
             width: 32px;
             height: 32px;
             border-radius: 50%;
-            font-size: 16px;
+            font-size: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            box-shadow: 0 4px 8px rgba(231, 76, 60, 0.4);
+            box-shadow: 0 4px 10px rgba(239, 68, 68, 0.4);
             opacity: 0;
             transform: scale(0);
             transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             z-index: 10;
         }
         
-        /* যখন প্রোডাক্টে ক্লিক করা হবে তখন ডিলিট আইকন পপ-আপ করবে */
-        .product-card.active-delete .card-delete-icon {
-            opacity: 1;
-            transform: scale(1);
-        }
+        .product-card.active-delete .card-delete-icon { opacity: 1; transform: scale(1); }
+        .product-card.fade-out { opacity: 0; transform: scale(0.5) rotate(5deg); pointer-events: none; }
 
-        /* [নতুন] ডিলিট হওয়ার ফেড আউট অ্যানিমেশন */
-        .product-card.fade-out {
-            opacity: 0;
-            transform: scale(0.5) rotate(5deg);
-            pointer-events: none;
-        }
-
-        /* [নতুন] আলোর ক্র্যাশ (Particle) স্টাইল */
+        /* আলোর ক্র্যাশ (Particle) স্টাইল */
         .particle {
             position: fixed;
             pointer-events: none;
@@ -173,13 +192,13 @@
         }
 
         /* ইউজার প্রোফাইল কার্ড স্টাইল */
-        .user-profile-card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 450px; margin: 20px auto; display: none; text-align: left; }
-        .profile-header { text-align: center; margin-bottom: 15px; }
-        .profile-header img { width: 80px; height: 80px; border-radius: 50%; border: 3px solid blue; }
-        .balance-box { background: #e3f2fd; padding: 15px; border-radius: 8px; margin: 15px 0; font-size: 16px; font-weight: bold; text-align: center; }
+        .user-profile-card { background: white; padding: 25px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 450px; margin: 20px auto; display: none; text-align: left; border: 1px solid #e2e8f0; }
+        .profile-header { text-align: center; margin-bottom: 20px; }
+        .profile-header img { width: 85px; height: 85px; border-radius: 50%; border: 3px solid #3b82f6; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2); }
+        .balance-box { background: #eff6ff; padding: 16px; border-radius: 12px; margin: 15px 0; font-size: 16px; font-weight: 700; text-align: center; color: #1e40af; border: 1px solid #bfdbfe; }
         
         /* তথ্য ও যোগাযোগ বক্স */
-        .contact-info-box { background: #fff8e1; border-left: 5px solid #ffb300; padding: 12px; margin: 15px 0; border-radius: 4px; font-size: 14px; line-height: 1.6; }
+        .contact-info-box { background: #fffde7; border-left: 5px solid #eab308; padding: 14px; margin: 15px 0; border-radius: 8px; font-size: 14px; line-height: 1.6; color: #713f12; }
         
         /* ট্যাব বাটন এবং সাব-মেনু */
         .tab-menu-btn { width: 100%; background: #0288d1; color: white; border: none; padding: 12px; border-radius: 5px; font-size: 15px; font-weight: bold; cursor: pointer; text-align: center; margin-top: 10px; }
@@ -199,14 +218,73 @@
         .next-btn { background: green; color: white; border: none; padding: 10px 20px; border-radius: 5px; width: 100%; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 15px; }
         .back-btn { background: #777; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; margin-bottom: 15px; }
 
-        /* বটম নেভিগেশন বার */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: #ffffff; display: flex; justify-content: space-around; align-items: center; padding: 10px 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 1000; box-sizing: border-box; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: #555; text-decoration: none; font-size: 12px; cursor: pointer; background: none; border: none; font-family: inherit; }
-        .nav-item:hover, .nav-item.active { color: blue; }
-        .nav-icon { font-size: 20px; margin-bottom: 2px; }
+        /* প্রিমিয়াম বটম নেভিগেশন বার - ১ সারিতে ৪ বাটন ও আল্ট্রা মডার্ন লুক */
+        .bottom-nav { 
+            position: fixed; 
+            bottom: 0; 
+            left: 0; 
+            width: 100%; 
+            background: rgba(255, 255, 255, 0.85); 
+            backdrop-filter: blur(20px); 
+            -webkit-backdrop-filter: blur(20px);
+            display: flex; 
+            justify-content: space-around; 
+            align-items: center; 
+            padding: 8px 0 12px 0; 
+            box-shadow: 0 -8px 32px rgba(15, 23, 42, 0.08); 
+            border-top: 1px solid rgba(226, 232, 240, 0.8);
+            z-index: 1000; 
+            box-sizing: border-box; 
+        }
+        
+        .nav-item { 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            color: #64748b; 
+            text-decoration: none; 
+            font-size: 11px; 
+            font-weight: 600;
+            cursor: pointer; 
+            background: none; 
+            border: none; 
+            font-family: inherit; 
+            flex: 1; 
+            text-align: center; 
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            padding: 4px 0;
+        }
+        
+        .nav-icon { 
+            font-size: 22px; 
+            margin-bottom: 4px; 
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        /* হোভার এবং অ্যাক্টিভ স্টেটের আকর্ষণীয় প্রিমিয়াম ইফেক্ট */
+        .nav-item:hover, .nav-item.active { 
+            color: #2563eb; 
+        }
+        
+        .nav-item:hover .nav-icon, .nav-item.active .nav-icon { 
+            transform: translateY(-4px) scale(1.1); 
+        }
+        
+        /* অ্যাক্টিভ ইন্ডিকেটর গ্লো ডট */
+        .nav-item.active::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            width: 5px;
+            height: 5px;
+            background-color: #2563eb;
+            border-radius: 50%;
+            box-shadow: 0 0 10px #2563eb;
+        }
 
         /* অ্যাডমিন লগইন মডাল স্টাইল */
-        .admin-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 9999; }
+        .admin-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 9999; }
         .admin-box { background: rgba(20, 30, 48, 0.98); border: 2px solid #38ef7d; padding: 35px 30px; border-radius: 16px; width: 90%; max-width: 360px; box-shadow: 0 15px 35px rgba(56, 239, 125, 0.25); position: relative; box-sizing: border-box; }
         .admin-box h3 { color: #38ef7d; margin-top: 0; text-align: center; margin-bottom: 25px; font-size: 22px; }
         .admin-box .close-btn { position: absolute; top: 12px; right: 18px; color: #fff; font-size: 24px; cursor: pointer; }
@@ -341,16 +419,16 @@
         </div>
 
         <div id="mainHomeView">
-            <h1>আমাদের প্রোডাক্টগুলো</h1>
+            <h1 style="font-size: 22px; font-weight: 700; margin-bottom: 20px; color: #1e293b; padding-left: 5px;">আমাদের প্রোডাক্টগুলো</h1>
             <div class="product-grid" id="productGrid"></div>
         </div>
     </div>
 
     <div class="bottom-nav">
-        <a href="#" class="nav-item active" id="homeNavBtn" onclick="showHomeView()">
+        <button class="nav-item active" id="homeNavBtn" onclick="showHomeView()">
             <span class="nav-icon">🏠</span>
             <span>হোম</span>
-        </a>
+        </button>
         <button class="nav-item" onclick="showSection('অর্ডার')">
             <span class="nav-icon">🛍️</span>
             <span>অর্ডার</span>
@@ -358,11 +436,11 @@
         <button class="nav-item" onclick="showSection('ইনবক্স')">
             <span class="nav-icon">💬</span>
             <span>ইনবক্স</span>
-        </a>
-        <a href="#" class="nav-item" id="accountNavBtn" onclick="handleAccountNavigation(event)">
+        </button>
+        <button class="nav-item" id="accountNavBtn" onclick="handleAccountNavigation(event)">
             <span class="nav-icon">👤</span>
             <span>অ্যাকাউন্ট</span>
-        </a>
+        </button>
     </div>
 
     <div id="adminModal" class="admin-modal">
@@ -412,95 +490,76 @@
         }
 
         let defaultProducts = [
-            { name: "টি-শার্ট", price: "৪০০ টাকা", oldPrice: "৫০০ টাকা", category: "tshirt", image: "https://via.placeholder.com/200x150?text=T-Shirt" },
-            { name: "ঘড়ি", price: "১৫০০ টাকা", oldPrice: "", category: "watch", image: "https://via.placeholder.com/200x150?text=Watch" }
+            { name: "প্রিমিয়াম টি-শার্ট", price: "৪০০ টাকা", oldPrice: "৫০০ টাকা", category: "tshirt", image: "https://via.placeholder.com/200x150?text=T-Shirt" },
+            { name: "স্মার্ট ওয়াচ", price: "১৫০০ টাকা", oldPrice: "", category: "watch", image: "https://via.placeholder.com/200x150?text=Watch" }
         ];
 
         let products = JSON.parse(localStorage.getItem('myProducts')) || defaultProducts;
 
-        // [আপডেট] রেন্ডার ফাংশনে ক্লিক এবং ডিলিট লজিক ইনজেক্ট করা হয়েছে
         function renderProducts(productsToRender = products) {
             const grid = document.getElementById('productGrid');
             grid.innerHTML = '';
             if(productsToRender.length === 0) {
-                grid.innerHTML = '<div style="color:#666; padding: 20px;">কোনো প্রোডাক্ট পাওয়া যায়নি!</div>';
+                grid.innerHTML = '<div style="color:#64748b; padding: 20px; font-weight: 500;">কোনো প্রোডাক্ট পাওয়া যায়নি!</div>';
                 return;
             }
             productsToRender.forEach((p, index) => {
                 const card = document.createElement('div');
                 card.className = `product-card ${p.category}`;
-                
-                // প্রোডাক্ট কার্ডে ক্লিক করলে ডিলিট আইকন টগল হবে
                 card.setAttribute('onclick', 'toggleCardDelete(this, event)');
                 
-                const imgTag = p.image ? `<img src="${p.image}" class="product-img" alt="${p.name}">` : `<div class="product-img">ছবি নেই</div>`;
+                const imgTag = p.image ? `<img src="${p.image}" class="product-img" alt="${p.name}">` : `<div class="product-img" style="display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:13px;">ছবি নেই</div>`;
                 
-                // এখানে ডিলিট আইকন (🗑️) এবং তার ক্লিকের ইভেন্ট হ্যান্ডলার সেট করা হয়েছে
                 card.innerHTML = `
                     <button class="card-delete-icon" onclick="triggerCrashDelete(this, event, ${index})">🗑️</button>
                     <h3>${p.name}</h3>
                     ${imgTag}
-                    <p>${p.oldPrice ? `<span class="old-price">${p.oldPrice}</span>` : ''}<span class="price">${p.price}</span></p>
+                    <p style="margin: 5px 0;"><span class="price">${p.price}</span>${p.oldPrice ? ` <span class="old-price">${p.oldPrice}</span>` : ''}</p>
                     <button class="order-btn" onclick="event.stopPropagation(); showSection('অর্ডার')">অর্ডার করুন</button>
                 `;
                 grid.appendChild(card);
             });
         }
 
-        // [নতুন] কার্ডে ক্লিক করলে ডিলিট বাটন দেখানোর ফাংশন
         function toggleCardDelete(cardElement, event) {
-            // আগের কোনো কার্ডে ডিলিট বাটন অন থাকলে তা রিমুভ করবে
             document.querySelectorAll('.product-card').forEach(card => {
                 if (card !== cardElement) card.classList.remove('active-delete');
             });
-            // বর্তমান কার্ডে ডিলিট বাটন টগল করবে
             cardElement.classList.toggle('active-delete');
         }
 
-        // [নতুন] আলোর ক্র্যাশ এবং লোকাল স্টোরেজ থেকে ডিলিট করার মেইন ম্যাজিক লজিক
         function triggerCrashDelete(btnElement, event, productIndex) {
-            event.stopPropagation(); // কার্ডের ক্লিক ইভেন্ট যেন ফায়ার না হয়
-
+            event.stopPropagation(); 
             const card = btnElement.closest('.product-card');
             
-            // মাউস/আঙুলের ক্লিকের পজিশন থেকে ক্র্যাশের কেন্দ্র ঠিক করা
             const rect = btnElement.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
             const centerY = rect.top + rect.height / 2;
 
-            // ৩৫টি রঙিন আলোর স্ফুলিঙ্গ বা কণা তৈরি করা
             for (let i = 0; i < 35; i++) {
                 createCrashFX(centerX, centerY);
             }
 
-            // কার্ডটি ফেড আউট অ্যানিমেশন দিয়ে ছোট করে ভ্যানিশ করা
             card.classList.add('fade-out');
             
-            // ৫০০ মিলি-সেকেন্ড পর ডাটাবেজ/মেমোরি থেকে রিমুভ করা
             setTimeout(() => {
-                // মেইন অ্যারে থেকে প্রোডাক্টটি মুছে ফেলা
                 products.splice(productIndex, 1);
-                // লোকাল স্টোরেজ আপডেট এবং নতুন করে স্ক্রিনে রেন্ডার করা
                 saveAndRender();
             }, 500);
         }
 
-        // [নতুন] আলোর কণা তৈরি এবং ছিটকে দেওয়ার সাব-ফাংশন
         function createCrashFX(x, y) {
             const particle = document.createElement('div');
             particle.classList.add('particle');
             document.body.appendChild(particle);
 
-            // র‍্যান্ডম সাইজ (৪ থেকে ১২ পিক্সেল)
             const size = Math.random() * 8 + 4;
             particle.style.width = `${size}px`;
             particle.style.height = `${size}px`;
 
-            // বিস্ফোরণের কেন্দ্রবিন্দু পজিশন করা
             particle.style.left = `${x - size / 2}px`;
             particle.style.top = `${y - size / 2}px`;
 
-            // কণাগুলো চারদিকে ছড়িয়ে পড়ার ডিরেকশন ও স্পিড র‍্যান্ডম করা
             const angle = Math.random() * Math.PI * 2;
             const velocity = Math.random() * 100 + 50; 
             const mx = Math.cos(angle) * velocity;
@@ -509,7 +568,6 @@
             particle.style.setProperty('--mx', `${mx}px`);
             particle.style.setProperty('--my', `${my}px`);
 
-            // অ্যানিমেশন শেষে র‍্যাম ফাকা করার জন্য এলিমেন্ট রিমুভ করা
             setTimeout(() => { particle.remove(); }, 600);
         }
 
@@ -551,7 +609,7 @@
             const userBalance = localStorage.getItem('userBalance') || '০.০০';
             
             if (isLoggedIn) {
-                document.getElementById('profileWelcome').innerHTML = `স্বাগতম আপনাকে!<br><span style="font-size:14px;color:#555;font-weight:normal;">${userEmail}</span>`;
+                document.getElementById('profileWelcome').innerHTML = `স্বাগতম আপনাকে!<br><span style="font-size:14px;color:#64748b;font-weight:normal;">${userEmail}</span>`;
                 document.getElementById('userBalance').innerText = userBalance;
             }
             return isLoggedIn;
@@ -559,7 +617,7 @@
 
         function handleAccountNavigation(e) {
             e.preventDefault();
-            document.getElementById('homeNavBtn').classList.remove('active');
+            resetNavActiveState();
             document.getElementById('accountNavBtn').classList.add('active');
 
             const loggedIn = checkLoginStatus();
@@ -573,10 +631,14 @@
         }
 
         function showHomeView() {
-            document.getElementById('accountNavBtn').classList.remove('active');
+            resetNavActiveState();
             document.getElementById('homeNavBtn').classList.add('active');
             hideAllViews();
             document.getElementById('mainHomeView').style.display = 'block';
+        }
+
+        function resetNavActiveState() {
+            document.querySelectorAll('.bottom-nav .nav-item').forEach(btn => btn.classList.remove('active'));
         }
 
         function hideAllViews() {
