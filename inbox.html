@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Inbox - Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -19,202 +19,47 @@
             --card-bg: #ffffff;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            display: flex;
-            height: 100vh;
-            overflow: hidden;
-        }
+        /* Sidebar */
+        .sidebar { width: 260px; background-color: var(--sidebar-color); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; padding: 24px; }
+        .logo { font-size: 20px; font-weight: 700; color: var(--primary-color); margin-bottom: 30px; display: flex; align-items: center; gap: 10px; }
+        .nav-menu { list-style: none; display: flex; flex-direction: column; gap: 4px; }
+        .nav-item a { display: flex; align-items: center; padding: 12px; color: var(--text-muted); text-decoration: none; border-radius: 6px; font-weight: 500; font-size: 14px; gap: 12px; }
+        .nav-item.active a { background-color: var(--bg-color); color: var(--primary-color); }
 
-        /* Sidebar Styles */
-        .sidebar {
-            width: 260px;
-            background-color: var(--sidebar-color);
-            border-right: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            padding: 24px;
-        }
-
-        .logo {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 30px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .nav-menu {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .nav-item a {
-            display: flex;
-            align-items: center;
-            padding: 12px;
-            color: var(--text-muted);
-            text-decoration: none;
-            border-radius: 6px;
-            font-weight: 500;
-            font-size: 14px;
-            transition: all 0.2s;
-            gap: 12px;
-        }
-
-        .nav-item.active a {
-            background-color: var(--bg-color);
-            color: var(--primary-color);
-        }
-
-        /* Main Content Area */
-        .main-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Header */
-        .header {
-            height: 70px;
-            background-color: #ffffff;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 30px;
-        }
-
-        .header h2 {
-            font-size: 18px;
-            font-weight: 600;
-        }
+        /* Main Content */
+        .main-content { flex: 1; display: flex; flex-direction: column; }
+        .header { height: 70px; background-color: #ffffff; border-bottom: 1px solid var(--border-color); display: flex; align-items: center; padding: 0 30px; }
+        .header h2 { font-size: 18px; font-weight: 600; }
 
         /* Content Container */
-        .inbox-container {
-            flex: 1;
-            padding: 30px;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            overflow-y: auto;
-        }
+        .inbox-container { flex: 1; padding: 30px; display: flex; justify-content: center; align-items: flex-start; overflow-y: auto; }
 
-        /* অর্ডার কার্ড স্টাইল */
-        .order-card {
-            background-color: var(--card-bg);
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-            width: 100%;
-            max-width: 500px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
-            overflow: hidden;
-            display: none; /* জাভাস্ক্রিপ্ট দিয়ে কন্ট্রোল হবে */
-        }
+        /* অর্ডার কার্ড */
+        .order-card { background-color: var(--card-bg); border-radius: 16px; border: 1px solid var(--border-color); width: 100%; max-width: 500px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05); overflow: hidden; display: none; }
+        .product-img-box { width: 100%; height: 240px; background-color: #f1f5f9; border-bottom: 1px solid var(--border-color); }
+        .product-img-box img { width: 100%; height: 100%; object-fit: cover; }
+        
+        .order-info { padding: 25px; }
+        .info-row { margin-bottom: 16px; }
+        .info-row label { display: block; font-size: 11px; color: var(--text-muted); text-transform: uppercase; font-weight: 600; margin-bottom: 4px; }
+        .info-row p { font-size: 14px; color: var(--text-main); font-weight: 500; }
+        .address-text { background-color: var(--bg-color); padding: 12px; border-radius: 8px; border: 1px solid var(--border-color); line-height: 1.5; }
 
-        .product-img-box {
-            width: 100%;
-            height: 230px;
-            background-color: #f1f5f9;
-            border-bottom: 1px solid var(--border-color);
-        }
+        /* ক্যান্সেল বাটন */
+        .cancel-btn { width: 100%; background-color: var(--danger-color); color: white; border: none; padding: 12px; border-radius: 8px; font-weight: 600; font-size: 14px; cursor: pointer; transition: background 0.2s; margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .cancel-btn:hover { background-color: #dc2626; }
 
-        .product-img-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        /* বার্তা নেই বক্স */
+        .no-message-box { text-align: center; margin-top: 100px; display: none; }
+        .no-message-box i { font-size: 60px; color: #cbd5e1; margin-bottom: 15px; }
+        .no-message-box h3 { font-size: 18px; color: var(--text-main); font-weight: 600; }
 
-        .order-info {
-            padding: 25px;
-        }
-
-        .info-row {
-            margin-bottom: 16px;
-        }
-
-        .info-row label {
-            display: block;
-            font-size: 11px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .info-row p {
-            font-size: 14px;
-            color: var(--text-main);
-            font-weight: 500;
-        }
-
-        .address-text {
-            background-color: var(--bg-color);
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            line-height: 1.5;
-        }
-
-        /* বাটন স্টাইল */
-        .cancel-btn {
-            width: 100%;
-            background-color: var(--danger-color);
-            color: white;
-            border: none;
-            padding: 12px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            transition: background 0.2s;
-            margin-top: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .cancel-btn:hover {
-            background-color: #dc2626;
-        }
-
-        /* বার্তা নেই মেসেজ স্টাইল */
-        .no-message-box {
-            text-align: center;
-            margin-top: 100px;
-            display: none; /* জাভাস্ক্রিপ্ট দিয়ে কন্ট্রোল হবে */
-        }
-
-        .no-message-box i {
-            font-size: 60px;
-            color: #cbd5e1;
-            margin-bottom: 15px;
-        }
-
-        .no-message-box h3 {
-            font-size: 18px;
-            color: var(--text-main);
-            font-weight: 600;
-        }
-
-        /* Responsive */
         @media (max-width: 768px) {
             .sidebar { width: 70px; padding: 15px 5px; align-items: center; }
             .logo span, .nav-item span { display: none; }
-            .inbox-container { padding: 15px; }
         }
     </style>
 </head>
@@ -244,7 +89,7 @@
             
             <div class="order-card" id="orderCard">
                 <div class="product-img-box">
-                    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80" alt="Product">
+                    <img id="productImg" src="" alt="Product">
                 </div>
                 <div class="order-info">
                     <div class="info-row">
@@ -285,51 +130,47 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            // ডামি কাস্টমার অর্ডার ডাটা (এখানে ডাটা থাকলে কার্ড দেখাবে, ফাকা বা null থাকলে 'বার্তা নেই' দেখাবে)
-            // পরীক্ষা করার জন্য নিচের ডাটাগুলো পরিবর্তন করে দেখতে পারেন
-            let currentOrder = {
-                id: "#ORD-99821",
-                name: "Niloy Rahman",
-                phone: "01712-XXXXXX",
-                product: "1x Premium Smart Watch (Black Edition)",
-                address: "বাগমারা, রাজশাহী, রাজশাহী বিভাগ, বাংলাদেশ"
-            };
-
-            // অথবা টেস্ট করার জন্য নিচের কমেন্টটি আনকমেন্ট করুন (অর্ডার না থাকার সিনারিও):
-            // currentOrder = null; 
-
             const orderCard = document.getElementById('orderCard');
             const noMessageBox = document.getElementById('noMessageBox');
+            const cancelOrderBtn = document.getElementById('cancelOrderBtn');
 
-            // প্রধান কন্ডিশনাল লজিক (অর্ডার চেক করা)
-            function checkInbox() {
-                if (currentOrder) {
-                    // ১. অর্ডার থাকলে ডাটাগুলো বসিয়ে কার্ডটি শো করা হবে
+            // লাইভ রেন্ডার লজিক (index.html থেকে আসা ডাটা রিড করা)
+            function checkLiveInbox() {
+                const savedOrder = localStorage.getItem('userOrder');
+
+                if (savedOrder) {
+                    const currentOrder = JSON.parse(savedOrder);
+
+                    // ডাইনামিকালি ফর্ম থেকে আসা ডাটা এবং ছবি কার্ডে সেট করা হচ্ছে
+                    document.getElementById('productImg').src = currentOrder.productImg;
                     document.getElementById('orderId').textContent = currentOrder.id;
                     document.getElementById('customerName').textContent = currentOrder.name;
                     document.getElementById('customerPhone').textContent = currentOrder.phone;
-                    document.getElementById('productDetails').textContent = currentOrder.product;
+                    document.getElementById('productDetails').textContent = currentOrder.productTitle;
                     document.getElementById('deliveryAddress').textContent = currentOrder.address;
 
                     orderCard.style.display = 'block';
                     noMessageBox.style.display = 'none';
                 } else {
-                    // ২. অর্ডার না থাকলে 'আপনার কোন বার্তা নেই' মেসেজটি শো করবে
+                    // কোনো ডাটা না থাকলে আপনার কথামতো এই মেসেজ দেখাবে
                     orderCard.style.display = 'none';
                     noMessageBox.style.display = 'block';
                 }
             }
 
-            // শুরুতে ইনবক্স চেক রান করা
-            checkInbox();
+            // শুরুতে ডাটা চেক করা
+            checkLiveInbox();
 
-            // 'অর্ডার ক্যান্সেল করুন' বাটনে ক্লিক করলে কি হবে তার লজিক
-            document.getElementById('cancelOrderBtn').addEventListener('click', () => {
+            // প্রতি সেকেন্ডে মেমোরি চেক করা (যাতে অন্য ট্যাবে অর্ডার করলে এই ট্যাবে অটো আপডেট হয়)
+            setInterval(checkLiveInbox, 1000);
+
+            // অর্ডার ক্যান্সেল লজিক
+            cancelOrderBtn.addEventListener('click', () => {
                 let confirmCancel = confirm("আপনি কি নিশ্চিত যে এই অর্ডারটি ক্যান্সেল করতে চান?");
                 if (confirmCancel) {
+                    localStorage.removeItem('userOrder'); // মেমোরি খালি করা হলো
                     alert("অর্ডারটি সফলভাবে ক্যান্সেল করা হয়েছে!");
-                    currentOrder = null; // ডাটা ফাকা করে দেওয়া হলো
-                    checkInbox(); // ইনবক্স আবার রিফ্রেশ করা হলো যাতে 'বার্তা নেই' লেখা আসে
+                    checkLiveInbox();
                 }
             });
         });
