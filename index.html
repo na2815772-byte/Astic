@@ -112,12 +112,6 @@
         .old-price { text-decoration: line-through; color: red; margin-right: 10px; font-size: 14px; }
         .order-btn { background-color: blue; color: white; border: none; padding: 10px; cursor: pointer; width: 100%; border-radius: 3px; margin-top: 10px; font-weight: bold; }
 
-        /* বটম নেভিগেশন বার */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: #ffffff; display: flex; justify-content: space-around; align-items: center; padding: 10px 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 1000; box-sizing: border-box; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: #555; text-decoration: none; font-size: 12px; cursor: pointer; background: none; border: none; font-family: inherit; }
-        .nav-item:hover, .nav-item.active { color: blue; }
-        .nav-icon { font-size: 20px; margin-bottom: 2px; }
-
         /* ইউজার প্রোফাইল কার্ড স্টাইল */
         .user-profile-card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 450px; margin: 20px auto; display: none; text-align: left; }
         .profile-header { text-align: center; margin-bottom: 15px; }
@@ -144,6 +138,12 @@
         .payment-input-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 15px; outline: none; }
         .next-btn { background: green; color: white; border: none; padding: 10px 20px; border-radius: 5px; width: 100%; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 15px; }
         .back-btn { background: #777; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; margin-bottom: 15px; }
+
+        /* বটম নেভিগেশন বার */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: #ffffff; display: flex; justify-content: space-around; align-items: center; padding: 10px 0; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); z-index: 1000; box-sizing: border-box; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #555; text-decoration: none; font-size: 12px; cursor: pointer; background: none; border: none; font-family: inherit; }
+        .nav-item:hover, .nav-item.active { color: blue; }
+        .nav-icon { font-size: 20px; margin-bottom: 2px; }
 
         /* অ্যাডমিন লগইন মডাল স্টাইল */
         .admin-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 9999; }
@@ -407,13 +407,12 @@
         // ==========================================
 
         function checkLoginStatus() {
-            // ব্রাউজার মেমোরি থেকে চেক করবে ইউজার আসলেই লগইনড কিনা
             const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-            const username = localStorage.getItem('loggedInUser') || 'নিলয়'; 
+            const userEmail = localStorage.getItem('loggedInUser') || 'ইউজার'; 
             const userBalance = localStorage.getItem('userBalance') || '০.০০';
             
             if (isLoggedIn) {
-                document.getElementById('profileWelcome').innerHTML = `স্বাগতম আপনাকে, ${username}!`;
+                document.getElementById('profileWelcome').innerHTML = `স্বাগতম আপনাকে!<br><span style="font-size:14px;color:#555;font-weight:normal;">${userEmail}</span>`;
                 document.getElementById('userBalance').innerText = userBalance;
             }
             return isLoggedIn;
@@ -427,12 +426,11 @@
             const loggedIn = checkLoginStatus();
             
             if (loggedIn) {
-                // ইউজার লগইন করা থাকলে পেমেন্ট ও প্রোফাইল পেজ দেখাবে
                 hideAllViews();
                 document.getElementById('userProfileCard').style.display = 'block';
             } else {
-                // ইউজার প্রথমবার আসলে বা লগআউট থাকলে সরাসরি register.html পেজে পাঠাবে
-                window.location.href = 'register.html';
+                // [সংশোধন]: আসল মেমোরি ফাকা থাকলে সরাসরি লগইন/রেজিস্ট্রি ফাইলে পাঠিয়ে দিবে
+                window.location.href = 'login.html';
             }
         }
 
@@ -512,12 +510,12 @@
         }
 
         function handleLogout() {
-            // সমস্ত লগইন সেশন ডেটা মুছে ফেলা হচ্ছে 
+            // [সংশোধন]: সেশন ডাটা রিমুভ করে একদম ফ্রেশ লকআউট করা হচ্ছে
             localStorage.removeItem('isLoggedIn');
             localStorage.removeItem('loggedInUser');
             localStorage.removeItem('userBalance');
             alert('আপনার লগআউট সফল হয়েছে!');
-            showHomeView(); // লগআউট শেষে হোম পেজে নিয়ে যাবে
+            showHomeView(); 
         }
 
         renderProducts();
