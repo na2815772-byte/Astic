@@ -1,4 +1,4 @@
-// ১. আপনার আগের প্রোডাক্ট লিস্ট
+// ১. আপনার প্রোডাক্ট লিস্ট
 let products = [
     { name: "টি-শার্ট", price: 400, oldPrice: "৫০০ টাকা", category: "tshirt" },
     { name: "ঘড়ি", price: 1500, oldPrice: "", category: "watch" }
@@ -7,7 +7,6 @@ let products = [
 let cart = [];
 
 // ফেইক অ্যাডমিন লগইন চেক (পরীক্ষা করার জন্য এটিকে true করে দেখতে পারেন)
-// আপনার আসল লগইন লজিক যদি localStorage ব্যবহার করে, তবে নিচে সেটি বসিয়ে দেবেন।
 let isAdminLoggedIn = true; 
 
 // ২. প্রোডাক্ট রেন্ডার করার মেইন ফাংশন
@@ -36,16 +35,13 @@ function renderProducts() {
         if (isAdminLoggedIn) {
             let pressTimer;
 
-            // মাউস বা টাচ চেপে ধরলে টাইমার শুরু হবে (১ সেকেন্ড বা ১০০০ মিলিসেকেন্ড)
             const startPress = () => {
                 pressTimer = window.setTimeout(() => {
-                    // ১ সেকেন্ড পার হলে ডিলিট বাটনটি দৃশ্যমান হবে
                     const deleteBtn = card.querySelector('.delete-btn');
                     if (deleteBtn) deleteBtn.style.display = 'block';
                 }, 1000); 
             };
 
-            // মাউস বা টাচ ছেড়ে দিলে বা সরিয়ে নিলে টাইমার বন্ধ হয়ে যাবে
             const cancelPress = () => {
                 clearTimeout(pressTimer);
             };
@@ -68,15 +64,16 @@ function renderProducts() {
 // ৪. প্রোডাক্ট ডিলিট করার ফাংশন
 function deleteProduct(index) {
     if (confirm("আপনি কি নিশ্চিতভাবে এই প্রোডাক্টটি ডিলিট করতে চান?")) {
-        products.splice(index, 1); // অ্যারে থেকে প্রোডাক্টটি বাদ দেওয়া হলো
-        renderProducts(); // স্ক্রিনটি নতুন করে আপডেট করা হলো
+        products.splice(index, 1); 
+        renderProducts(); 
     }
 }
 
-// ৫. কার্ট এবং অন্যান্য আগের ফাংশনসমূহ (অপরিবর্তিত)
+// ৫. কার্ট ফাংশনসমূহ
 function addToCart(name, price) {
     cart.push({ name, price });
     alert(name + " কার্টে যোগ করা হয়েছে!");
+    displayCart(); 
 }
 
 function displayCart() {
@@ -101,14 +98,19 @@ function displayCart() {
     totalContainer.innerText = total + " টাকা";
 }
 
+// ৬. চেকআউট ফাংশন (যা ইউজারকে সরাসরি আপনার নতুন checkout.html পেজে পাঠাবে)
 function checkout() {
     if (cart.length === 0) {
-        alert("আপনার কার্ট খালি!");
+        alert("আপনার কার্ট খালি! দয়া করে প্রথমে প্রোডাক্ট কার্টে যোগ করুন।");
         return;
     }
-    alert("আপনার অর্ডারটি সফলভাবে সম্পন্ন হয়েছে! মোট বিল: " + document.getElementById('totalPrice').innerText);
-    cart = [];
-    displayCart();
+    
+    // কার্টের মোট হিসাবটি মনে রাখার জন্য (যদি checkout.html পেজে দেখাতে চান)
+    const totalBill = document.getElementById('totalPrice') ? document.getElementById('totalPrice').innerText : "0 টাকা";
+    localStorage.setItem('orderTotal', totalBill);
+    
+    // ইউজারকে সরাসরি আপনার তৈরি করা পেমেন্ট ও ফ্রি অর্ডার ফরমে (checkout.html) নিয়ে যাওয়া হবে
+    window.location.href = "checkout.html";
 }
 
 // অ্যাপ রান করার জন্য প্রথম কল
