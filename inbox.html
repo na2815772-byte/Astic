@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inbox - Email Dashboard</title>
+    <title>Order Inbox - Dashboard</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
         :root {
             --primary-color: #3b82f6;
+            --danger-color: #ef4444;
             --bg-color: #f8fafc;
             --sidebar-color: #ffffff;
             --text-main: #1e293b;
             --text-muted: #64748b;
             --border-color: #e2e8f0;
-            --hover-color: #f1f5f9;
-            --unread-bg: #eff6ff;
+            --card-bg: #ffffff;
         }
 
         * {
@@ -54,28 +54,6 @@
             gap: 10px;
         }
 
-        .compose-btn {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 14px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.2);
-            transition: background 0.2s;
-            margin-bottom: 24px;
-        }
-
-        .compose-btn:hover {
-            background-color: #2563eb;
-        }
-
         .nav-menu {
             list-style: none;
             display: flex;
@@ -86,34 +64,19 @@
         .nav-item a {
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            padding: 10px 12px;
+            padding: 12px;
             color: var(--text-muted);
             text-decoration: none;
             border-radius: 6px;
             font-weight: 500;
             font-size: 14px;
             transition: all 0.2s;
-        }
-
-        .nav-item.active a, .nav-item a:hover {
-            background-color: var(--hover-color);
-            color: var(--primary-color);
-        }
-
-        .nav-item-left {
-            display: flex;
-            align-items: center;
             gap: 12px;
         }
 
-        .badge {
-            background-color: #dbeafe;
+        .nav-item.active a {
+            background-color: var(--bg-color);
             color: var(--primary-color);
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 600;
         }
 
         /* Main Content Area */
@@ -121,12 +84,12 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            background-color: #ffffff;
         }
 
-        /* Top Header */
+        /* Header */
         .header {
             height: 70px;
+            background-color: #ffffff;
             border-bottom: 1px solid var(--border-color);
             display: flex;
             align-items: center;
@@ -134,169 +97,124 @@
             padding: 0 30px;
         }
 
-        .search-bar {
-            position: relative;
-            width: 400px;
+        .header h2 {
+            font-size: 18px;
+            font-weight: 600;
         }
 
-        .search-bar input {
-            width: 100%;
-            padding: 10px 16px 10px 40px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            background-color: var(--bg-color);
-            font-size: 14px;
-            outline: none;
-            transition: border 0.2s;
-        }
-
-        .search-bar input:focus {
-            border-color: var(--primary-color);
-        }
-
-        .search-bar i {
-            position: absolute;
-            left: 14px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: var(--text-muted);
-        }
-
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .user-profile img {
-            width: 38px;
-            height: 38px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        /* Email List Actions */
-        .actions-bar {
-            padding: 15px 30px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            color: var(--text-muted);
-            font-size: 14px;
-        }
-
-        .action-icon {
-            cursor: pointer;
-            padding: 6px;
-            border-radius: 4px;
-            transition: background 0.2s;
-        }
-
-        .action-icon:hover {
-            background-color: var(--hover-color);
-            color: var(--text-main);
-        }
-
-        /* Email List Container */
-        .email-list {
+        /* Content Container */
+        .inbox-container {
             flex: 1;
+            padding: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
             overflow-y: auto;
         }
 
-        .email-item {
-            display: flex;
-            align-items: center;
-            padding: 14px 30px;
+        /* অর্ডার কার্ড স্টাইল */
+        .order-card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            display: none; /* জাভাস্ক্রিপ্ট দিয়ে কন্ট্রোল হবে */
+        }
+
+        .product-img-box {
+            width: 100%;
+            height: 230px;
+            background-color: #f1f5f9;
             border-bottom: 1px solid var(--border-color);
+        }
+
+        .product-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .order-info {
+            padding: 25px;
+        }
+
+        .info-row {
+            margin-bottom: 16px;
+        }
+
+        .info-row label {
+            display: block;
+            font-size: 11px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .info-row p {
+            font-size: 14px;
+            color: var(--text-main);
+            font-weight: 500;
+        }
+
+        .address-text {
+            background-color: var(--bg-color);
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            line-height: 1.5;
+        }
+
+        /* বাটন স্টাইল */
+        .cancel-btn {
+            width: 100%;
+            background-color: var(--danger-color);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 14px;
             cursor: pointer;
             transition: background 0.2s;
-            position: relative;
-        }
-
-        .email-item:hover {
-            background-color: var(--hover-color);
-            box-shadow: inset 3px 0 0 0 var(--primary-color);
-        }
-
-        .email-item.unread {
-            background-color: var(--unread-bg);
-        }
-
-        .email-item.unread .sender, .email-item.unread .subject {
-            font-weight: 600;
-            color: #000000;
-        }
-
-        .email-checkbox {
-            margin-right: 15px;
-            cursor: pointer;
-        }
-
-        .star-icon {
-            margin-right: 20px;
-            color: #cbd5e1;
-            cursor: pointer;
-            transition: color 0.2s;
-        }
-
-        .star-icon.starred, .star-icon:hover {
-            color: #f59e0b;
-        }
-
-        .sender {
-            width: 200px;
-            font-size: 14px;
-            color: var(--text-main);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .email-content {
-            flex: 1;
+            margin-top: 15px;
             display: flex;
-            align-items: baseline;
-            gap: 10px;
-            padding-right: 20px;
-            overflow: hidden;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
-        .subject {
-            font-size: 14px;
+        .cancel-btn:hover {
+            background-color: #dc2626;
+        }
+
+        /* বার্তা নেই মেসেজ স্টাইল */
+        .no-message-box {
+            text-align: center;
+            margin-top: 100px;
+            display: none; /* জাভাস্ক্রিপ্ট দিয়ে কন্ট্রোল হবে */
+        }
+
+        .no-message-box i {
+            font-size: 60px;
+            color: #cbd5e1;
+            margin-bottom: 15px;
+        }
+
+        .no-message-box h3 {
+            font-size: 18px;
             color: var(--text-main);
-            white-space: nowrap;
+            font-weight: 600;
         }
 
-        .snippet {
-            font-size: 14px;
-            color: var(--text-muted);
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .time {
-            font-size: 12px;
-            color: var(--text-muted);
-            font-weight: 500;
-            width: 80px;
-            text-align: right;
-        }
-
-        /* Responsive Design */
+        /* Responsive */
         @media (max-width: 768px) {
-            .sidebar {
-                width: 70px;
-                padding: 15px 5px;
-                align-items: center;
-            }
-            .logo span, .compose-btn span, .nav-item span, .badge, .search-bar {
-                display: none;
-            }
-            .sender {
-                width: 120px;
-            }
+            .sidebar { width: 70px; padding: 15px 5px; align-items: center; }
+            .logo span, .nav-item span { display: none; }
+            .inbox-container { padding: 15px; }
         }
     </style>
 </head>
@@ -304,55 +222,14 @@
 
     <aside class="sidebar">
         <div class="logo">
-            <i class="fa-solid fa-envelope-open-text"></i>
-            <span>MailBox</span>
+            <i class="fa-solid fa-boxes-stacked"></i>
+            <span>OrderInbox</span>
         </div>
-        
-        <button class="compose-btn">
-            <i class="fa-solid fa-plus"></i>
-            <span>Compose</span>
-        </button>
-
         <ul class="nav-menu">
             <li class="nav-item active">
                 <a href="#">
-                    <div class="nav-item-left">
-                        <i class="fa-solid fa-inbox"></i>
-                        <span>Inbox</span>
-                    </div>
-                    <span class="badge">4</span>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#">
-                    <div class="nav-item-left">
-                        <i class="fa-regular fa-star"></i>
-                        <span>Starred</span>
-                    </div>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#">
-                    <div class="nav-item-left">
-                        <i class="fa-regular fa-paper-plane"></i>
-                        <span>Sent</span>
-                    </div>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#">
-                    <div class="nav-item-left">
-                        <i class="fa-regular fa-file"></i>
-                        <span>Drafts</span>
-                    </div>
-                </a>
-            </li>
-            <li class="nav-item">
-                <a href="#">
-                    <div class="nav-item-left">
-                        <i class="fa-regular fa-trash-can"></i>
-                        <span>Trash</span>
-                    </div>
+                    <i class="fa-solid fa-inbox"></i>
+                    <span>ইনবক্স</span>
                 </a>
             </li>
         </ul>
@@ -360,70 +237,102 @@
 
     <main class="main-content">
         <header class="header">
-            <div class="search-bar">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" placeholder="Search mail...">
-            </div>
-            <div class="user-profile">
-                <i class="fa-regular fa-bell action-icon" style="font-size: 20px;"></i>
-                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" alt="User Profile">
-            </div>
+            <h2>ইনবক্স ড্যাশবোর্ড</h2>
         </header>
 
-        <div class="actions-bar">
-            <input type="checkbox" class="email-checkbox">
-            <i class="fa-solid fa-rotate-right action-icon" title="Refresh"></i>
-            <i class="fa-solid fa-ellipsis-vertical action-icon" title="More"></i>
-        </div>
-
-        <div class="email-list">
+        <div class="inbox-container">
             
-            <div class="email-item unread">
-                <input type="checkbox" class="email-checkbox">
-                <i class="fa-regular fa-star star-icon starred"></i>
-                <div class="sender">Google Security</div>
-                <div class="email-content">
-                    <span class="subject">New sign-in from Chrome</span>
-                    <span class="snippet">- We noticed a new login session on your account from a Windows device...</span>
+            <div class="order-card" id="orderCard">
+                <div class="product-img-box">
+                    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80" alt="Product">
                 </div>
-                <div class="time">10:42 AM</div>
+                <div class="order-info">
+                    <div class="info-row">
+                        <label>অর্ডার আইডি (Order ID)</label>
+                        <p id="orderId" style="color: var(--primary-color); font-weight: 700;"></p>
+                    </div>
+                    <div class="info-row">
+                        <label>কাস্টমারের নাম</label>
+                        <p id="customerName"></p>
+                    </div>
+                    <div class="info-row">
+                        <label>মোবাইল নম্বর</label>
+                        <p id="customerPhone"></p>
+                    </div>
+                    <div class="info-row">
+                        <label>প্রোডাক্টের বিবরণ</label>
+                        <p id="productDetails"></p>
+                    </div>
+                    <div class="info-row">
+                        <label>ডেলিভারি ঠিকানা (Address)</label>
+                        <p id="deliveryAddress" class="address-text"></p>
+                    </div>
+                    
+                    <button class="cancel-btn" id="cancelOrderBtn">
+                        <i class="fa-regular fa-trash-can"></i>
+                        অর্ডার ক্যান্সেল করুন
+                    </button>
+                </div>
             </div>
 
-            <div class="email-item unread">
-                <input type="checkbox" class="email-checkbox">
-                <i class="fa-regular fa-star star-icon"></i>
-                <div class="sender">GitHub</div>
-                <div class="email-content">
-                    <span class="subject">Successful deployment</span>
-                    <span class="snippet">- Your project "portfolio-website" has been successfully deployed to production...</span>
-                </div>
-                <div class="time">9:15 AM</div>
-            </div>
-
-            <div class="email-item">
-                <input type="checkbox" class="email-checkbox">
-                <i class="fa-regular fa-star star-icon"></i>
-                <div class="sender">Figma Team</div>
-                <div class="email-content">
-                    <span class="subject">What's new in UI Design</span>
-                    <span class="snippet">- Discover the latest features, auto-layout updates, and community templates...</span>
-                </div>
-                <div class="time">Yesterday</div>
-            </div>
-
-            <div class="email-item">
-                <input type="checkbox" class="email-checkbox">
-                <i class="fa-regular fa-star star-icon"></i>
-                <div class="sender">LinkedIn Jobs</div>
-                <div class="email-content">
-                    <span class="subject">30+ new jobs for Frontend Developer</span>
-                    <span class="snippet">- Based on your profile and search history, here are the new vacancies today...</span>
-                </div>
-                <div class="time">24 Jun</div>
+            <div class="no-message-box" id="noMessageBox">
+                <i class="fa-regular fa-envelope-open"></i>
+                <h3>আপনার কোন বার্তা নেই</h3>
             </div>
 
         </div>
     </main>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // ডামি কাস্টমার অর্ডার ডাটা (এখানে ডাটা থাকলে কার্ড দেখাবে, ফাকা বা null থাকলে 'বার্তা নেই' দেখাবে)
+            // পরীক্ষা করার জন্য নিচের ডাটাগুলো পরিবর্তন করে দেখতে পারেন
+            let currentOrder = {
+                id: "#ORD-99821",
+                name: "Niloy Rahman",
+                phone: "01712-XXXXXX",
+                product: "1x Premium Smart Watch (Black Edition)",
+                address: "বাগমারা, রাজশাহী, রাজশাহী বিভাগ, বাংলাদেশ"
+            };
+
+            // অথবা টেস্ট করার জন্য নিচের কমেন্টটি আনকমেন্ট করুন (অর্ডার না থাকার সিনারিও):
+            // currentOrder = null; 
+
+            const orderCard = document.getElementById('orderCard');
+            const noMessageBox = document.getElementById('noMessageBox');
+
+            // প্রধান কন্ডিশনাল লজিক (অর্ডার চেক করা)
+            function checkInbox() {
+                if (currentOrder) {
+                    // ১. অর্ডার থাকলে ডাটাগুলো বসিয়ে কার্ডটি শো করা হবে
+                    document.getElementById('orderId').textContent = currentOrder.id;
+                    document.getElementById('customerName').textContent = currentOrder.name;
+                    document.getElementById('customerPhone').textContent = currentOrder.phone;
+                    document.getElementById('productDetails').textContent = currentOrder.product;
+                    document.getElementById('deliveryAddress').textContent = currentOrder.address;
+
+                    orderCard.style.display = 'block';
+                    noMessageBox.style.display = 'none';
+                } else {
+                    // ২. অর্ডার না থাকলে 'আপনার কোন বার্তা নেই' মেসেজটি শো করবে
+                    orderCard.style.display = 'none';
+                    noMessageBox.style.display = 'block';
+                }
+            }
+
+            // শুরুতে ইনবক্স চেক রান করা
+            checkInbox();
+
+            // 'অর্ডার ক্যান্সেল করুন' বাটনে ক্লিক করলে কি হবে তার লজিক
+            document.getElementById('cancelOrderBtn').addEventListener('click', () => {
+                let confirmCancel = confirm("আপনি কি নিশ্চিত যে এই অর্ডারটি ক্যান্সেল করতে চান?");
+                if (confirmCancel) {
+                    alert("অর্ডারটি সফলভাবে ক্যান্সেল করা হয়েছে!");
+                    currentOrder = null; // ডাটা ফাকা করে দেওয়া হলো
+                    checkInbox(); // ইনবক্স আবার রিফ্রেশ করা হলো যাতে 'বার্তা নেই' লেখা আসে
+                }
+            });
+        });
+    </script>
 </body>
 </html>
