@@ -125,7 +125,7 @@
             position: relative; 
             cursor: pointer; 
             transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-            user-select: none; /* লং প্রেস ইম্প্রুভমেন্টের জন্য */
+            user-select: none;
             -webkit-user-select: none;
         }
         
@@ -485,7 +485,7 @@
             <span class="nav-icon">🛍️</span>
             <span>অর্ডার</span>
         </button>
-        <button class="nav-item" onclick="showSection('ইনবক্স')">
+        <button class="nav-item" onclick="window.location.href = 'inbox.html';">
             <span class="nav-icon">💬</span>
             <span>ইনবক্স</span>
         </button>
@@ -512,7 +512,6 @@
     </div>
 
     <script>
-        // গলোবাল ভেরিয়েবল হিসেবে কারেন্ট সিলেক্টেড প্রোডাক্ট রাখার জন্য
         let currentSelectedProduct = null;
 
         function toggleSidebar() {
@@ -538,14 +537,13 @@
                 alert('অ্যাডমিন লগইন সফল!');
                 closeAdminModal();
                 document.getElementById('mainAdminPanel').style.display = 'block'; 
-                renderProducts(); // লগইন সফল হলে ডিলিট অপশন ইভেন্ট সক্রিয় করতে রেন্ডার করা হলো
+                renderProducts(); 
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {
                 alert('দুঃখিত! ভুল পাসওয়ার্ড।');
             }
         }
 
-        // অ্যাডমিন প্যানেল ওপেন বা দৃশ্যমান আছে কি না তা যাচাই করার সেফ লজিক ফাংশন
         function isAdminPanelVisible() {
             const adminPanel = document.getElementById('mainAdminPanel');
             return adminPanel && adminPanel.style.display === 'block';
@@ -569,23 +567,18 @@
                 const card = document.createElement('div');
                 card.className = `product-card ${p.category}`;
                 
-                // স্বাভাবিক ক্লিক ইভেন্ট (যদি ডিলিট মোড অন না থাকে এবং প্যানেল ওপেন না থাকে)
                 card.addEventListener('click', function(event) {
                     if (event.target.className !== 'order-btn' && !event.target.classList.contains('card-delete-icon')) {
                         openDarazModal(p, event);
                     }
                 });
                 
-                // ==========================================
-                // নতুন লজিক: শুধুমাত্র অ্যাডমিন লগইন থাকলেই লং প্রেস কাজ করবে
-                // ==========================================
                 let pressTimer;
 
                 const startPress = (e) => {
-                    if (!isAdminPanelVisible()) return; // অ্যাডমিন লগইন না থাকলে এখানেই ব্রেক করবে
-                    
+                    if (!isAdminPanelVisible()) return; 
                     pressTimer = window.setTimeout(() => {
-                        toggleCardDelete(card, e); // ১ সেকেন্ড ধরে রাখলে ডিলিট আইকন শো করবে
+                        toggleCardDelete(card, e); 
                     }, 1000); 
                 };
 
@@ -593,16 +586,13 @@
                     clearTimeout(pressTimer);
                 };
 
-                // ডেস্কটপ মাউস ইভেন্টসমূহ
                 card.addEventListener('mousedown', startPress);
                 card.addEventListener('mouseup', cancelPress);
                 card.addEventListener('mouseleave', cancelPress);
 
-                // মোবাইল টাচ স্ক্রিন ইভেন্টসমূহ
                 card.addEventListener('touchstart', startPress);
                 card.addEventListener('touchend', cancelPress);
                 card.addEventListener('touchcancel', cancelPress);
-                // ==========================================
 
                 const imgTag = p.image ? `<img src="${p.image}" class="product-img" alt="${p.name}">` : `<div class="product-img" style="display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:13px;">ছবি নেই</div>`;
                 
@@ -614,7 +604,6 @@
                     <button class="order-btn">অর্ডার করুন</button>
                 `;
 
-                // ডিলিট এবং অর্ডার বাটনে আলাদা লিসেনার অ্যাড করা
                 card.querySelector('.card-delete-icon').addEventListener('click', function(event) {
                     triggerCrashDelete(this, event, index);
                 });
@@ -764,6 +753,9 @@
             document.getElementById('darazCheckoutForm').style.display = 'flex';
         }
 
+        // =======================================================
+        // এখানে কাস্টমার ও প্রোডাক্টের বিবরণ localStorage-এ সেভ করার লজিক যুক্ত করা হয়েছে
+        // =======================================================
         function submitDarazOrder() {
             const name = document.getElementById('custName').value.trim();
             const phone = document.getElementById('custPhone').value.trim();
@@ -773,6 +765,17 @@
             if (!name || !phone || !address || !city) {
                 alert("দয়া করে নাম, ফোন নম্বর, ঠিকানা এবং শহরের ঘরগুলো সঠিকভাবে পূরণ করুন!");
                 return;
+            }
+
+            // ডাইনামিক ইনবক্সের জন্য ডেটা সেভ
+            localStorage.setItem("order_name", name);
+            localStorage.setItem("order_phone", phone);
+            localStorage.setItem("order_address", address + ", " + city);
+            
+            if (currentSelectedProduct) {
+                localStorage.setItem("order_product_name", currentSelectedProduct.name);
+                localStorage.setItem("order_product_price", currentSelectedProduct.price);
+                localStorage.setItem("order_product_image", currentSelectedProduct.image || "");
             }
 
             closeDarazModal();
@@ -874,7 +877,7 @@
             const amount = document.getElementById('userAmountInput').value.trim();
             
             if(!trxId) {
-                alert("দয়া করে আপনার কাঙ্ক্ষিত ট্রানজেকশন আইডিটি বসান!");
+                alert("দয়া করে আপনার কাঙ্ক্ষিত ট্রানজেকশন আইডিটি বসան!");
                 return;
             }
             
