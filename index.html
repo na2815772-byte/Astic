@@ -127,7 +127,6 @@
             transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
         }
         
-        /* প্রিমিয়াম হোভার ও চারপাশের ভিজ্যুয়াল ইফেক্ট (ভবিষ্যতের সকল প্রোডাক্টের জন্য কার্যকর) */
         .product-card:hover { 
             transform: translateY(-6px); 
             border-color: rgba(59, 130, 246, 0.5);
@@ -218,7 +217,7 @@
         .next-btn { background: green; color: white; border: none; padding: 10px 20px; border-radius: 5px; width: 100%; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 15px; }
         .back-btn { background: #777; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; margin-bottom: 15px; }
 
-        /* প্রিমিয়াম বটম নেভিগেশন বার - ১ সারিতে ৪ বাটন ও আল্ট্রা মডার্ন লুক */
+        /* প্রিমিয়াম বটম নেভিগেশন বার */
         .bottom-nav { 
             position: fixed; 
             bottom: 0; 
@@ -262,26 +261,9 @@
             transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         
-        /* হোভার এবং অ্যাক্টিভ স্টেটের আকর্ষণীয় প্রিমিয়াম ইফেক্ট */
-        .nav-item:hover, .nav-item.active { 
-            color: #2563eb; 
-        }
-        
-        .nav-item:hover .nav-icon, .nav-item.active .nav-icon { 
-            transform: translateY(-4px) scale(1.1); 
-        }
-        
-        /* অ্যাক্টিভ ইন্ডিকেটর গ্লো ডট */
-        .nav-item.active::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            width: 5px;
-            height: 5px;
-            background-color: #2563eb;
-            border-radius: 50%;
-            box-shadow: 0 0 10px #2563eb;
-        }
+        .nav-item:hover, .nav-item.active { color: #2563eb; }
+        .nav-item:hover .nav-icon, .nav-item.active .nav-icon { transform: translateY(-4px) scale(1.1); }
+        .nav-item.active::after { content: ''; position: absolute; bottom: -4px; width: 5px; height: 5px; background-color: #2563eb; border-radius: 50%; box-shadow: 0 0 10px #2563eb; }
 
         /* অ্যাডমিন লগইন মডাল স্টাইল */
         .admin-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 9999; }
@@ -291,6 +273,43 @@
         .input-group { margin-bottom: 20px; text-align: left; }
         .input-group label { display: block; margin-bottom: 8px; color: #fff; font-size: 14px; }
         .input-group input { width: 100%; padding: 12px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.4); box-sizing: border-box; outline: none; font-size: 14px;}
+
+        /* ==========================================
+            ✨ আল্ট্রা-প্রিমিয়াম নিউ ডিজাইন ও ইফেক্টস ✨
+           ========================================== */
+        
+        /* প্রিমিয়াম ইন্টারঅ্যাক্টিভ মডাল (নিচ থেকে স্লাইড ও গ্লাস ফিল্ড) */
+        .daraz-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); justify-content: center; align-items: flex-end; z-index: 2000; }
+        .daraz-modal-content { background: rgba(255, 255, 255, 0.95); width: 100%; max-width: 500px; border-top-left-radius: 24px; border-top-right-radius: 24px; padding: 25px; box-sizing: border-box; animation: premiumSlideUp 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); max-height: 85vh; overflow-y: auto; box-shadow: 0 -10px 40px rgba(0,0,0,0.15); }
+        @keyframes premiumSlideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        
+        .daraz-product-info { display: flex; gap: 18px; margin-bottom: 20px; border-bottom: 1px solid rgba(226, 232, 240, 0.8); padding-bottom: 18px; }
+        .daraz-modal-img { width: 110px; height: 110px; object-fit: cover; border-radius: 14px; background: #f1f5f9; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+        .daraz-modal-details { display: flex; flex-direction: column; justify-content: center; }
+        .daraz-modal-details h2 { margin: 0 0 6px 0; font-size: 19px; color: #0f172a; font-weight: 700; }
+        .daraz-modal-price { font-size: 22px; color: #f57224; font-weight: bold; margin: 0; }
+        
+        .daraz-btn-group { display: flex; gap: 12px; margin-top: 15px; }
+        .daraz-add-cart { flex: 1; background: #ff9f43; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 15px; transition: all 0.3s; box-shadow: 0 4px 14px rgba(255, 159, 67, 0.3); }
+        .daraz-add-cart:hover { background: #ff8f23; transform: translateY(-2px); }
+        .daraz-buy-now { flex: 1; background: #f57224; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 15px; transition: all 0.3s; box-shadow: 0 4px 14px rgba(245, 114, 36, 0.3); }
+        .daraz-buy-now:hover { background: #e05e13; transform: translateY(-2px); }
+        
+        /* প্রিমিয়াম হাই-কোয়ালিটি ফর্ম */
+        .daraz-checkout-form { display: none; flex-direction: column; gap: 14px; margin-top: 10px; }
+        .daraz-checkout-form h3 { margin: 0 0 5px 0; color: #1e293b; font-size: 17px; font-weight: 700; border-bottom: 2px solid rgba(245, 114, 36, 0.1); padding-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .daraz-checkout-form input { width: 100%; padding: 13px 16px; border: 1px solid #cbd5e1; border-radius: 12px; box-sizing: border-box; font-size: 14px; outline: none; background: #f8fafc; transition: all 0.3s; }
+        .daraz-checkout-form input:focus { border-color: #f57224; background: #fff; box-shadow: 0 0 0 4px rgba(245, 114, 36, 0.15); }
+        .daraz-confirm-btn { background: linear-gradient(135deg, #f57224, #ff6b1a); color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 16px; margin-top: 10px; box-shadow: 0 6px 20px rgba(245, 114, 36, 0.4); transition: all 0.3s; }
+        .daraz-confirm-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(245, 114, 36, 0.5); }
+
+        /* আল্ট্রা প্রিমিয়াম সাকসেস পেজ ভিউ */
+        .order-success-view { display: none; text-align: center; padding: 50px 30px; background: linear-gradient(145deg, #ffffff, #f0fff4); border-radius: 24px; box-shadow: 0 20px 50px rgba(46, 213, 115, 0.15); max-width: 480px; margin: 40px auto; border: 1px solid rgba(46, 213, 115, 0.2); animation: scaleUpFx 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes scaleUpFx { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .success-icon { font-size: 70px; background: linear-gradient(135deg, #2ed573, #1dd1a1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; display: inline-block; animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popIn { from { transform: scale(0) rotate(-20deg); } to { transform: scale(1) rotate(0); } }
+        .success-title { color: #10b981; font-size: 24px; font-weight: 800; margin: 0 0 15px 0; }
+        .success-msg { font-size: 18px; font-weight: 700; color: #1e293b; line-height: 1.5; margin-bottom: 10px; padding: 0 10px; }
 
         @media (max-width: 480px) { .header-title { display: none; } }
     </style>
@@ -409,7 +428,7 @@
             <button class="back-btn" onclick="backToStep1()">⬅️ পিছনে যান</button>
             <h3 style="margin-top: 0; color: green;">🔒 ট্রানজেকশন ভেরিফিকেশন</h3>
             
-            <p style="font-size: 15px; font-weight: bold;">👉 আপনার কাঙ্ক্ষিত ট্রানজেকশনটি বসিয়ে ব্যালেন্স চেক করুন</p>
+            <p style="font-size: 15px; font-weight: bold;">👉 আপনার কাঙ্জ্জিত ট্রানজেকশনটি বসিয়ে ব্যালেন্স চেক করুন</p>
             
             <div class="payment-input-group" style="border: none; padding-top: 0;">
                 <label>Transaction ID (TrxID):</label>
@@ -418,9 +437,44 @@
             </div>
         </div>
 
+        <div class="order-success-view" id="orderSuccessView">
+            <div class="success-icon">✦ ✓ ✦</div>
+            <h2 class="success-title">অর্ডার সফল হয়েছে!</h2>
+            <p class="success-msg">আপনার প্রোডাক্টটি সফলভাবে নিশ্চিত হয়েছে, হ্যাঁ, আপনি তাড়াতাড়ি পেয়ে যাবেন।</p>
+            <p style="color: #64748b; font-size: 14px; margin-top: 15px;">এস্টিক শপ-এর সাথে থাকার জন্য আপনাকে অসংখ্য ধন্যবাদ।</p>
+            <button class="order-btn" style="background: linear-gradient(135deg, #2ed573, #1dd1a1); margin-top: 25px; font-size: 15px; padding: 12px; border-radius: 12px; box-shadow: 0 6px 15px rgba(46, 213, 115, 0.3);" onclick="showHomeView()">হোম পেজে ফিরে যান</button>
+        </div>
+
         <div id="mainHomeView">
             <h1 style="font-size: 22px; font-weight: 700; margin-bottom: 20px; color: #1e293b; padding-left: 5px;">আমাদের প্রোডাক্টগুলো</h1>
             <div class="product-grid" id="productGrid"></div>
+        </div>
+    </div>
+
+    <div class="daraz-modal" id="darazModal" onclick="closeDarazModal()">
+        <div class="daraz-modal-content" onclick="event.stopPropagation()">
+            <div class="daraz-product-info">
+                <img src="" id="darazModalImg" class="daraz-modal-img" alt="Product Image">
+                <div class="daraz-modal-details">
+                    <h2 id="darazModalName">প্রোডাক্টের নাম</h2>
+                    <p id="darazModalPrice" class="daraz-modal-price">০.০০ টাকা</p>
+                </div>
+            </div>
+
+            <div class="daraz-btn-group" id="darazInitialButtons">
+                <button class="daraz-add-cart" onclick="alert('প্রোডাক্টটি কার্টে যোগ করা হয়েছে!')">Add to Cart</button>
+                <button class="daraz-buy-now" onclick="showDarazCheckoutForm()">Buy Now</button>
+            </div>
+
+            <div class="daraz-checkout-form" id="darazCheckoutForm">
+                <h3>📍 ডেলিভারি ঠিকানা দিন (ক্যাশ অন ডেলিভারি)</h3>
+                <input type="text" id="custName" placeholder="আপনার সম্পূর্ণ নাম">
+                <input type="text" id="custPhone" placeholder="মোবাইল নম্বর">
+                <input type="text" id="custAddress" placeholder="গ্রাম / রাস্তা / থানা এবং বাড়ির ঠিকানা">
+                <input type="text" id="custCity" placeholder="শহর / জেলা">
+                <input type="text" id="custZip" placeholder="পোস্ট কোড">
+                <button class="daraz-confirm-btn" onclick="submitDarazOrder()">অর্ডার নিশ্চিত করুন ➔</button>
+            </div>
         </div>
     </div>
 
@@ -429,7 +483,7 @@
             <span class="nav-icon">🏠</span>
             <span>হোম</span>
         </button>
-        <button class="nav-item" onclick="showSection('অর্ডার')">
+        <button class="nav-item" onclick="handleOrderNavClick()">
             <span class="nav-icon">🛍️</span>
             <span>অর্ডার</span>
         </button>
@@ -506,7 +560,7 @@
             productsToRender.forEach((p, index) => {
                 const card = document.createElement('div');
                 card.className = `product-card ${p.category}`;
-                card.setAttribute('onclick', 'toggleCardDelete(this, event)');
+                card.setAttribute('onclick', 'openDarazModal(' + JSON.stringify(p).replace(/"/g, '&quot;') + ', event)');
                 
                 const imgTag = p.image ? `<img src="${p.image}" class="product-img" alt="${p.name}">` : `<div class="product-img" style="display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:13px;">ছবি নেই</div>`;
                 
@@ -515,7 +569,7 @@
                     <h3>${p.name}</h3>
                     ${imgTag}
                     <p style="margin: 5px 0;"><span class="price">${p.price}</span>${p.oldPrice ? ` <span class="old-price">${p.oldPrice}</span>` : ''}</p>
-                    <button class="order-btn" onclick="event.stopPropagation(); showSection('অর্ডার')">অর্ডার করুন</button>
+                    <button class="order-btn" onclick="openDarazModalDirectCheckout(${JSON.stringify(p).replace(/"/g, '&quot;')}, event)">অর্ডার করুন</button>
                 `;
                 grid.appendChild(card);
             });
@@ -600,6 +654,89 @@
         function showSection(section) { alert(section + " সেকশনটি পরবর্তীতে ডাইনামিক করা হবে।"); }
 
         // ==========================================
+        //      🔐 লগইন চেকিং ও প্রিমিয়াম অর্ডার লজিক
+        // ==========================================
+        
+        // গ্রাহক লগইন আছে কিনা চেক করার গ্লোবাল ফাংশন
+        function isUserLoggedIn() {
+            return localStorage.getItem('isLoggedIn') === 'true';
+        }
+
+        function openDarazModal(product, event) {
+            if (event.target.closest('.product-card') && event.target.closest('.product-card').classList.contains('active-delete') && event.target.className !== 'order-btn') {
+                return;
+            }
+
+            // 🛑 লজিক: লগইন না থাকলে নিবন্ধন করার নোটিশ দেখাবে
+            if (!isUserLoggedIn()) {
+                alert("প্রথমে নিবন্ধনটি সম্পূর্ণ করুন তারপর অর্ডার করুন।");
+                return;
+            }
+            
+            document.getElementById('darazModalImg').src = product.image || 'https://via.placeholder.com/200x150?text=No+Image';
+            document.getElementById('darazModalName').innerText = product.name;
+            document.getElementById('darazModalPrice').innerText = product.price;
+            
+            document.getElementById('darazInitialButtons').style.display = 'flex';
+            document.getElementById('darazCheckoutForm').style.display = 'none';
+            
+            document.getElementById('darazModal').style.display = 'flex';
+        }
+
+        function openDarazModalDirectCheckout(product, event) {
+            event.stopPropagation(); 
+            
+            // 🛑 লজিক: ডিরেক্ট বাটনে চাপ দিলেও লগইন চেক হবে
+            if (!isUserLoggedIn()) {
+                alert("প্রথমে নিবন্ধনটি সম্পূর্ণ করুন তারপর অর্ডার করুন।");
+                return;
+            }
+
+            openDarazModal(product, event);
+            showDarazCheckoutForm(); 
+        }
+
+        function handleOrderNavClick() {
+            if (!isUserLoggedIn()) {
+                alert("প্রথমে নিবন্ধনটি সম্পূর্ণ করুন তারপর অর্ডার করুন।");
+            } else {
+                showSection('অর্ডার');
+            }
+        }
+
+        function closeDarazModal() {
+            document.getElementById('darazModal').style.display = 'none';
+            document.getElementById('custName').value = '';
+            document.getElementById('custPhone').value = '';
+            document.getElementById('custAddress').value = '';
+            document.getElementById('custCity').value = '';
+            document.getElementById('custZip').value = '';
+        }
+
+        function showDarazCheckoutForm() {
+            document.getElementById('darazInitialButtons').style.display = 'none';
+            document.getElementById('darazCheckoutForm').style.display = 'flex';
+        }
+
+        function submitDarazOrder() {
+            const name = document.getElementById('custName').value.trim();
+            const phone = document.getElementById('custPhone').value.trim();
+            const address = document.getElementById('custAddress').value.trim();
+            const city = document.getElementById('custCity').value.trim();
+
+            if (!name || !phone || !address || !city) {
+                alert("দয়া করে নাম, ফোন নম্বর, ঠিকানা এবং শহরের ঘরগুলো সঠিকভাবে পূরণ করুন!");
+                return;
+            }
+
+            closeDarazModal();
+            hideAllViews();
+            // নেক্সট পেজে সম্পূর্ণ প্রিমিয়াম সাকসেস মেসেজ দেখাবে
+            document.getElementById('orderSuccessView').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // ==========================================
         //         পেমেন্ট ও প্রোফাইল লজিক 
         // ==========================================
 
@@ -626,6 +763,7 @@
                 hideAllViews();
                 document.getElementById('userProfileCard').style.display = 'block';
             } else {
+                // যদি অ্যাকাউন্ট পেজে যেতে চায় কিন্তু লগইন না থাকে, তবে লগইন পেজে রিডাইরেক্ট করবে
                 window.location.href = 'login.html';
             }
         }
@@ -646,6 +784,7 @@
             document.getElementById('mainHomeView').style.display = 'none';
             document.getElementById('paymentStepPage1').style.display = 'none';
             document.getElementById('paymentStepPage2').style.display = 'none';
+            document.getElementById('orderSuccessView').style.display = 'none';
         }
 
         function copyText(text) {
