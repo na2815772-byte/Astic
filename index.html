@@ -119,7 +119,7 @@
         .nav-icon { font-size: 20px; margin-bottom: 2px; }
 
         /* ইউজার প্রোফাইল কার্ড স্টাইল */
-        .user-profile-card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 450px; margin: 20px auto; text-align: center; display: none; text-align: left; }
+        .user-profile-card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 450px; margin: 20px auto; display: none; text-align: left; }
         .profile-header { text-align: center; margin-bottom: 15px; }
         .profile-header img { width: 80px; height: 80px; border-radius: 50%; border: 3px solid blue; }
         .balance-box { background: #e3f2fd; padding: 15px; border-radius: 8px; margin: 15px 0; font-size: 16px; font-weight: bold; text-align: center; }
@@ -403,12 +403,13 @@
         function showSection(section) { alert(section + " সেকশনটি পরবর্তীতে ডাইনামিক করা হবে।"); }
 
         // ==========================================
-        //         নতুন পেমেন্ট ও প্রোফাইল লজিক 
+        //         পেমেন্ট ও প্রোফাইল লজিক 
         // ==========================================
 
         function checkLoginStatus() {
+            // ব্রাউজার মেমোরি থেকে চেক করবে ইউজার আসলেই লগইনড কিনা
             const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-            const username = localStorage.getItem('loggedInUser') || 'নিলয়'; // টেস্ট ডিফল্ট নাম
+            const username = localStorage.getItem('loggedInUser') || 'নিলয়'; 
             const userBalance = localStorage.getItem('userBalance') || '০.০০';
             
             if (isLoggedIn) {
@@ -423,17 +424,14 @@
             document.getElementById('homeNavBtn').classList.remove('active');
             document.getElementById('accountNavBtn').classList.add('active');
 
-            // টেস্ট করার সুবিধার্থে প্রথমে কোনো অ্যাকাউন্ট না থাকলে লগইন ট্রু করে দেওয়া হলো
-            if(!localStorage.getItem('isLoggedIn')) {
-                localStorage.setItem('isLoggedIn', 'true');
-                localStorage.setItem('loggedInUser', 'Niloy');
-            }
-
             const loggedIn = checkLoginStatus();
+            
             if (loggedIn) {
+                // ইউজার লগইন করা থাকলে পেমেন্ট ও প্রোফাইল পেজ দেখাবে
                 hideAllViews();
                 document.getElementById('userProfileCard').style.display = 'block';
             } else {
+                // ইউজার প্রথমবার আসলে বা লগআউট থাকলে সরাসরি register.html পেজে পাঠাবে
                 window.location.href = 'register.html';
             }
         }
@@ -452,30 +450,22 @@
             document.getElementById('paymentStepPage2').style.display = 'none';
         }
 
-        // নাম্বার কপি করার ফাংশন
         function copyText(text) {
             navigator.clipboard.writeText(text).then(() => {
                 alert("নাম্বারটি কপি করা হয়েছে: " + text);
             });
         }
 
-        // ট্যাব বাটন ওপেন/ক্লোজ
         function togglePaymentTab() {
             const selectionDiv = document.getElementById('paymentSelection');
-            if(selectionDiv.style.display === 'block') {
-                selectionDiv.style.display = 'none';
-            } else {
-                selectionDiv.style.display = 'block';
-            }
+            selectionDiv.style.display = (selectionDiv.style.display === 'block') ? 'none' : 'block';
         }
 
-        // পেমেন্ট মেথড সিলেক্ট করার পর প্রথম ধাপ পেজ ওপেন করা
         function openPaymentStepPage(method) {
             hideAllViews();
             document.getElementById('paymentStepPage1').style.display = 'block';
             document.getElementById('selectedMethodTitle').innerText = method + " পেমেন্ট প্রোসেস";
             
-            // লেখার ভেতরের মেথড ডাইনামিক করা
             const elements = document.getElementsByClassName('selected-method-text');
             for(let el of elements) {
                 el.innerText = method;
@@ -487,7 +477,6 @@
             document.getElementById('userProfileCard').style.display = 'block';
         }
 
-        // আপনার হিসাব এমাউন্ট বসিয়ে নেক্সট এ যাওয়ার লজিক
         function goToPaymentStep2() {
             const amount = document.getElementById('userAmountInput').value.trim();
             if(!amount) {
@@ -503,7 +492,6 @@
             document.getElementById('paymentStepPage1').style.display = 'block';
         }
 
-        // ট্রানজেকশন আইডি বসিয়ে ব্যালেন্স ফাইনাল চেক করার ফাংশন
         function verifyTransaction() {
             const trxId = document.getElementById('trxIdInput').value.trim();
             const amount = document.getElementById('userAmountInput').value.trim();
@@ -513,25 +501,23 @@
                 return;
             }
             
-            // ব্যালেন্স আপডেট করার ডেমো লজিক
             localStorage.setItem('userBalance', amount + ".০০");
             alert("আপনার ট্রানজেকশনটি যাচাইয়ের জন্য পাঠানো হয়েছে। সফল হলে " + amount + " টাকা ব্যালেন্স যোগ হবে।");
             
-            // কাজ শেষ হলে পুনরায় প্রোফাইলে ফেরত নিয়ে যাওয়া
             checkLoginStatus();
             backToProfile();
             
-            // ফিল্ডগুলো ক্লিয়ার করা
             document.getElementById('userAmountInput').value = '';
             document.getElementById('trxIdInput').value = '';
         }
 
         function handleLogout() {
+            // সমস্ত লগইন সেশন ডেটা মুছে ফেলা হচ্ছে 
             localStorage.removeItem('isLoggedIn');
             localStorage.removeItem('loggedInUser');
             localStorage.removeItem('userBalance');
-            alert('লগআউট সফল হয়েছে!');
-            showHomeView();
+            alert('আপনার লগআউট সফল হয়েছে!');
+            showHomeView(); // লগআউট শেষে হোম পেজে নিয়ে যাবে
         }
 
         renderProducts();
