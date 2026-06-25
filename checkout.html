@@ -28,6 +28,31 @@
             color: #333;
             margin-bottom: 20px;
         }
+        
+        /* অর্ডার টাইপ বাটন স্টাইল */
+        .order-type-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #2196f3;
+            background-color: #fff;
+            color: #2196f3;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 14px;
+            text-align: center;
+        }
+        .tab-btn.active {
+            background-color: #2196f3;
+            color: #fff;
+        }
+
         .instruction-box {
             background-color: #e3f2fd;
             border-left: 5px solid #2196f3;
@@ -38,7 +63,6 @@
             color: #0d47a1;
             line-height: 1.5;
         }
-        /* এক ক্লিকে কপি করার নম্বরের স্টাইল */
         .copy-number {
             background-color: #fff;
             border: 1px dashed #2196f3;
@@ -49,7 +73,6 @@
             cursor: pointer;
             display: inline-block;
             margin: 5px 0;
-            transition: background 0.2s;
         }
         .copy-number:hover {
             background-color: #bbdefb;
@@ -64,7 +87,7 @@
             color: #555;
             font-size: 14px;
         }
-        input[type="text"], input[type="email"], select {
+        input[type="text"], select {
             width: 100%;
             padding: 10px;
             border: 1px solid #ccc;
@@ -97,15 +120,22 @@
 <body>
 
 <div class="checkout-container">
-    <h2>অর্ডার ও পেমেন্ট ফরম</h2>
+    <h2>অর্ডার কনফার্ম ফরম</h2>
     
-    <div class="instruction-box">
+    <div class="order-type-tabs">
+        <button type="button" class="tab-btn active" id="paidOrderTab" onclick="switchOrderType('paid')">পেমেন্ট করে অর্ডার</button>
+        <button type="button" class="tab-btn" id="freeOrderTab" onclick="switchOrderType('free')">ফ্রি অর্ডার করুন</button>
+    </div>
+
+    <div class="instruction-box" id="paymentNotice">
         <strong>পেমেন্ট নিয়ম:</strong> নিচের নম্বরটি কপি করে আপনার ইচ্ছামতো ক্যাশআউট অথবা সেন্ড মানি করুন। এরপর আপনার কাঙ্ক্ষিত তথ্য দিয়ে সাবমিট করুন। <br>
         নম্বর (কপি করতে ক্লিক করুন): <span class="copy-number" onclick="copyToClipboard('01315531124')">01315531124</span>
     </div>
 
     <form id="orderForm" action="https://formspree.io/f/xbdvdjzg" method="POST">
         
+        <input type="hidden" id="orderTypeInput" name="Order Type" value="Paid Order">
+
         <div class="form-group">
             <label for="name">আপনার নাম:</label>
             <input type="text" id="name" name="Customer Name" placeholder="যেমন: নিলয়" required>
@@ -126,7 +156,7 @@
             <input type="text" id="city" name="Customer City" placeholder="যেমন: রাজশাহী" required>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="methodGroup">
             <label for="method">কোন মাধ্যমে টাকা পাঠিয়েছেন?</label>
             <select id="method" name="Payment Method" required>
                 <option value="">সিলেক্ট করুন</option>
@@ -136,22 +166,65 @@
             </select>
         </div>
 
-        <div class="form-group">
+        <div class="form-group" id="txnidGroup">
             <label for="txnid">ট্রানজেকশন আইডি (TxnID):</label>
             <input type="text" id="txnid" name="Transaction ID" placeholder="যেমন: TRX12345678" required>
         </div>
 
-        <button type="submit" class="submit-btn">পেমেন্ট নিশ্চিত করুন</button>
+        <button type="submit" class="submit-btn" id="submitBtn">পেমেন্ট নিশ্চিত করুন</button>
     </form>
 </div>
 
 <script>
+let currentOrderType = 'paid'; // ডিফল্টভাবে পেইড অর্ডার সিলেক্ট থাকবে
+
+// ফ্রি এবং পেইড অর্ডারের মধ্যে পরিবর্তন করার ফাংশন
+function switchOrderType(type) {
+    currentOrderType = type;
+    const paidTab = document.getElementById('paidOrderTab');
+    const freeTab = document.getElementById('freeOrderTab');
+    const paymentNotice = document.getElementById('paymentNotice');
+    const methodGroup = document.getElementById('methodGroup');
+    const txnidGroup = document.getElementById('txnidGroup');
+    const submitBtn = document.getElementById('submitBtn');
+    const orderTypeInput = document.getElementById('orderTypeInput');
+
+    if (type === 'free') {
+        // ফ্রি অর্ডার সিলেক্ট করলে যা হবে
+        paidTab.classList.remove('active');
+        freeTab.classList.add('active');
+        paymentNotice.style.display = 'none';
+        methodGroup.style.display = 'none';
+        txnidGroup.style.display = 'none';
+        
+        // রিকোয়ার্ড (required) তুলে দেওয়া হলো যেন ফর্ম সাবমিট আটকPath না করে
+        document.getElementById('method').removeAttribute('required');
+        document.getElementById('txnid').removeAttribute('required');
+        
+        submitBtn.innerText = "ফ্রি অর্ডার নিশ্চিত করুন";
+        orderTypeInput.value = "Free Order";
+    } else {
+        // পেমেন্ট করে অর্ডার সিলেক্ট করলে যা হবে
+        freeTab.classList.remove('active');
+        paidTab.classList.add('active');
+        paymentNotice.style.display = 'block';
+        methodGroup.style.display = 'block';
+        txnidGroup.style.display = 'block';
+        
+        // পুনরায় রিকোয়ার্ড করে দেওয়া হলো
+        document.getElementById('method').setAttribute('required', 'required');
+        document.getElementById('txnid').setAttribute('required', 'required');
+        
+        submitBtn.innerText = "পেমেন্ট নিশ্চিত করুন";
+        orderTypeInput.value = "Paid Order";
+    }
+}
+
 // এক ক্লিকে নম্বর কপি করার ফাংশন
 function copyToClipboard(number) {
     navigator.clipboard.writeText(number).then(function() {
         alert("নম্বরটি কপি হয়েছে: " + number);
     }, function(err) {
-        // ব্যাকআপ পদ্ধতি যদি ব্রাউজার সাপোর্ট না করে
         const el = document.createElement('textarea');
         el.value = number;
         document.body.appendChild(el);
@@ -170,55 +243,61 @@ document.getElementById('orderForm').addEventListener('submit', function(event) 
     const phone = document.getElementById('phone').value.trim();
     const address = document.getElementById('address').value.trim();
     const city = document.getElementById('city').value.trim();
-    const method = document.getElementById('method').value;
-    const txnid = document.getElementById('txnid').value.trim();
 
-    // ১. নাম ভ্যালিডেশন
+    // সাধারণ ভ্যালিডেশন (ফ্রি ও পেইড উভয়ের জন্য)
     const invalidPatterns = /^(.)\1{2,}$/; 
     const onlyNumbers = /^[0-9]+$/; 
     
     if (name.length < 3 || invalidPatterns.test(name) || onlyNumbers.test(name)) {
-        alert("অনুগ্রহ করে আপনার সঠিক এবং সম্পূর্ণ নাম লিখুন। কোনো আজেবাজে বা অযথা অক্ষর গ্রহণযোগ্য নয়।");
+        alert("অনুগ্রহ করে আপনার সঠিক এবং সম্পূর্ণ নাম লিখুন।");
         document.getElementById('name').focus();
         return;
     }
 
-    // ২. ফোন নম্বর ভ্যালিডেশন (ঠিক ১১ ডিজিট)
     const phonePattern = /^01[3-9]\d{8}$/;
     if (phone.length !== 11 || !phonePattern.test(phone)) {
-        alert("ভুল মোবাইল নম্বর! অনুগ্রহ করে সঠিক ১১ ডিজিটের বাংলাদেশি মোবাইল নম্বর দিন (যেমন: 017XXXXXXXX)।");
+        alert("ভুল মোবাইল নম্বর! অনুগ্রহ করে সঠিক ১১ ডিজিটের বাংলাদেশি মোবাইল নম্বর দিন।");
         document.getElementById('phone').focus();
         return;
     }
 
-    // ৩. গ্রাম ও ঠিকানা ভ্যালিডেশন
     if (address.length < 5 || invalidPatterns.test(address) || onlyNumbers.test(address)) {
         alert("অনুগ্রহ করে আপনার সঠিক গ্রাম এবং সম্পূর্ণ ঠিকানার তথ্য প্রদান করুন।");
         document.getElementById('address').focus();
         return;
     }
 
-    // ৪. শহর ভ্যালিডেশন
     if (city.length < 3 || invalidPatterns.test(city) || onlyNumbers.test(city)) {
         alert("অনুগ্রহ করে আপনার সঠিক শহরের বা জেলার নাম লিখুন।");
         document.getElementById('city').focus();
         return;
     }
 
-    // ৫. পেমেন্ট মেথড ও ট্রানজেকশন আইডি চেক
-    if (method === "") {
-        alert("অনুগ্রহ করে পেমেন্ট মাধ্যম সিলেক্ট করুন।");
-        document.getElementById('method').focus();
-        return;
+    // শুধুমাত্র 'পেইড অর্ডার'-এর জন্য পেমেন্ট ভ্যালিডেশন চেক হবে
+    if (currentOrderType === 'paid') {
+        const method = document.getElementById('method').value;
+        const txnid = document.getElementById('txnid').value.trim();
+
+        if (method === "") {
+            alert("অনুগ্রহ করে পেমেন্ট মাধ্যম সিলেক্ট করুন।");
+            document.getElementById('method').focus();
+            return;
+        }
+
+        if (txnid.length < 6 || invalidPatterns.test(txnid)) {
+            alert("অনুগ্রহ করে সঠিক ট্রানজেকশন আইডি (TxnID) প্রদান করুন।");
+            document.getElementById('txnid').focus();
+            return;
+        }
+        
+        // পেমেন্ট সফল হওয়ার মেসেজ
+        alert("আপনার পেমেন্টটি সফল হয়েছে এবং তথ্য সম্পূর্ণ হয়েছে। অর্ডারটি নিশ্চিত করার জন্য ধন্যবাদ!");
+    } else {
+        // ফ্রি অর্ডারের সফল হওয়ার মেসেজ
+        alert("আপনার ফ্রি অর্ডারটি সফলভাবে গ্রহণ করা হয়েছে। আমাদের সাথে থাকার জন্য ধন্যবাদ!");
     }
 
-    if (txnid.length < 6 || invalidPatterns.test(txnid)) {
-        alert("অনুগ্রহ করে সঠিক ট্রানজেকশন আইডি (TxnID) প্রদান করুন।");
-        document.getElementById('txnid').focus();
-        return;
-    }
-
-    alert("আপনার তথ্য সম্পূর্ণ এবং সঠিক হয়েছে। অর্ডারটি নিশ্চিত করার জন্য ধন্যবাদ!");
+    // সব ঠিক থাকলে Formspree-তে ডাটা চলে যাবে
     this.submit(); 
 });
 </script>
