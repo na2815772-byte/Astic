@@ -307,6 +307,7 @@
         .success-icon { font-size: 70px; background: linear-gradient(135deg, #2ed573, #1dd1a1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 20px; display: inline-block; animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes popIn { from { transform: scale(0) rotate(-20deg); } to { transform: scale(1) rotate(0); } }
         .success-title { color: #10b981; font-size: 24px; font-weight: 800; margin: 0 0 15px 0; }
+        .success-title { color: #10b981; font-size: 24px; font-weight: 800; margin: 0 0 15px 0; }
         .success-msg { font-size: 18px; font-weight: 700; color: #1e293b; line-height: 1.5; margin-bottom: 10px; padding: 0 10px; }
 
         @media (max-width: 480px) { .header-title { display: none; } }
@@ -735,7 +736,7 @@
             if (!isUserLoggedIn()) {
                 alert("প্রথমে নিবন্ধনটি সম্পূর্ণ করুন তারপর অর্ডার করুন।");
             } else {
-                showSection('অর্ডার');
+                showSection('অर्डर');
             }
         }
 
@@ -754,7 +755,7 @@
         }
 
         // =====================================================================
-        // ডাইনামিক ইনবক্স অবজেক্ট তৈরি এবং localStorage-এ অ্যারে সেভ করার আপডেট লজিক
+        // ইনবক্স ড্যাশবোর্ডের জন্য আপডেট করা ডাইনামিক সাবমিট লজিক
         // =====================================================================
         function submitDarazOrder() {
             const name = document.getElementById('custName').value.trim();
@@ -767,40 +768,41 @@
                 return;
             }
 
-            // ১. একটি র্যান্ডম সিক্স-ডিজিট অর্ডার আইডি তৈরি
-            const orderId = Math.floor(100000 + Math.random() * 900000);
+            // ১. একটি র্যান্ডম ৫-ডিজিট অর্ডার আইডি তৈরি
+            const orderId = "#ORD-" + Math.floor(10000 + Math.random() * 90000);
             
-            // ২. বর্তমান প্রোডাক্টের ইনফরমেশন নির্ধারণ করা
-            const pName = currentSelectedProduct ? currentSelectedProduct.name : "Unknown Product";
-            const pPrice = currentSelectedProduct ? currentSelectedProduct.price : "0 টাকা";
-            const pImg = currentSelectedProduct ? (currentSelectedProduct.image || "") : "";
+            // ২. বর্তমান প্রোডাক্টের বিবরণ ও ছবি নির্ধারণ করা
+            const pName = currentSelectedProduct ? currentSelectedProduct.name : "প্রিমিয়াম প্রোডাক্ট";
+            const pPrice = currentSelectedProduct ? currentSelectedProduct.price : "০ টাকা";
+            const pImg = currentSelectedProduct ? (currentSelectedProduct.image || "https://via.placeholder.com/200x150?text=Product") : "https://via.placeholder.com/200x150?text=Product";
 
-            // ৩. ইনবক্স ড্যাশবোর্ডের রিড করার উপযোগী একটি সুনির্দিষ্ট অবজেক্ট স্ট্রাকচার তৈরি
-            const newOrderMail = {
+            // ৩. আপনার তৈরি করা ইনবক্সের (`inbox.html`) রিড করার উপযোগী ডাটা অবজেক্ট তৈরি
+            const newOrderData = {
+                id: orderId,
+                name: name,
+                phone: phone,
+                product: `${pName} (${pPrice})`,
+                address: `${address}, ${city}`,
+                productImg: pImg
+            };
+
+            // ৪. ব্রাউজার মেমোরিতে (localStorage) 'userOrder' কী-তে ডাটা স্ট্রাকচার সেভ করা
+            localStorage.setItem('userOrder', JSON.stringify(newOrderData));
+
+            // আপনার আগের সিস্টেমের কোডগুলো যাতে নষ্ট না হয়, তার জন্য ওল্ড মেথডগুলোও ব্যাকআপ রাখা হলো
+            const oldOrderMail = {
                 sender: name, 
-                subject: `নতুন অর্ডার নিশ্চিতকরণ #${orderId}`,
+                subject: `নতুন অর্ডার নিশ্চিতকরণ ${orderId}`,
                 snippet: `প্রোডাক্ট: ${pName} | মূল্য: ${pPrice} | মোবাইল: ${phone} | ঠিকানা: ${address}, ${city}`,
                 time: "Just Now",
                 productName: pName,
                 productPrice: pPrice,
                 productImage: pImg,
-                customerInfo: {
-                    phone: phone,
-                    address: address,
-                    city: city
-                }
+                customerInfo: { phone: phone, address: address, city: city }
             };
-
-            // ৪. ব্রাউজারের localStorage থেকে পূর্বের অ্যারেটি তুলে আনা (না থাকলে খালি অ্যারে)
             let inboxMails = JSON.parse(localStorage.getItem('inboxMails')) || [];
-
-            // ৫. নতুন অর্ডার মেইলটিকে অ্যারের একদম শুরুতে (সবার উপরে) পুশ করা
-            inboxMails.unshift(newOrderMail);
-
-            // 六. আপডেট হওয়া কমপ্লিট অ্যারেটি পুনরায় মেমরিতে ওভাররাইট করা
+            inboxMails.unshift(oldOrderMail);
             localStorage.setItem('inboxMails', JSON.stringify(inboxMails));
-
-            // ব্যাকআপ হিসেবে আপনার আগের একক কি (Key) গুলোও রেখে দেওয়া হলো
             localStorage.setItem("order_name", name);
             localStorage.setItem("order_phone", phone);
             localStorage.setItem("order_address", address + ", " + city);
@@ -810,6 +812,7 @@
                 localStorage.setItem("order_product_image", currentSelectedProduct.image || "");
             }
 
+            // ৫. অর্ডার সফল হওয়ার পর মডাল বন্ধ এবং ভিউ চেঞ্জ করা
             closeDarazModal();
             hideAllViews();
             document.getElementById('orderSuccessView').style.display = 'block';
@@ -909,7 +912,7 @@
             const amount = document.getElementById('userAmountInput').value.trim();
             
             if(!trxId) {
-                alert("দয়া করে আপনার কাঙ্ক্ষিত ট্রানজেকশন আইডিটি বসান!");
+                alert("দয়া করে আপনার কাঙ্ক্ষিত ট্রানজেকশন আইডিটি বসան!");
                 return;
             }
             
