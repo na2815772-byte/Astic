@@ -125,6 +125,8 @@
             position: relative; 
             cursor: pointer; 
             transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            user-select: none; /* লং প্রেস ইম্প্রুভমেন্টের জন্য */
+            -webkit-user-select: none;
         }
         
         .product-card:hover { 
@@ -510,7 +512,7 @@
     </div>
 
     <script>
-        // গ্লোবাল ভেরিয়েবল হিসেবে কারেন্ট সিলেক্টেড প্রোডাক্ট রাখার জন্য
+        // গলোবাল ভেরিয়েবল হিসেবে কারেন্ট সিলেক্টেড প্রোডাক্ট রাখার জন্য
         let currentSelectedProduct = null;
 
         function toggleSidebar() {
@@ -536,10 +538,17 @@
                 alert('অ্যাডমিন লগইন সফল!');
                 closeAdminModal();
                 document.getElementById('mainAdminPanel').style.display = 'block'; 
+                renderProducts(); // লগইন সফল হলে ডিলিট অপশন ইভেন্ট সক্রিয় করতে রেন্ডার করা হলো
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {
                 alert('দুঃখিত! ভুল পাসওয়ার্ড।');
             }
+        }
+
+        // অ্যাডমিন প্যানেল ওপেন বা দৃশ্যমান আছে কি না তা যাচাই করার সেফ লজিক ফাংশন
+        function isAdminPanelVisible() {
+            const adminPanel = document.getElementById('mainAdminPanel');
+            return adminPanel && adminPanel.style.display === 'block';
         }
 
         let defaultProducts = [
@@ -560,13 +569,41 @@
                 const card = document.createElement('div');
                 card.className = `product-card ${p.category}`;
                 
-                // সংশোধিত অংশ: ইভেন্ট লিসেনার দিয়ে নিরাপদ উপায়ে ডাটা পাস করা হয়েছে
+                // স্বাভাবিক ক্লিক ইভেন্ট (যদি ডিলিট মোড অন না থাকে এবং প্যানেল ওপেন না থাকে)
                 card.addEventListener('click', function(event) {
                     if (event.target.className !== 'order-btn' && !event.target.classList.contains('card-delete-icon')) {
                         openDarazModal(p, event);
                     }
                 });
                 
+                // ==========================================
+                // নতুন লজিক: শুধুমাত্র অ্যাডমিন লগইন থাকলেই লং প্রেস কাজ করবে
+                // ==========================================
+                let pressTimer;
+
+                const startPress = (e) => {
+                    if (!isAdminPanelVisible()) return; // অ্যাডমিন লগইন না থাকলে এখানেই ব্রেক করবে
+                    
+                    pressTimer = window.setTimeout(() => {
+                        toggleCardDelete(card, e); // ১ সেকেন্ড ধরে রাখলে ডিলিট আইকন শো করবে
+                    }, 1000); 
+                };
+
+                const cancelPress = () => {
+                    clearTimeout(pressTimer);
+                };
+
+                // ডেস্কটপ মাউস ইভেন্টসমূহ
+                card.addEventListener('mousedown', startPress);
+                card.addEventListener('mouseup', cancelPress);
+                card.addEventListener('mouseleave', cancelPress);
+
+                // মোবাইল টাচ স্ক্রিন ইভেন্টসমূহ
+                card.addEventListener('touchstart', startPress);
+                card.addEventListener('touchend', cancelPress);
+                card.addEventListener('touchcancel', cancelPress);
+                // ==========================================
+
                 const imgTag = p.image ? `<img src="${p.image}" class="product-img" alt="${p.name}">` : `<div class="product-img" style="display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:13px;">ছবি নেই</div>`;
                 
                 card.innerHTML = `
@@ -820,7 +857,7 @@
         function goToPaymentStep2() {
             const amount = document.getElementById('userAmountInput').value.trim();
             if(!amount) {
-                alert("দয়া করে আপনার হিসাবের ঘরে টাকার পরিমাণটি বসান!");
+                alert("দয়া করে আপনার হিসাবের ঘরে টাকার পরিমাণটি বসան!");
                 return;
             }
             hideAllViews();
