@@ -773,13 +773,22 @@
             // ২. বর্তমান প্রোডাক্টের ইনফরমেশন নির্ধারণ করা
             const pName = currentSelectedProduct ? currentSelectedProduct.name : "Unknown Product";
             const pPrice = currentSelectedProduct ? currentSelectedProduct.price : "0 টাকা";
+            const pImg = currentSelectedProduct ? (currentSelectedProduct.image || "") : "";
 
             // ৩. ইনবক্স ড্যাশবোর্ডের রিড করার উপযোগী একটি সুনির্দিষ্ট অবজেক্ট স্ট্রাকচার তৈরি
             const newOrderMail = {
                 sender: name, 
                 subject: `নতুন অর্ডার নিশ্চিতকরণ #${orderId}`,
                 snippet: `প্রোডাক্ট: ${pName} | মূল্য: ${pPrice} | মোবাইল: ${phone} | ঠিকানা: ${address}, ${city}`,
-                time: "Just Now"
+                time: "Just Now",
+                productName: pName,
+                productPrice: pPrice,
+                productImage: pImg,
+                customerInfo: {
+                    phone: phone,
+                    address: address,
+                    city: city
+                }
             };
 
             // ৪. ব্রাউজারের localStorage থেকে পূর্বের অ্যারেটি তুলে আনা (না থাকলে খালি অ্যারে)
@@ -788,10 +797,10 @@
             // ৫. নতুন অর্ডার মেইলটিকে অ্যারের একদম শুরুতে (সবার উপরে) পুশ করা
             inboxMails.unshift(newOrderMail);
 
-            // ৬. আপডেট হওয়া কমপ্লিট অ্যারেটি পুনরায় মেমরিতে ওভাররাইট করা
+            // 六. আপডেট হওয়া কমপ্লিট অ্যারেটি পুনরায় মেমরিতে ওভাররাইট করা
             localStorage.setItem('inboxMails', JSON.stringify(inboxMails));
 
-            // আপনার আগের একক ট্র্যাকিং কি (Key) গুলোও ব্যাকআপ হিসেবে রেখে দেওয়া হলো
+            // ব্যাকআপ হিসেবে আপনার আগের একক কি (Key) গুলোও রেখে দেওয়া হলো
             localStorage.setItem("order_name", name);
             localStorage.setItem("order_phone", phone);
             localStorage.setItem("order_address", address + ", " + city);
@@ -883,7 +892,7 @@
         function goToPaymentStep2() {
             const amount = document.getElementById('userAmountInput').value.trim();
             if(!amount) {
-                alert("দয়া করে আপনার হিসাবের ঘরে টাকার পরিমাণটি বসান!");
+                alert("দয়া করে আপনার হিসাবের ঘরে টাকার পরিমাণটি বসան!");
                 return;
             }
             hideAllViews();
