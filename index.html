@@ -418,7 +418,7 @@
             
             <p>🔄 তাই নাম্বারটি কপি করুন <span class="copyable-num" onclick="copyText('01315531124')">01315531124</span></p>
             
-            <p>🛂 তারপর <span class="selected-method-text">বিকাশে</span> গিয়ে সেন্ড মানি এবং ক্যাশ আউট বোতামে ট্যাব করুন।</p>
+            <p>👉 তারপর <span class="selected-method-text">বিকাশে</span> গিয়ে সেন্ড মানি এবং ক্যাশ আউট বোতামে ট্যাব করুন।</p>
             
             <p>🏧 তারপর ট্রানজেকশনটি বসিয়ে দিয়ে আপনার ব্যালেন্স টি চেক করুন।</p>
             
@@ -541,7 +541,7 @@
 
     <script>
         let currentSelectedProduct = null;
-        let currentModalOrderType = 'paid'; // ডিফল্ট 'paid' মোড
+        let currentModalOrderType = 'paid'; 
 
         function toggleSidebar() {
             document.getElementById('sidebar').classList.toggle('active');
@@ -578,9 +578,10 @@
             return adminPanel && adminPanel.style.display === 'block';
         }
 
+        // ডিফল্ট প্রোডাক্টে আমরা পূর্ববর্তী ট্র্যাকিংয়ের জন্য একটি পুরনো তারিখ যুক্ত করে রাখলাম
         let defaultProducts = [
-            { name: "প্রিমিয়াম টি-শার্ট", price: "৪০০ টাকা", oldPrice: "৫০০ টাকা", category: "tshirt", image: "https://via.placeholder.com/200x150?text=T-Shirt" },
-            { name: "স্মার্ট ওয়াচ", price: "১৫০০ টাকা", oldPrice: "", category: "watch", image: "https://via.placeholder.com/200x150?text=Watch" }
+            { name: "প্রিমিয়াম টি-শার্ট", price: "৪০০ টাকা", oldPrice: "৫০০ টাকা", category: "tshirt", image: "https://via.placeholder.com/200x150?text=T-Shirt", date: "2026-06-25" },
+            { name: "স্মার্ট ওয়াচ", price: "১৫০০ টাকা", oldPrice: "", category: "watch", image: "https://via.placeholder.com/200x150?text=Watch", date: "2026-06-25" }
         ];
 
         let products = JSON.parse(localStorage.getItem('myProducts')) || defaultProducts;
@@ -695,23 +696,35 @@
             setTimeout(() => { particle.remove(); }, 600);
         }
 
+        // =====================================================================
+        // মেইন লজিক: প্রোডাক্ট যোগ করার সময় স্বয়ংক্রিয়ভাবে লাইভ তারিখ যোগ করা
+        // =====================================================================
+        function getLiveFormattedDate() {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`; // ফরম্যাট: "2026-06-27"
+        }
+
         function addProduct() {
             const name = document.getElementById('pName').value;
             const price = document.getElementById('pPrice').value;
             const oldPrice = document.getElementById('pOldPrice').value;
             const category = document.getElementById('pCategory').value;
             const imageInput = document.getElementById('pImage');
+            const uploadDate = getLiveFormattedDate(); // লাইভ তারিখ বের করা হলো
             
             if (name && price) {
                 if (imageInput.files && imageInput.files[0]) {
                     const reader = new FileReader();
                     reader.onload = function(e) {
-                        products.push({ name, price: price + " টাকা", oldPrice: oldPrice ? oldPrice + " টাকা" : "", category, image: e.target.result });
+                        products.push({ name, price: price + " টাকা", oldPrice: oldPrice ? oldPrice + " টাকা" : "", category, image: e.target.result, date: uploadDate });
                         saveAndRender(); clearInputs();
                     };
                     reader.readAsDataURL(imageInput.files[0]);
                 } else {
-                    products.push({ name, price: price + " টাকা", oldPrice: oldPrice ? oldPrice + " টাকা" : "", category, image: "" });
+                    products.push({ name, price: price + " টাকা", oldPrice: oldPrice ? oldPrice + " টাকা" : "", category, image: "", date: uploadDate });
                     saveAndRender(); clearInputs();
                 }
             }
@@ -745,7 +758,7 @@
             document.getElementById('darazInitialButtons').style.display = 'flex';
             document.getElementById('darazCheckoutForm').style.display = 'none';
             
-            switchModalOrderType('paid'); // ডিফল্ট পেইড মোডে মডাল ওপেন হবে
+            switchModalOrderType('paid'); 
             document.getElementById('darazModal').style.display = 'flex';
         }
 
@@ -761,11 +774,14 @@
             showDarazCheckoutForm(); 
         }
 
+        // =====================================================================
+        // ইউজার যখন 'অর্ডার' ন্যাভিগেশন বাটনে ক্লিক করবে, তখন সে সরাসরি 'my-products.html' পেজে চলে যাবে
+        // =====================================================================
         function handleOrderNavClick() {
             if (!isUserLoggedIn()) {
                 alert("প্রথমে নিবন্ধনটি সম্পূর্ণ করুন তারপর অর্ডার করুন।");
             } else {
-                showSection('অর্ডার');
+                window.location.href = "my-products.html";
             }
         }
 
@@ -784,7 +800,6 @@
             document.getElementById('darazCheckoutForm').style.display = 'flex';
         }
 
-        // মডালের ভেতর ফ্রি এবং পেইড অর্ডার সুইচ করার লজিক
         function switchModalOrderType(type) {
             currentModalOrderType = type;
             const paidTab = document.getElementById('modalPaidTab');
@@ -895,35 +910,27 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        // =====================================================================
-        // প্রোফাইল ছবি ডাইনামিক করার জন্য আপডেটেড লজিক (লগইন স্ট্যাটাস চেক)
-        // =====================================================================
         function checkLoginStatus() {
             const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
             const userBalance = localStorage.getItem('userBalance') || '০.০০';
             
             if (isLoggedIn) {
-                // ১. localStorage থেকে ইউজারের অবজেক্ট ডেটা নিয়ে আসা
                 const savedUserString = localStorage.getItem('loggedInUser');
                 let displayEmail = 'ইউজার';
-                let profileImgUrl = 'https://via.placeholder.com/80?text=User'; // ডিফল্ট ইমেজ
+                let profileImgUrl = 'https://via.placeholder.com/80?text=User'; 
 
                 if (savedUserString) {
                     try {
                         const userObj = JSON.parse(savedUserString);
                         displayEmail = userObj.email || displayEmail;
-                        
-                        // যদি Supabase ডেটাবেস থেকে পাওয়া প্রোফাইল ছবির লিংক অবজেক্টে থাকে (যেমন: user.profile_image)
-                        // আপনার Supabase টেবিলের কলামের নাম অনুযায়ী 'profile_image' পরিবর্তন করতে পারেন।
                         if (userObj.profile_image) {
                             profileImgUrl = userObj.profile_image;
                         }
                     } catch (e) {
-                        displayEmail = savedUserString; // যদি অবজেক্ট না হয়ে শুধু স্ট্রিং ইমেইল থাকে
+                        displayEmail = savedUserString; 
                     }
                 }
 
-                // ২. ডাইনামিক লেখা ও ছবি সেট করা
                 document.getElementById('profileWelcome').innerHTML = `স্বাগতম আপনাকে!<br><span style="font-size:14px;color:#64748b;font-weight:normal;">${displayEmail}</span>`;
                 document.getElementById('userProfileImg').src = profileImgUrl;
                 document.getElementById('userBalance').innerText = userBalance;
@@ -1038,4 +1045,4 @@
         checkLoginStatus();
     </script>
 </body>
-    </html>
+</html>
