@@ -8,8 +8,30 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
         body { background-color: #f7f9fc; padding: 20px; overflow-x: hidden; }
         .container { max-width: 700px; margin: 0 auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); position: relative; }
-        h1 { color: #2c3e50; text-align: center; margin-bottom: 20px; font-size: 24px; }
+        h1 { color: #2c3e50; text-align: center; margin-bottom: 10px; font-size: 24px; }
         
+        /* ফিল্টার বাটনের স্টাইল */
+        .filter-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .filter-btn {
+            background: #ecf0f1;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #7f8c8d;
+            transition: all 0.3s ease;
+        }
+        .filter-btn.active {
+            background: #3498db;
+            color: white;
+        }
+
         /* প্রোডাক্ট আইটেম স্টাইল */
         .product-item { 
             display: flex; 
@@ -30,7 +52,7 @@
         .status { background: #2ecc71; color: white; padding: 5px 10px; border-radius: 4px; font-size: 12px; font-weight: bold; transition: all 0.3s; }
         .back-btn { display: inline-block; margin-top: 20px; text-decoration: none; color: #3498db; font-weight: bold; }
 
-        /* ডিলিট বাটন স্টাইল (শুরুতে লুকানো থাকবে) */
+        /* ডিলিট বাটন স্টাইল */
         .delete-btn {
             background: #e74c3c;
             color: white;
@@ -39,15 +61,14 @@
             border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
-            display: none; /* প্রথমে ইনভিজিবল থাকবে */
+            display: none;
             opacity: 0;
             transform: translateX(20px);
             transition: all 0.3s ease;
         }
         
-        /* যখন প্রোডাক্টে ক্লিক করা হবে, তখন এই ক্লাসটি অ্যাক্টিভ হবে */
         .product-item.show-delete .status {
-            display: none; /* স্ট্যাটাস লুকিয়ে যাবে */
+            display: none;
         }
         .product-item.show-delete .delete-btn {
             display: block;
@@ -55,7 +76,6 @@
             transform: translateX(0);
         }
 
-        /* ডিলিট হওয়ার সময় ফেড আউট অ্যানিমেশন */
         .product-item.fade-out {
             opacity: 0;
             transform: scale(0.8);
@@ -90,65 +110,106 @@
     <div class="container">
         <h1>📦 আমার প্রোডাক্টসমূহ (My Products)</h1>
         
-        <div class="product-list">
-            <div class="product-item" onclick="toggleDelete(this, event)">
-                <div class="prod-details">
-                    <h3>প্রিমিয়াম টি-শার্ট</h3>
-                    <p>অর্ডার আইডি: #AST-9874</p>
-                </div>
-                <span class="status">ডেলিভারড</span>
-                <button class="delete-btn" onclick="deleteProduct(this, event)">ডিলিট করুন</button>
-            </div>
-
-            <div class="product-item" onclick="toggleDelete(this, event)">
-                <div class="prod-details">
-                    <h3>স্মার্ট এনালগ ঘড়ি</h3>
-                    <p>অর্ডার আইডি: #AST-9852</p>
-                </div>
-                <span class="status" style="background: #f1c40f;">চলতি পথে</span>
-                <button class="delete-btn" onclick="deleteProduct(this, event)">ডিলিট করুন</button>
-            </div>
+        <div class="filter-container">
+            <button class="filter-btn active" id="btnToday" onclick="filterProducts('today')">আজকের নতুন প্রোডাক্ট</button>
+            <button class="filter-btn" id="btnAll" onclick="filterProducts('all')">সব প্রোডাক্ট</button>
         </div>
+        
+        <div class="product-list" id="myProductList">
+            </div>
 
         <a href="index.html" class="back-btn">← মূল শপ-এ ফিরে যান</a>
     </div>
 
     <script>
-        // প্রোডাক্টের ওপর ক্লিক করলে ডিলিট বাটন দেখানোর ফাংশন
+        // ১. ডাটাবেজ বা ফাইল লজিক (এখানে প্রতিটি প্রোডাক্টের একটি নির্দিষ্ট তারিখ বা 'date' দেওয়া আছে)
+        // টেস্ট করার জন্য প্রথম প্রোডাক্টটির তারিখ আজকের বর্তমান তারিখ (২০২৬-০৬-২৭) দেওয়া হলো
+        const myOrderedProducts = [
+            { id: "#AST-9874", name: "প্রিমিয়াম টি-শার্ট", status: "ডেলিভারড", statusBg: "#2ecc71", date: "2026-06-27" },
+            { id: "#AST-9852", name: "স্মার্ট এনালগ ঘড়ি", status: "চলতি পথে", statusBg: "#f1c40f", date: "2026-06-25" } // এটি আগের দিনের
+        ];
+
+        // ২. স্ক্রিনে প্রোডাক্ট দেখানোর মূল ফাংশন
+        function renderOrderedProducts(productsToDisplay) {
+            const listContainer = document.getElementById('myProductList');
+            listContainer.innerHTML = '';
+
+            if (productsToDisplay.length === 0) {
+                listContainer.innerHTML = '<p style="text-align:center; color:#7f8c8d; padding: 20px;">এই তালিকায় কোনো প্রোডাক্ট নেই।</p>';
+                return;
+            }
+
+            productsToDisplay.forEach(p => {
+                const item = document.createElement('div');
+                item.className = 'product-item';
+                item.setAttribute('onclick', 'toggleDelete(this, event)');
+                
+                item.innerHTML = `
+                    <div class="prod-details">
+                        <h3>${p.name}</h3>
+                        <p>অর্ডার আইডি: ${p.id}</p>
+                    </div>
+                    <span class="status" style="background: ${p.statusBg};">${p.status}</span>
+                    <button class="delete-btn" onclick="deleteProduct(this, event)">ডিলিট করুন</button>
+                `;
+                listContainer.appendChild(item);
+            });
+        }
+
+        // ৩. মেইন ফিল্টারিং লজিক (আজকের বনাম সব প্রোডাক্ট)
+        function filterProducts(type) {
+            // বাটনগুলোর অ্যাক্টিভ কালার পরিবর্তন
+            document.getElementById('btnToday').classList.toggle('active', type === 'today');
+            document.getElementById('btnAll').classList.toggle('active', type === 'all');
+
+            if (type === 'all') {
+                renderOrderedProducts(myOrderedProducts);
+            } else {
+                // আজকের লাইভ তারিখ বের করার লজিক (YYYY-MM-DD ফরম্যাটে)
+                const today = new Date();
+                const yyyy = today.getFullYear();
+                const mm = String(today.getMonth() + 1).padStart(2, '0');
+                const dd = String(today.getDate()).padStart(2, '0');
+                const formattedToday = `${yyyy}-${mm}-${dd}`;
+
+                // লজিক ম্যাচিং: শুধু আজকের তারিখের প্রোডাক্টগুলো ফিল্টার হবে
+                const todayProducts = myOrderedProducts.filter(p => p.date === formattedToday);
+                renderOrderedProducts(todayProducts);
+            }
+        }
+
+        // ৪. ডিলিট বাটন টগল করার ফাংশন
         function toggleDelete(element, event) {
-            // যদি সরাসরি ডিলিট বাটনে ক্লিক করা হয়, তবে এই ফাংশনটি কাজ করবে না
             if (event.target.classList.contains('delete-btn')) return;
 
-            // আগের কোনো প্রোডাক্টে ডিলিট বাটন খোলা থাকলে তা বন্ধ করে দেবে
             document.querySelectorAll('.product-item').forEach(item => {
                 if (item !== element) item.classList.remove('show-delete');
             });
 
-            // বর্তমান প্রোডাক্টে ডিলিট বাটন টগল (আনা/নেওয়া) করবে
             element.classList.toggle('show-delete');
         }
 
-        // আলোর ক্র্যাশ ইফেক্ট এবং ডিলিট করার মেইন লজিক
+        // ৫. আলোর ক্র্যাশ ইফেক্ট এবং ডিলিট করার লজিক
         function deleteProduct(button, event) {
-            event.stopPropagation(); // প্রোডাক্ট ক্লিকের ইভেন্টকে থামানোর জন্য
-            
+            event.stopPropagation();
             const productItem = button.closest('.product-item');
             
-            // বাটনের পজিশন থেকে আলোর ক্র্যাশের কেন্দ্রবিন্দু ঠিক করা
             const rect = button.getBoundingClientRect();
             const centerX = rect.left + rect.width / 2;
             const centerY = rect.top + rect.height / 2;
 
-            // ৩০টি আলোর কণা (Particles) তৈরি করা
             for (let i = 0; i < 30; i++) {
                 createParticle(centerX, centerY);
             }
 
-            // প্রোডাক্টটিকে হালকা অ্যানিমেশন দিয়ে স্ক্রিন থেকে মুছে ফেলা
             productItem.classList.add('fade-out');
             
-            // অ্যানিমেশন শেষ হওয়ার পর ডক থেকে রিমুভ করা (৫০০ মিলি-সেকেন্ড পর)
             setTimeout(() => {
+                // মেইন অ্যারে থেকে ডাটা মুছে ফেলা (অর্ডার আইডি ম্যাচ করে)
+                const orderId = productItem.querySelector('.prod-details p').innerText.replace('অর্ডার আইডি: ', '');
+                const index = myOrderedProducts.findIndex(p => p.id === orderId);
+                if (index !== -1) myOrderedProducts.splice(index, 1);
+                
                 productItem.remove();
             }, 500);
         }
@@ -159,30 +220,28 @@
             particle.classList.add('particle');
             document.body.appendChild(particle);
 
-            // সাইজ র‍্যান্ডম করা (৪ থেকে ১০ পিক্সেল)
             const size = Math.random() * 6 + 4;
             particle.style.width = `${size}px`;
             particle.style.height = `${size}px`;
 
-            // আলোর কণাটি স্ক্রিনের ঠিক কোন জায়গা থেকে ছড়াবে
             particle.style.left = `${x - size / 2}px`;
             particle.style.top = `${y - size / 2}px`;
 
-            // কণাগুলো কোন দিকে কতটা ছিটকে যাবে (র‍্যান্ডম ডিরেকশন)
             const angle = Math.random() * Math.PI * 2;
-            const velocity = Math.random() * 80 + 40; // ছিটকে যাওয়ার গতি
+            const velocity = Math.random() * 80 + 40;
             const mx = Math.cos(angle) * velocity;
             const my = Math.sin(angle) * velocity;
 
-            // সিএসএস ভ্যারিয়েবলে মানগুলো পাস করা
             particle.style.setProperty('--mx', `${mx}px`);
             particle.style.setProperty('--my', `${my}px`);
 
-            // অ্যানিমেশন শেষে কণাগুলো ডিলিট করে দেওয়া যেন মেমোরি জ্যাম না হয়
             setTimeout(() => {
                 particle.remove();
             }, 600);
         }
+
+        // পেজ লোড হওয়ার সাথে সাথে শুরুতে শুধু "আজকের প্রোডাক্ট" দেখাবে
+        filterProducts('today');
     </script>
 </body>
 </html>
