@@ -1,24 +1,32 @@
-// ১. আপনার প্রোডাক্ট লিস্ট
+// ১. আপনার প্রোডাক্ট লিস্ট (এখানে 'date' প্রোপার্টি যুক্ত করা হয়েছে YYYY-MM-DD ফরম্যাটে)
+// উদাহরণ হিসেবে আজকের তারিখ ২০২৬-০৬-২৭ ধরে একটি প্রোডাক্ট দেওয়া হলো
 let products = [
-    { name: "টি-শার্ট", price: 400, oldPrice: "৫০০ টাকা", category: "tshirt" },
-    { name: "ঘড়ি", price: 1500, oldPrice: "", category: "watch" }
+    { name: "টি-শার্ট", price: 400, oldPrice: "৫০০ টাকা", category: "tshirt", date: "2026-06-27" }, 
+    { name: "ঘড়ি", price: 1500, oldPrice: "", category: "watch", date: "2026-06-25" } // এটি আগের দিনের
 ];
 
 let cart = [];
 
-// ফেইক অ্যাডমিন লগইন চেক (পরীক্ষা করার জন্য এটিকে true করে দেখতে পারেন)
+// ফেইক অ্যাডমিন লগইন চেক
 let isAdminLoggedIn = true; 
 
-// ২. প্রোডাক্ট রেন্ডার করার মেইন ফাংশন
-function renderProducts() {
+// ২. প্রোডাক্ট রেন্ডার করার মেইন ফাংশন (যা আমরা ফিল্টার করার জন্যও ব্যবহার করব)
+// এখানে 'productsToShow' দিয়ে ডিফাইন করা হয়েছে কোন প্রোডাক্টগুলো স্ক্রিনে দেখাবে
+function renderProducts(productsToShow = products) {
     const grid = document.getElementById('productGrid');
     if (!grid) return;
     grid.innerHTML = '';
     
-    products.forEach((p, index) => {
+    // যদি কোনো প্রোডাক্ট না থাকে
+    if (productsToShow.length === 0) {
+        grid.innerHTML = '<p style="text-align:center; width:100%; color:gray;">আজকে কোনো নতুন প্রোডাক্ট আপলোড করা হয়নি।</p>';
+        return;
+    }
+    
+    productsToShow.forEach((p, index) => {
         const card = document.createElement('div');
         card.className = `product-card ${p.category}`;
-        card.style.position = 'relative'; // ডিলিট বাটনটি কর্নারে পজিশন করার জন্য
+        card.style.position = 'relative'; 
         
         card.innerHTML = `
             <h3>${p.name}</h3>
@@ -31,7 +39,7 @@ function renderProducts() {
             <button class="delete-btn" id="delete-${index}" style="display: none; position: absolute; top: 5px; right: 5px; background: red; color: white; border: none; padding: 2px 6px; cursor: pointer; border-radius: 3px; font-size: 12px;" onclick="deleteProduct(${index})">ডিলিট করুন</button>
         `;
         
-        // ৩. শুধুমাত্র অ্যাডমিন লগইন থাকলে লং প্রেস (Click & Hold) লজিক কাজ করবে
+        // ৩. শুধুমাত্র অ্যাডমিন লগইন থাকলে লং প্রেস লজিক
         if (isAdminLoggedIn) {
             let pressTimer;
 
@@ -46,12 +54,10 @@ function renderProducts() {
                 clearTimeout(pressTimer);
             };
 
-            // কম্পিউটার মাউসের জন্য ইভেন্ট
             card.addEventListener('mousedown', startPress);
             card.addEventListener('mouseup', cancelPress);
             card.addEventListener('mouseleave', cancelPress);
 
-            // মোবাইল বা টাচ স্ক্রিনের জন্য ইভেন্ট
             card.addEventListener('touchstart', startPress);
             card.addEventListener('touchend', cancelPress);
             card.addEventListener('touchcancel', cancelPress);
@@ -60,6 +66,29 @@ function renderProducts() {
         grid.appendChild(card);
     });
 }
+
+// ================= মেইন লজিক: আজকের নতুন প্রোডাক্ট ফিল্টার করার ফাংশন =================
+function showTodayProducts() {
+    // জাভাস্ক্রিপ্ট দিয়ে আজকের বর্তমান তারিখ (YYYY-MM-DD ফরম্যাটে) বের করা হচ্ছে
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0'); // মাস ০ থেকে শুরু হয় তাই ১ যোগ করা হয়েছে
+    const dd = String(today.getDate()).padStart(2, '0');
+    
+    const formattedToday = `${yyyy}-${mm}-${dd}`; // উদাহরণ: "2026-06-27"
+    
+    // লজিক: শুধু সেই প্রোডাক্টগুলো নাও যেগুলোর তারিখ আজকের তারিখের সমান
+    const todayProducts = products.filter(product => product.date === formattedToday);
+    
+    // স্ক্রিনে শুধু আজকের প্রোডাক্টগুলো রেন্ডার করো
+    renderProducts(todayProducts);
+}
+
+// সমস্ত প্রোডাক্ট একসাথে দেখার জন্য ফাংশন (ইউজার চাইলে যেন আবার সব দেখতে পারে)
+function showAllProducts() {
+    renderProducts(products);
+}
+// ============================================================================
 
 // ৪. প্রোডাক্ট ডিলিট করার ফাংশন
 function deleteProduct(index) {
@@ -98,20 +127,18 @@ function displayCart() {
     totalContainer.innerText = total + " টাকা";
 }
 
-// ৬. চেকআউট ফাংশন (যা ইউজারকে সরাসরি আপনার নতুন checkout.html পেজে পাঠাবে)
+// ৬. চেকআউট ফাংশন
 function checkout() {
     if (cart.length === 0) {
         alert("আপনার কার্ট খালি! দয়া করে প্রথমে প্রোডাক্ট কার্টে যোগ করুন।");
         return;
     }
     
-    // কার্টের মোট হিসাবটি মনে রাখার জন্য (যদি checkout.html পেজে দেখাতে চান)
     const totalBill = document.getElementById('totalPrice') ? document.getElementById('totalPrice').innerText : "0 টাকা";
     localStorage.setItem('orderTotal', totalBill);
     
-    // ইউজারকে সরাসরি আপনার তৈরি করা পেমেন্ট ও ফ্রি অর্ডার ফরমে (checkout.html) নিয়ে যাওয়া হবে
     window.location.href = "checkout.html";
 }
 
-// অ্যাপ রান করার জন্য প্রথম কল
+// অ্যাপ রান করার জন্য প্রথম কল (শুরুতে সব প্রোডাক্ট দেখাবে)
 renderProducts();
