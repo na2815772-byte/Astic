@@ -195,7 +195,7 @@
         /* ইউজার প্রোফাইল কার্ড স্টাইল */
         .user-profile-card { background: white; padding: 25px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 450px; margin: 20px auto; display: none; text-align: left; border: 1px solid #e2e8f0; }
         .profile-header { text-align: center; margin-bottom: 20px; }
-        .profile-header img { width: 85px; height: 85px; border-radius: 50%; border: 3px solid #3b82f6; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2); }
+        .profile-header img { width: 85px; height: 85px; border-radius: 50%; border: 3px solid #3b82f6; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2); object-fit: cover; }
         .balance-box { background: #eff6ff; padding: 16px; border-radius: 12px; margin: 15px 0; font-size: 16px; font-weight: 700; text-align: center; color: #1e40af; border: 1px solid #bfdbfe; }
         
         /* তথ্য ও যোগাযোগ বক্স */
@@ -376,7 +376,7 @@
 
         <div class="user-profile-card" id="userProfileCard">
             <div class="profile-header">
-                <img src="https://via.placeholder.com/80?text=User" alt="User Profile">
+                <img id="userProfileImg" src="https://via.placeholder.com/80?text=User" alt="User Profile">
                 <h2 id="profileWelcome" style="margin: 10px 0 5px 0;">স্বাগতম আপনাকে!</h2>
             </div>
             
@@ -808,16 +808,12 @@
             }
         }
 
-        // =====================================================================
-        // ইনবক্স ড্যাশবোর্ডের জন্য ডাইনামিক সাবমিট লজিক (আপডেটেড)
-        // =====================================================================
         function submitDarazOrder() {
             const name = document.getElementById('custName').value.trim();
             const phone = document.getElementById('custPhone').value.trim();
             const address = document.getElementById('custAddress').value.trim();
             const city = document.getElementById('custCity').value.trim();
 
-            // নাম, ফোন, গ্রাম, শহরের বেসিক সিকিউরিটি ফিল্টার
             const invalidPatterns = /^(.)\1{2,}$/; 
             const onlyNumbers = /^[0-9]+$/; 
             const phonePattern = /^01[3-9]\d{8}$/;
@@ -842,7 +838,6 @@
             let pMethod = "Free/Cash On Delivery";
             let pTxnId = "N/A";
 
-            // ইউজার যদি 'পেইড অর্ডার' সিলেক্ট করে থাকে তবে পেমেন্ট ভ্যালিডেশন চেক হবে
             if (currentModalOrderType === 'paid') {
                 pMethod = document.getElementById('custMethod').value;
                 pTxnId = document.getElementById('custTxnId').value.trim();
@@ -857,7 +852,6 @@
                 }
                 document.getElementById('successCustomMessage').innerText = "আপনার পেমেন্টটি সফল হয়েছে এবং তথ্য সম্পূর্ণ হয়েছে। অর্ডারটি নিশ্চিত করার জন্য ধন্যবাদ!";
             } else {
-                // ফ্রি অর্ডারের জন্য সাকসেস মেসেজ সেট করা
                 document.getElementById('successCustomMessage').innerText = "আপনার ফ্রি অর্ডারটি সফলভাবে গ্রহণ করা হয়েছে। আমাদের সাথে থাকার জন্য ধন্যবাদ!";
             }
 
@@ -866,7 +860,6 @@
             const pPrice = currentSelectedProduct ? currentSelectedProduct.price : "০ টাকা";
             const pImg = currentSelectedProduct ? (currentSelectedProduct.image || "https://via.placeholder.com/200x150?text=Product") : "https://via.placeholder.com/200x150?text=Product";
 
-            // ইনবক্স ড্যাশবোর্ডে ডেটা পাঠানো
             const newOrderData = {
                 id: orderId,
                 name: name,
@@ -902,13 +895,37 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        // =====================================================================
+        // প্রোফাইল ছবি ডাইনামিক করার জন্য আপডেটেড লজিক (লগইন স্ট্যাটাস চেক)
+        // =====================================================================
         function checkLoginStatus() {
             const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-            const userEmail = localStorage.getItem('loggedInUser') || 'ইউজার'; 
             const userBalance = localStorage.getItem('userBalance') || '০.০০';
             
             if (isLoggedIn) {
-                document.getElementById('profileWelcome').innerHTML = `স্বাগতম আপনাকে!<br><span style="font-size:14px;color:#64748b;font-weight:normal;">${userEmail}</span>`;
+                // ১. localStorage থেকে ইউজারের অবজেক্ট ডেটা নিয়ে আসা
+                const savedUserString = localStorage.getItem('loggedInUser');
+                let displayEmail = 'ইউজার';
+                let profileImgUrl = 'https://via.placeholder.com/80?text=User'; // ডিফল্ট ইমেজ
+
+                if (savedUserString) {
+                    try {
+                        const userObj = JSON.parse(savedUserString);
+                        displayEmail = userObj.email || displayEmail;
+                        
+                        // যদি Supabase ডেটাবেস থেকে পাওয়া প্রোফাইল ছবির লিংক অবজেক্টে থাকে (যেমন: user.profile_image)
+                        // আপনার Supabase টেবিলের কলামের নাম অনুযায়ী 'profile_image' পরিবর্তন করতে পারেন।
+                        if (userObj.profile_image) {
+                            profileImgUrl = userObj.profile_image;
+                        }
+                    } catch (e) {
+                        displayEmail = savedUserString; // যদি অবজেক্ট না হয়ে শুধু স্ট্রিং ইমেইল থাকে
+                    }
+                }
+
+                // ২. ডাইনামিক লেখা ও ছবি সেট করা
+                document.getElementById('profileWelcome').innerHTML = `স্বাগতম আপনাকে!<br><span style="font-size:14px;color:#64748b;font-weight:normal;">${displayEmail}</span>`;
+                document.getElementById('userProfileImg').src = profileImgUrl;
                 document.getElementById('userBalance').innerText = userBalance;
             }
             return isLoggedIn;
@@ -978,7 +995,7 @@
         function goToPaymentStep2() {
             const amount = document.getElementById('userAmountInput').value.trim();
             if(!amount) {
-                alert("দয়া করে আপনার হিসাবের ঘরে টাকার পরিমাণটি বসան!");
+                alert("দয়া করে আপনার হিসাবের ঘরে টাকার পরিমাণটি বসান!");
                 return;
             }
             hideAllViews();
@@ -995,7 +1012,7 @@
             const amount = document.getElementById('userAmountInput').value.trim();
             
             if(!trxId) {
-                alert("দয়া করে আপনার কাঙ্ক্ষিত ট্রানজেকশন আইডিটি বসան!");
+                alert("দয়া করে আপনার কাঙ্ক্ষিত ট্রানজেকশন আইডিটি বসান!");
                 return;
             }
             
