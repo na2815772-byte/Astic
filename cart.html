@@ -63,6 +63,14 @@
         .checkout-btn:hover {
             background-color: #219653;
         }
+        /* প্রোডাক্ট না থাকলে যে মেসেজ দেখাবে তার স্টাইল */
+        .no-product-msg {
+            text-align: center;
+            color: #e74c3c;
+            font-size: 1.2em;
+            font-weight: bold;
+            padding: 20px 0;
+        }
     </style>
 </head>
 <body>
@@ -70,24 +78,66 @@
     <div class="cart-container">
         <h2>আপনার কার্ট</h2>
         
-        <div class="cart-item">
-            <span class="item-name">পণ্য ১</span>
-            <span class="item-price">৳ ৫০০</span>
-        </div>
-        <div class="cart-item">
-            <span class="item-name">পণ্য ২</span>
-            <span class="item-price">৳ ৩০০</span>
-        </div>
+        <div id="cart-items-container">
+            </div>
 
-        <div class="total-section">
+        <div id="total-area" class="total-section">
             <span>মোট:</span>
-            <span>৳ ৮००</span>
+            <span id="total-price">৳ ০</span>
         </div>
 
-        <a href="checkout.html" style="text-decoration: none;">
+        <a id="checkout-link" href="checkout.html" style="text-decoration: none;">
             <button class="checkout-btn">চেকআউট করুন</button>
         </a>
     </div>
+
+    <script>
+        // ১. আজকের তারিখ বের করার লজিক (YYYY-MM-DD ফরম্যাটে)
+        const today = new Date().toISOString().split('T')[0];
+
+        // ২. কাল্পনিক ডাটাবেজ (উদাহরণস্বরূপ: অ্যাডমিনদের আপলোড করা প্রোডাক্টের তালিকা ও তারিখ)
+        // বাস্তব প্রজেক্টে এই ডাটা Firebase, LocalStorage বা API থেকে আসবে।
+        // এখানে বোঝার সুবিধার্থে 'uploadDate' আজকের তারিখ (today) দিয়ে রাখা হয়েছে।
+        const uploadedProducts = [
+            { id: 1, name: "পণ্য ১", price: 500, uploadDate: today },
+            { id: 2, name: "পণ্য ২", price: 300, uploadDate: today }
+        ];
+
+        // ৩. মেইন লজিক: ফিল্টার করে শুধু আজকের দিনের প্রোডাক্টগুলো নেওয়া
+        const todaysProducts = uploadedProducts.filter(product => product.uploadDate === today);
+
+        // ৪. এইচটিএমএল-এ প্রদর্শনের লজিক
+        const container = document.getElementById('cart-items-container');
+        const totalArea = document.getElementById('total-area');
+        const checkoutLink = document.getElementById('checkout-link');
+        const totalPriceSpan = document.getElementById('total-price');
+
+        if (todaysProducts.length > 0) {
+            // যদি আজকের দিনে প্রোডাক্ট আপলোড হয়ে থাকে
+            let cartHTML = '';
+            let total = 0;
+
+            todaysProducts.forEach(product => {
+                cartHTML += `
+                    <div class="cart-item">
+                        <span class="item-name">${product.name}</span>
+                        <span class="item-price">৳ ${product.price}</span>
+                    </div>
+                `;
+                total += product.price;
+            });
+
+            container.innerHTML = cartHTML;
+            totalPriceSpan.innerText = `৳ ${total}`;
+        } else {
+            // যদি আজকে কোনো প্রোডাক্ট আপলোড না হয়ে থাকে (খালি থাকে)
+            container.innerHTML = `<p class="no-product-msg">আপনার কোনো প্রোডাক্ট নেই অথবা আজকে কোনো প্রোডাক্ট আপলোড হয়নি।</p>`;
+            
+            // প্রোডাক্ট না থাকলে মোট টাকা এবং চেকআউট বাটন লুকিয়ে রাখার লজিক
+            totalArea.style.display = 'none';
+            checkoutLink.style.display = 'none';
+        }
+    </script>
 
 </body>
 </html>
