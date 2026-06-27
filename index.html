@@ -257,12 +257,6 @@
             padding: 4px 0;
         }
         
-        .nav-icon { 
-            font-size: 22px; 
-            margin-bottom: 4px; 
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-        
         .nav-item:hover, .nav-item.active { color: #2563eb; }
         .nav-item:hover .nav-icon, .nav-item.active .nav-icon { transform: translateY(-4px) scale(1.1); }
         .nav-item.active::after { content: ''; position: absolute; bottom: -4px; width: 5px; height: 5px; background-color: #2563eb; border-radius: 50%; box-shadow: 0 0 10px #2563eb; }
@@ -451,7 +445,7 @@
         </div>
 
         <div id="mainHomeView">
-            <h1 style="font-size: 22px; font-weight: 700; margin-bottom: 20px; color: #1e293b; padding-left: 5px;">আমাদের প্রোডাক্টগুলো</h1>
+            <h1 id="homeViewTitle" style="font-size: 22px; font-weight: 700; margin-bottom: 20px; color: #1e293b; padding-left: 5px;">আমাদের প্রোডাক্টগুলো</h1>
             <div class="product-grid" id="productGrid"></div>
         </div>
     </div>
@@ -480,7 +474,7 @@
 
                 <div class="daraz-notice-box" id="modalPaymentNotice">
                     <strong>পেমেন্ট নিয়ম:</strong> নিচের নম্বরটি কপি করে আপনার ইচ্ছামতো ক্যাশআউট অথবা সেন্ড মানি করুন। এরপর আপনার কাঙ্ক্ষিত তথ্য দিয়ে সাবমিট করুন। <br>
-                    নম্বর (কপি করতে ক্লিক করুন): <span class="daraz-copy-num" onclick="copyText('01315531124')">01315531124</span>
+                    নম্বর (কپی করতে ক্লিক করুন): <span class="daraz-copy-num" onclick="copyText('01315531124')">01315531124</span>
                 </div>
 
                 <h3>📍 ডেলিভারি ঠিকানা দিন</h3>
@@ -509,7 +503,7 @@
             <span class="nav-icon">🏠</span>
             <span>হোম</span>
         </button>
-        <button class="nav-item" onclick="handleOrderNavClick()">
+        <button class="nav-item" id="orderNavBtn" onclick="handleOrderNavClick()">
             <span class="nav-icon">🛍️</span>
             <span>অর্ডার</span>
         </button>
@@ -578,9 +572,20 @@
             return adminPanel && adminPanel.style.display === 'block';
         }
 
-        // ডিফল্ট প্রোডাক্টে আমরা পূর্ববর্তী ট্র্যাকিংয়ের জন্য একটি পুরনো তারিখ যুক্ত করে রাখলাম
+        // লাইভ ডেট ট্র্যাকিং এর জন্য আজকের সঠিক ডাইনামিক ডেট সেট করা
+        function getLiveFormattedDate() {
+            const today = new Date();
+            const yyyy = today.getFullYear();
+            const mm = String(today.getMonth() + 1).padStart(2, '0');
+            const dd = String(today.getDate()).padStart(2, '0');
+            return `${yyyy}-${mm}-${dd}`; 
+        }
+
+        const todayLiveDate = getLiveFormattedDate();
+
+        // ডিফল্ট প্রোডাক্টে আজকের ডাইনামিক ডেট সেট করে দেওয়া হলো
         let defaultProducts = [
-            { name: "প্রিমিয়াম টি-শার্ট", price: "৪০০ টাকা", oldPrice: "৫০০ টাকা", category: "tshirt", image: "https://via.placeholder.com/200x150?text=T-Shirt", date: "2026-06-25" },
+            { name: "প্রিমিয়াম টি-শার্ট", price: "৪০০ টাকা", oldPrice: "৫০০ টাকা", category: "tshirt", image: "https://via.placeholder.com/200x150?text=T-Shirt", date: todayLiveDate },
             { name: "স্মার্ট ওয়াচ", price: "১৫০০ টাকা", oldPrice: "", category: "watch", image: "https://via.placeholder.com/200x150?text=Watch", date: "2026-06-25" }
         ];
 
@@ -590,7 +595,7 @@
             const grid = document.getElementById('productGrid');
             grid.innerHTML = '';
             if(productsToRender.length === 0) {
-                grid.innerHTML = '<div style="color:#64748b; padding: 20px; font-weight: 500;">কোনো প্রোডাক্ট পাওয়া যায়নি!</div>';
+                grid.innerHTML = '<div style="color:#ef4444; padding: 20px; font-weight: bold; text-align: center; width: 100%;">আপনার কোন প্রোডাক্ট নেই অথবা আজকে কোন প্রোডাক্ট আপলোড হয়নি।</div>';
                 return;
             }
             productsToRender.forEach((p, index) => {
@@ -696,24 +701,13 @@
             setTimeout(() => { particle.remove(); }, 600);
         }
 
-        // =====================================================================
-        // মেইন লজিক: প্রোডাক্ট যোগ করার সময় স্বয়ংক্রিয়ভাবে লাইভ তারিখ যোগ করা
-        // =====================================================================
-        function getLiveFormattedDate() {
-            const today = new Date();
-            const yyyy = today.getFullYear();
-            const mm = String(today.getMonth() + 1).padStart(2, '0');
-            const dd = String(today.getDate()).padStart(2, '0');
-            return `${yyyy}-${mm}-${dd}`; // ফরম্যাট: "2026-06-27"
-        }
-
         function addProduct() {
             const name = document.getElementById('pName').value;
             const price = document.getElementById('pPrice').value;
             const oldPrice = document.getElementById('pOldPrice').value;
             const category = document.getElementById('pCategory').value;
             const imageInput = document.getElementById('pImage');
-            const uploadDate = getLiveFormattedDate(); // লাইভ তারিখ বের করা হলো
+            const uploadDate = getLiveFormattedDate(); 
             
             if (name && price) {
                 if (imageInput.files && imageInput.files[0]) {
@@ -732,9 +726,22 @@
 
         function saveAndRender() { localStorage.setItem('myProducts', JSON.stringify(products)); renderProducts(); }
         function clearInputs() { document.getElementById('pName').value = ''; document.getElementById('pPrice').value = ''; document.getElementById('pOldPrice').value = ''; document.getElementById('pImage').value = ''; }
-        function filterCategory(category) { document.getElementById('searchInput').value = ''; const filtered = products.filter(p => p.category === category); renderProducts(filtered); showHomeView(); toggleSidebar(); }
-        function searchProducts() { const query = document.getElementById('searchInput').value.toLowerCase().trim(); if (query === '') { renderProducts(products); return; } const filtered = products.filter(p => p.name.toLowerCase().includes(query)); renderProducts(filtered); }
-        function showSection(section) { alert(section + " সেকশনটি পরবর্তীতে ডাইনামিক করা হবে।"); }
+        
+        function filterCategory(category) { 
+            document.getElementById('searchInput').value = ''; 
+            const filtered = products.filter(p => p.category === category); 
+            document.getElementById('homeViewTitle').innerText = "ক্যাটাগরি প্রোডাক্ট";
+            renderProducts(filtered); 
+            showHomeView(); 
+            toggleSidebar(); 
+        }
+        
+        function searchProducts() { 
+            const query = document.getElementById('searchInput').value.toLowerCase().trim(); 
+            if (query === '') { renderProducts(products); return; } 
+            const filtered = products.filter(p => p.name.toLowerCase().includes(query)); 
+            renderProducts(filtered); 
+        }
 
         function isUserLoggedIn() {
             return localStorage.getItem('isLoggedIn') === 'true';
@@ -775,14 +782,26 @@
         }
 
         // =====================================================================
-        // ইউজার যখন 'অর্ডার' ন্যাভিগেশন বাটনে ক্লিক করবে, তখন সে সরাসরি 'my-products.html' পেজে চলে যাবে
+        // মেইন লজিক: ইউজার যখন নিচের 'অর্ডার' ন্যাভিগেশন বাটনে ক্লিক করবে
         // =====================================================================
         function handleOrderNavClick() {
             if (!isUserLoggedIn()) {
                 alert("প্রথমে নিবন্ধনটি সম্পূর্ণ করুন তারপর অর্ডার করুন।");
-            } else {
-                window.location.href = "my-products.html";
+                return;
             }
+            
+            resetNavActiveState();
+            document.getElementById('orderNavBtn').classList.add('active');
+            hideAllViews();
+            
+            // আজকের লাইভ তারিখ ফিল্টারিং লজিক
+            const today = getLiveFormattedDate();
+            const todaysProducts = products.filter(p => p.date === today);
+            
+            // টাইটেল আপডেট ও আজকের প্রোডাক্ট রেন্ডার
+            document.getElementById('homeViewTitle').innerText = "আজকের আপলোড করা প্রোডাক্ট";
+            document.getElementById('mainHomeView').style.display = 'block';
+            renderProducts(todaysProducts);
         }
 
         function closeDarazModal() {
@@ -957,7 +976,9 @@
             resetNavActiveState();
             document.getElementById('homeNavBtn').classList.add('active');
             hideAllViews();
+            document.getElementById('homeViewTitle').innerText = "আমাদের প্রোডাক্টগুলো";
             document.getElementById('mainHomeView').style.display = 'block';
+            renderProducts(products); // হোমে ক্লিক করলে সব প্রোডাক্ট দেখাবে
         }
 
         function resetNavActiveState() {
@@ -1002,7 +1023,7 @@
         function goToPaymentStep2() {
             const amount = document.getElementById('userAmountInput').value.trim();
             if(!amount) {
-                alert("দয়া করে আপনার হিসাবের ঘরে টাকার পরিমাণটি বসান!");
+                alert("দয়া করে আপনার হিসাবের ঘরে টাকার পরিমাণটি বসան!");
                 return;
             }
             hideAllViews();
@@ -1019,7 +1040,7 @@
             const amount = document.getElementById('userAmountInput').value.trim();
             
             if(!trxId) {
-                alert("দয়া করে আপনার কাঙ্ক্ষিত ট্রানজেকশন আইডিটি বসান!");
+                alert("দয়া করে আপনার কাঙ্ক্ষিত ট্রানজেকশন আইডিটি বসան!");
                 return;
             }
             
