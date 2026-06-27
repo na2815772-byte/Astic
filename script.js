@@ -1,8 +1,18 @@
 // ১. আপনার প্রোডাক্ট লিস্ট (এখানে 'date' প্রোপার্টি যুক্ত করা হয়েছে YYYY-MM-DD ফরম্যাটে)
-// উদাহরণ হিসেবে আজকের তারিখ ২০২৬-০৬-২৭ ধরে একটি প্রোডাক্ট দেওয়া হলো
+// জাভাস্ক্রিপ্ট দিয়ে আজকের বর্তমান তারিখ স্বয়ংক্রিয়ভাবে বের করার ফাংশন
+function getFormattedDate() {
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth() + 1).padStart(2, '0'); 
+    const dd = String(today.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+}
+
+const currentDate = getFormattedDate(); // আজকের রিয়েল তারিখ ডাইনামিকালি নেবে
+
 let products = [
-    { name: "টি-শার্ট", price: 400, oldPrice: "৫০০ টাকা", category: "tshirt", date: "2026-06-27" }, 
-    { name: "ঘড়ি", price: 1500, oldPrice: "", category: "watch", date: "2026-06-25" } // এটি আগের দিনের
+    { name: "টি-শার্ট", price: 400, oldPrice: "৫০০ টাকা", category: "tshirt", date: currentDate }, // এটি আজকের প্রোডাক্ট
+    { name: "ঘড়ি", price: 1500, oldPrice: "", category: "watch", date: "2026-06-25" } // এটি আগের দিনের (পুরাতন)
 ];
 
 let cart = [];
@@ -10,16 +20,18 @@ let cart = [];
 // ফেইক অ্যাডমিন লগইন চেক
 let isAdminLoggedIn = true; 
 
-// ২. প্রোডাক্ট রেন্ডার করার মেইন ফাংশন (যা আমরা ফিল্টার করার জন্যও ব্যবহার করব)
-// এখানে 'productsToShow' দিয়ে ডিফাইন করা হয়েছে কোন প্রোডাক্টগুলো স্ক্রিনে দেখাবে
+// ২. প্রোডাক্ট রেন্ডার করার মেইন ফাংশน
 function renderProducts(productsToShow = products) {
     const grid = document.getElementById('productGrid');
     if (!grid) return;
     grid.innerHTML = '';
     
-    // যদি কোনো প্রোডাক্ট না থাকে
+    // লজিক: যদি কোনো প্রোডাক্ট না থাকে তবে সুন্দর করে মেসেজ দেখাবে
     if (productsToShow.length === 0) {
-        grid.innerHTML = '<p style="text-align:center; width:100%; color:gray;">আজকে কোনো নতুন প্রোডাক্ট আপলোড করা হয়নি।</p>';
+        grid.innerHTML = `
+            <div style="text-align:center; width:100%; color:#e74c3c; font-weight:bold; padding: 20px;">
+                আপনার কোন প্রোডাক্ট নেই অথবা আজকে কোন প্রোডাক্ট আপলোড হয়নি।
+            </div>`;
         return;
     }
     
@@ -69,24 +81,31 @@ function renderProducts(productsToShow = products) {
 
 // ================= মেইন লজিক: আজকের নতুন প্রোডাক্ট ফিল্টার করার ফাংশন =================
 function showTodayProducts() {
-    // জাভাস্ক্রিপ্ট দিয়ে আজকের বর্তমান তারিখ (YYYY-MM-DD ফরম্যাটে) বের করা হচ্ছে
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0'); // মাস ০ থেকে শুরু হয় তাই ১ যোগ করা হয়েছে
-    const dd = String(today.getDate()).padStart(2, '0');
+    const formattedToday = getFormattedDate(); 
     
-    const formattedToday = `${yyyy}-${mm}-${dd}`; // উদাহরণ: "2026-06-27"
-    
-    // লজিক: শুধু সেই প্রোডাক্টগুলো নাও যেগুলোর তারিখ আজকের তারিখের সমান
+    // লজিক: শুধু সেই প্রোডাক্টগুলো ফিল্টার হবে যেগুলোর তারিখ আজকের তারিখের সমান
     const todayProducts = products.filter(product => product.date === formattedToday);
     
-    // স্ক্রিনে শুধু আজকের প্রোডাক্টগুলো রেন্ডার করো
+    // স্ক্রিনে শুধু আজকের প্রোডাক্টগুলো দেখাবে
     renderProducts(todayProducts);
 }
 
-// সমস্ত প্রোডাক্ট একসাথে দেখার জন্য ফাংশন (ইউজার চাইলে যেন আবার সব দেখতে পারে)
+// সমস্ত প্রোডাক্ট একসাথে দেখার জন্য ফাংশন
 function showAllProducts() {
     renderProducts(products);
+}
+
+// অ্যাডমিন প্যানেল থেকে নতুন প্রোডাক্ট আপলোড করার কাল্পনিক ফাংশন (লজিক সুরক্ষার জন্য)
+function adminUploadProduct(name, price, oldPrice, category) {
+    const newProduct = {
+        name: name,
+        price: price,
+        oldPrice: oldPrice,
+        category: category,
+        date: getFormattedDate() // আপলোড করার সাথে সাথে আজকের ডেট অটোমেটিক বসে যাবে
+    };
+    products.push(newProduct);
+    renderProducts();
 }
 // ============================================================================
 
@@ -108,10 +127,22 @@ function addToCart(name, price) {
 function displayCart() {
     const cartContainer = document.getElementById('cartItems');
     const totalContainer = document.getElementById('totalPrice');
+    
+    // যদি কার্ট পেজে সরাসরি আজকের আপলোড করা প্রোডাক্টের ডাটা দেখাতে চান:
     if (!cartContainer || !totalContainer) return;
 
     cartContainer.innerHTML = '';
     let total = 0;
+
+    // কার্ট পেজেও শুধু আজকের দিনের যুক্ত করা প্রোডাক্ট ভ্যালিডেশন লজিক
+    if (cart.length === 0) {
+        cartContainer.innerHTML = `
+            <p style="color: red; text-align: center; font-weight: bold;">
+                আপনার কোন প্রোডাক্ট নেই অথবা আজকে কোন প্রোডাক্ট আপলোড হয়নি।
+            </p>`;
+        totalContainer.innerText = "০ টাকা";
+        return;
+    }
 
     cart.forEach(item => {
         const itemElement = document.createElement('div');
@@ -140,5 +171,6 @@ function checkout() {
     window.location.href = "checkout.html";
 }
 
-// অ্যাপ রান করার জন্য প্রথম কল (শুরুতে সব প্রোডাক্ট দেখাবে)
-renderProducts();
+// অ্যাপ রান করার জন্য প্রথম কল
+// লজিক: গ্রাহক যখনই পেজে আসবে, সে শুরুতেই শুধু আজকের আপলোড করা প্রোডাক্টগুলো দেখতে পাবে।
+showTodayProducts();
