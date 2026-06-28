@@ -9,7 +9,13 @@
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
         body { background-color: #f7f9fc; padding: 20px; }
         .container { max-width: 500px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; }
-        .profile-icon { font-size: 60px; color: #3498db; background: #e8f4fd; width: 110px; height: 110px; line-height: 110px; border-radius: 50%; margin: 0 auto 20px; border: 3px solid #3498db; }
+        
+        /* প্রোফাইল ইমেজ কন্টেইনার এবং এডিটের স্টাইল */
+        .profile-img-container { position: relative; width: 110px; height: 110px; margin: 0 auto 20px; }
+        .profile-pic { width: 110px; height: 110px; border-radius: 50%; border: 3px solid #3498db; object-fit: cover; display: block; background: #e8f4fd; }
+        .upload-overlay { position: absolute; bottom: 0; right: 0; background: #3498db; color: white; border-radius: 50%; width: 32px; height: 32px; line-height: 32px; font-size: 16px; cursor: pointer; border: 2px solid white; display: none; text-align: center; }
+        #fileInput { display: none; }
+
         h1 { color: #2c3e50; margin-bottom: 20px; font-size: 24px; }
         .info-box { text-align: left; background: #f8f9fa; padding: 15px; border-radius: 6px; border-left: 4px solid #3498db; margin-bottom: 15px; }
         .info-box label { display: block; font-size: 12px; color: #7f8c8d; text-transform: uppercase; font-weight: bold; margin-bottom: 5px; }
@@ -26,7 +32,12 @@
 <body>
 
     <div class="container">
-        <div class="profile-icon">👤</div>
+        <div class="profile-img-container">
+            <img src="https://via.placeholder.com/110?text=👤" id="profilePic" class="profile-pic" alt="প্রোফাইল ছবি">
+            <label for="fileInput" class="upload-overlay" id="uploadOverlay">📷</label>
+            <input type="file" id="fileInput" accept="image/*" onchange="previewImage(event)" disabled>
+        </div>
+
         <h1>আমার প্রোফাইল</h1>
         
         <div class="info-box">
@@ -53,13 +64,12 @@
 
     <script>
         // ================= Supabase ইনিশিয়েলাইজেশন =================
-        // এখানে আপনার দেওয়া আসল URL এবং API Key বসানো হয়েছে
         const SUPABASE_URL = "https://mbxkickfugdkgsabizrr.supabase.co";
         const SUPABASE_KEY = "sb_publishable_ButTVVb8ZxL7QeaL919qJg_gZ2HDjfb";
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        // ফেইক ইউজার আইডি (যেহেতু প্রোফাইল একটি নির্দিষ্ট ইউজারের হয়, পরবর্তীতে লগইন সিস্টেম বানালে এটা ডাইনামিক হবে)
         const currentUserId = 1; 
+        let selectedFile = null; // গ্যালারি থেকে সিলেক্ট করা ফাইল সাময়িক রাখার জন্য
 
         // পেজ লোড হওয়ার সাথে সাথে Supabase থেকে ডাটা এনে দেখাবে
         window.onload = async function() {
@@ -70,69 +80,113 @@
         async function loadProfileData() {
             try {
                 let { data, error } = await supabase
-                    .from('profile') // আপনার ডাটাবেজের টেবিল নাম অনুযায়ী 'profile' রাখা হলো
+                    .from('profile')
                     .select('*')
                     .eq('id', currentUserId)
                     .single();
 
-                if (error && error.code !== 'PGRST116') throw error; // PGRST116 মানে কোনো ডাটা নাই, নতুন ইউজার
+                if (error && error.code !== 'PGRST116') throw error;
 
-                // ডাটাবেজে তথ্য থাকলে তা স্ক্রিনে দেখাবে
                 if (data) {
-                    document.getElementById('userName').value = data.name;
-                    document.getElementById('userPhone').value = data.phone;
-                    document.getElementById('userAddress').value = data.address;
+                    document.getElementById('userName').value = data.name || '';
+                    document.getElementById('userPhone').value = data.phone || '';
+                    document.getElementById('userAddress').value = data.address || '';
+                    // ডাটাবেজে যদি ইমেজ ইউআরএল থাকে তবে তা দেখাবে, না থাকলে ডিফল্ট ইমেজ
+                    if(data.image_url) {
+                        document.getElementById('profilePic').src = data.image_url;
+                    }
                 }
             } catch (error) {
                 console.error("প্রোফাইল ডাটা লোড করতে সমস্যা হয়েছে:", error.message);
             }
         }
 
-        // ইনপুট বক্সগুলো এডিট করার মুড অন/অফ করার লজিক
+        // গ্যালারি থেকে ছবি সিলেক্ট করলে সাথে সাথে স্ক্রিনে দেখানোর ফাংশন
+        function previewImage(event) {
+            const file = event.target.files[0];
+            if (file) {
+                selectedFile = file;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profilePic').src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // ইনপুট বক্সগুলো এবং ক্যামেরা আইকন এডিট করার মুড অন/অফ করার লজিক
         function toggleEdit() {
             document.getElementById('userName').disabled = false;
             document.getElementById('userPhone').disabled = false;
             document.getElementById('userAddress').disabled = false;
-
+            document.getElementById('fileInput').disabled = false;
+            
+            document.getElementById('uploadOverlay').style.display = 'block'; // ক্যামেরা আইকন দেখাবে
             document.getElementById('editBtn').style.display = 'none';
             document.getElementById('saveBtn').style.display = 'block';
             
-            // প্রথম ইনপুট বক্সে ফোকাস করবে
             document.getElementById('userName').focus();
         }
 
-        // Supabase-এ নতুন ডাটা সেভ বা আপডেট করার ফাংশন
+        // Supabase-এ ইমেজ এবং টেক্সট ডাটা সেভ বা আপডেট করার ফাংশন
         async function saveProfile() {
             const name = document.getElementById('userName').value;
             const phone = document.getElementById('userPhone').value;
             const address = document.getElementById('userAddress').value;
+            let imageUrl = document.getElementById('profilePic').src;
 
             try {
-                // 'upsert' ব্যবহার করা হয়েছে, যাতে ডাটা না থাকলে নতুন তৈরি হয় আর থাকলে আপডেট হয়
+                // ১. যদি নতুন কোনো ছবি সিলেক্ট করা হয়ে থাকে, তবে তা প্রথমে Storage-এ আপলোড হবে
+                if (selectedFile) {
+                    const fileExt = selectedFile.name.split('.').pop();
+                    const fileName = `${currentUserId}-${Date.now()}.${fileExt}`;
+                    const filePath = `avatar_${fileName}`;
+
+                    // 'avatars' বাকেটে ছবি আপলোড করা হচ্ছে
+                    let { error: uploadError } = await supabase.storage
+                        .from('avatars')
+                        .upload(filePath, selectedFile, { upsert: true });
+
+                    if (uploadError) throw uploadError;
+
+                    // আপলোড হওয়া ছবির পাবলিক URL নেওয়া হচ্ছে
+                    const { data: publicUrlData } = supabase.storage
+                        .from('avatars')
+                        .getPublicUrl(filePath);
+                    
+                    imageUrl = publicUrlData.publicUrl;
+                }
+
+                // ২. এবার প্রোফাইল টেবিলের টেক্সট এবং ইমেজ ইউআরএল একসাথে আপডেট হবে
                 const { error } = await supabase
-                    .from('profile') // আপনার ডাটাবেজের টেবিল নাম অনুযায়ী 'profile' রাখা হলো
+                    .from('profile')
                     .upsert({ 
                         id: currentUserId, 
                         name: name, 
                         phone: phone, 
-                        address: address 
+                        address: address,
+                        image_url: imageUrl // টেবিলের কলামের নাম 'image_url' নিশ্চিত করুন
                     });
 
                 if (error) throw error;
 
-                alert("আপনার প্রোফাইল তথ্য সফলভাবে আপডেট হয়েছে!");
+                alert("আপনার প্রোফাইল তথ্য ও ছবি সফলভাবে আপডেট হয়েছে!");
 
                 // সেভ হওয়ার পর আবার ফিল্ডগুলো লক করে দেবে
                 document.getElementById('userName').disabled = true;
                 document.getElementById('userPhone').disabled = true;
                 document.getElementById('userAddress').disabled = true;
+                document.getElementById('fileInput').disabled = true;
 
+                document.getElementById('uploadOverlay').style.display = 'none';
                 document.getElementById('editBtn').style.display = 'block';
                 document.getElementById('saveBtn').style.display = 'none';
+                
+                selectedFile = null; // রিসেট
 
             } catch (error) {
                 console.error("প্রোফাইল সেভ করতে সমস্যা হয়েছে:", error.message);
-                alert("তথ্য সেভ করা যায়নি। দয়া করে ডাটাবেজ টেবিল চেক করুন।");
+                alert("তথ্য সেভ করা যায়নি। দয়া করে Storage Bucket এবং Database Table চেক করুন।");
             }
         }
     </script>
