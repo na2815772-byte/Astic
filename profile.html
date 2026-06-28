@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>মাই প্রোফাইল - এস্টিক</title>
+    <!-- Supabase CDN (ডাটাবেজ কানেক্ট করার জন্য) -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
         body { background-color: #f7f9fc; padding: 20px; }
@@ -13,8 +15,12 @@
         .info-box { text-align: left; background: #f8f9fa; padding: 15px; border-radius: 6px; border-left: 4px solid #3498db; margin-bottom: 15px; }
         .info-box label { display: block; font-size: 12px; color: #7f8c8d; text-transform: uppercase; font-weight: bold; margin-bottom: 5px; }
         .info-box p { font-size: 16px; color: #333; font-weight: 500; }
-        .edit-btn { background: #3498db; color: white; border: none; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; margin-top: 10px; }
+        .info-box input { width: 100%; border: none; background: transparent; font-size: 16px; font-weight: 500; color: #333; outline: none; padding: 2px 0; }
+        .edit-btn, .save-btn { color: white; border: none; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-size: 16px; font-weight: bold; width: 100%; margin-top: 10px; }
+        .edit-btn { background: #3498db; }
         .edit-btn:hover { background: #2980b9; }
+        .save-btn { background: #2ecc71; display: none; }
+        .save-btn:hover { background: #27ae60; }
         .back-btn { display: inline-block; margin-top: 25px; text-decoration: none; color: #3498db; font-weight: bold; }
     </style>
 </head>
@@ -24,26 +30,113 @@
         <div class="profile-icon">👤</div>
         <h1>আমার প্রোফাইল</h1>
         
+        <!-- প্রতিটি ফিল্ডে আইডি এবং ইনপুট ট্যাগ যোগ করা হয়েছে যা শুরুতে রিড-অনলি (Disabled) থাকবে -->
         <div class="info-box">
             <label>ব্যবহারকারীর নাম</label>
-            <p>নিলয় হাসান</p>
+            <input type="text" id="userName" value="নিলয় হাসান" disabled>
         </div>
         
         <div class="info-box">
             <label>মোবাইল নম্বর</label>
-            <p>০১৭০০-০০۰۰০০</p>
+            <input type="text" id="userPhone" value="০১৭০০-০০০০০০" disabled>
         </div>
         
         <div class="info-box">
             <label>ডিফল্ট ঠিকানা</label>
-            <p>বাগমারা, রাজশাহী, বাংলাদেশ</p>
+            <input type="text" id="userAddress" value="বাগমারা, রাজশাহী, বাংলাদেশ" disabled>
         </div>
 
-        <button class="edit-btn" onclick="alert('প্রোফাইল আপডেট করার সিস্টেমটি ডেভেলাপমেন্টে আছে।')">⚙️ তথ্য পরিবর্তন করুন</button>
+        <!-- তথ্য পরিবর্তন এবং সেভ করার বাটন -->
+        <button class="edit-btn" id="editBtn" onclick="toggleEdit()">⚙️ তথ্য পরিবর্তন করুন</button>
+        <button class="save-btn" id="saveBtn" onclick="saveProfile()">💾 তথ্য সেভ করুন</button>
 
         <br>
         <a href="index.html" class="back-btn">← মূল শপ-এ ফিরে যান</a>
     </div>
 
+    <script>
+        // ================= Supabase ইনিশিয়েলাইজেশন =================
+        const SUPABASE_URL = "https://mbxkickfugdkgsabizrr.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_ButTVVb8ZxL7QeaL919qJg_gZ2HDjfb";
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        // ফেইক ইউজার আইডি (যেহেতু প্রোফাইল একটি নির্দিষ্ট ইউজারের হয়, পরবর্তীতে লগইন সিস্টেম বানালে এটা ডাইনামিক হবে)
+        const currentUserId = 1; 
+
+        // পেজ লোড হওয়ার সাথে সাথে Supabase থেকে ডাটা এনে দেখাবে
+        window.onload = async function() {
+            await loadProfileData();
+        };
+
+        // ডাটাবেজ থেকে ডাটা লোড করার ফাংশন
+        async function loadProfileData() {
+            try {
+                let { data, error } = await supabase
+                    .from('profiles') // আপনার টেবিল এর নাম 'profiles' হতে হবে
+                    .select('*')
+                    .eq('id', currentUserId)
+                    .single();
+
+                if (error && error.code !== 'PGRST116') throw error; // PGRST116 মানে কোনো ডাটা নাই, নতুন ইউজার
+
+                // ডাটাবেজে তথ্য থাকলে তা স্ক্রিনে দেখাবে
+                if (data) {
+                    document.getElementById('userName').value = data.name;
+                    document.getElementById('userPhone').value = data.phone;
+                    document.getElementById('userAddress').value = data.address;
+                }
+            } catch (error) {
+                console.error("প্রোফাইল ডাটা লোড করতে সমস্যা হয়েছে:", error.message);
+            }
+        }
+
+        // ইনপুট বক্সগুলো এডিট করার মুড অন/অফ করার লজিক
+        function toggleEdit() {
+            document.getElementById('userName').disabled = false;
+            document.getElementById('userPhone').disabled = false;
+            document.getElementById('userAddress').disabled = false;
+
+            document.getElementById('editBtn').style.display = 'none';
+            document.getElementById('saveBtn').style.display = 'block';
+            
+            // প্রথম ইনপুট বক্সে ফোকাস করবে
+            document.getElementById('userName').focus();
+        }
+
+        // Supabase-এ নতুন ডাটা সেভ বা আপডেট করার ফাংশন
+        async function saveProfile() {
+            const name = document.getElementById('userName').value;
+            const phone = document.getElementById('userPhone').value;
+            const address = document.getElementById('userAddress').value;
+
+            try {
+                // 'upsert' ব্যবহার করা হয়েছে, যাতে ডাটা না থাকলে নতুন তৈরি হয় আর থাকলে আপডেট হয়
+                const { error } = await supabase
+                    .from('profiles')
+                    .upsert({ 
+                        id: currentUserId, 
+                        name: name, 
+                        phone: phone, 
+                        address: address 
+                    });
+
+                if (error) throw error;
+
+                alert("আপনার প্রোফাইল তথ্য সফলভাবে আপডেট হয়েছে!");
+
+                // সেভ হওয়ার পর আবার ফিল্ডগুলো লক করে দেবে
+                document.getElementById('userName').disabled = true;
+                document.getElementById('userPhone').disabled = true;
+                document.getElementById('userAddress').disabled = true;
+
+                document.getElementById('editBtn').style.display = 'block';
+                document.getElementById('saveBtn').style.display = 'none';
+
+            } catch (error) {
+                console.error("প্রোফাইল সেভ করতে সমস্যা হয়েছে:", error.message);
+                alert("তথ্য সেভ করা যায়নি। দয়া করে ডাটাবেজ টেবিল চেক করুন।");
+            }
+        }
+    </script>
 </body>
 </html>
