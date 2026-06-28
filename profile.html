@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>মাই প্রোফাইল - এস্টিক</title>
-    <!-- Supabase CDN (ডাটাবেজ কানেক্ট করার জন্য) -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
@@ -30,7 +29,6 @@
         <div class="profile-icon">👤</div>
         <h1>আমার প্রোফাইল</h1>
         
-        <!-- প্রতিটি ফিল্ডে আইডি এবং ইনপুট ট্যাগ যোগ করা হয়েছে যা শুরুতে রিড-অনলি (Disabled) থাকবে -->
         <div class="info-box">
             <label>ব্যবহারকারীর নাম</label>
             <input type="text" id="userName" value="নিলয় হাসান" disabled>
@@ -46,7 +44,6 @@
             <input type="text" id="userAddress" value="বাগমারা, রাজশাহী, বাংলাদেশ" disabled>
         </div>
 
-        <!-- তথ্য পরিবর্তন এবং সেভ করার বাটন -->
         <button class="edit-btn" id="editBtn" onclick="toggleEdit()">⚙️ তথ্য পরিবর্তন করুন</button>
         <button class="save-btn" id="saveBtn" onclick="saveProfile()">💾 তথ্য সেভ করুন</button>
 
@@ -56,6 +53,7 @@
 
     <script>
         // ================= Supabase ইনিশিয়েলাইজেশন =================
+        // এখানে আপনার দেওয়া আসল URL এবং API Key বসানো হয়েছে
         const SUPABASE_URL = "https://mbxkickfugdkgsabizrr.supabase.co";
         const SUPABASE_KEY = "sb_publishable_ButTVVb8ZxL7QeaL919qJg_gZ2HDjfb";
         const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -72,7 +70,7 @@
         async function loadProfileData() {
             try {
                 let { data, error } = await supabase
-                    .from('profiles') // আপনার টেবিল এর নাম 'profiles' হতে হবে
+                    .from('profile') // আপনার ডাটাবেজের টেবিল নাম অনুযায়ী 'profile' রাখা হলো
                     .select('*')
                     .eq('id', currentUserId)
                     .single();
@@ -112,7 +110,7 @@
             try {
                 // 'upsert' ব্যবহার করা হয়েছে, যাতে ডাটা না থাকলে নতুন তৈরি হয় আর থাকলে আপডেট হয়
                 const { error } = await supabase
-                    .from('profiles')
+                    .from('profile') // আপনার ডাটাবেজের টেবিল নাম অনুযায়ী 'profile' রাখা হলো
                     .upsert({ 
                         id: currentUserId, 
                         name: name, 
