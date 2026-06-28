@@ -192,7 +192,7 @@
             100% { transform: translate(var(--mx), var(--my)) scale(0); opacity: 0; }
         }
 
-        /* ইউজার প্রোফাইল কার্ড স্টাইল */
+        /* ইউজার প্রোফাইলカード স্টাইল */
         .user-profile-card { background: white; padding: 25px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); max-width: 450px; margin: 20px auto; display: none; text-align: left; border: 1px solid #e2e8f0; }
         .profile-header { text-align: center; margin-bottom: 20px; }
         .profile-header img { width: 85px; height: 85px; border-radius: 50%; border: 3px solid #3b82f6; box-shadow: 0 4px 10px rgba(59, 130, 246, 0.2); object-fit: cover; }
@@ -539,6 +539,8 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
     <script>
         let currentSelectedProduct = null;
         let currentModalOrderType = 'paid'; 
@@ -578,7 +580,6 @@
             return adminPanel && adminPanel.style.display === 'block';
         }
 
-        // ডিফল্ট প্রোডাক্টে আমরা পূর্ববর্তী ট্র্যাকিংয়ের জন্য একটি পুরনো তারিখ যুক্ত করে রাখলাম
         let defaultProducts = [
             { name: "প্রিমিয়াম টি-শার্ট", price: "৪০০ টাকা", oldPrice: "৫০০ টাকা", category: "tshirt", image: "https://via.placeholder.com/200x150?text=T-Shirt", date: "2026-06-25" },
             { name: "স্মার্ট ওয়াচ", price: "১৫০০ টাকা", oldPrice: "", category: "watch", image: "https://via.placeholder.com/200x150?text=Watch", date: "2026-06-25" }
@@ -696,15 +697,12 @@
             setTimeout(() => { particle.remove(); }, 600);
         }
 
-        // =====================================================================
-        // মেইন লজিক: প্রোডাক্ট যোগ করার সময় স্বয়ংক্রিয়ভাবে লাইভ তারিখ যোগ করা
-        // =====================================================================
         function getLiveFormattedDate() {
             const today = new Date();
             const yyyy = today.getFullYear();
             const mm = String(today.getMonth() + 1).padStart(2, '0');
             const dd = String(today.getDate()).padStart(2, '0');
-            return `${yyyy}-${mm}-${dd}`; // ফরম্যাট: "2026-06-27"
+            return `${yyyy}-${mm}-${dd}`;
         }
 
         function addProduct() {
@@ -713,7 +711,7 @@
             const oldPrice = document.getElementById('pOldPrice').value;
             const category = document.getElementById('pCategory').value;
             const imageInput = document.getElementById('pImage');
-            const uploadDate = getLiveFormattedDate(); // লাইভ তারিখ বের করা হলো
+            const uploadDate = getLiveFormattedDate(); 
             
             if (name && price) {
                 if (imageInput.files && imageInput.files[0]) {
@@ -774,9 +772,6 @@
             showDarazCheckoutForm(); 
         }
 
-        // =====================================================================
-        // ইউজার যখন 'অর্ডার' ন্যাভিগেশন বাটনে ক্লিক করবে, তখন সে সরাসরি 'my-products.html' পেজে চলে যাবে
-        // =====================================================================
         function handleOrderNavClick() {
             if (!isUserLoggedIn()) {
                 alert("প্রথমে নিবন্ধনটি সম্পূর্ণ করুন তারপর অর্ডার করুন।");
@@ -1002,7 +997,7 @@
         function goToPaymentStep2() {
             const amount = document.getElementById('userAmountInput').value.trim();
             if(!amount) {
-                alert("দয়া করে আপনার হিসাবের ঘরে টাকার পরিমাণটি বসান!");
+                alert("দয়া করে আপনার হিসাবের ঘরে টাকার পরিমাণটি বসան!");
                 return;
             }
             hideAllViews();
