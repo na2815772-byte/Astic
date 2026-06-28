@@ -1,4 +1,12 @@
-// ১. আপনার প্রোডাক্ট লিস্ট (এখানে 'date' প্রোপার্টি যুক্ত করা হয়েছে YYYY-MM-DD ফরম্যাটে)
+// ================= Supabase ইনিশিয়েলাইজেশন =================
+const SUPABASE_URL = "https://mbxkickfugdkgsabizrr.supabase.co";
+const SUPABASE_KEY = "sb_publishable_ButTVVb8ZxL7QeaL919qJg_gZ2HDjfb";
+
+// CDN ব্যবহার করে ইনডেক্স ফাইলে Supabase লোড করা থাকলে এটি কাজ করবে
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// ================= প্রোডাক্ট ও কার্ট লজিক =================
+
 // জাভাস্ক্রিপ্ট দিয়ে আজকের বর্তমান তারিখ স্বয়ংক্রিয়ভাবে বের করার ফাংশন
 function getFormattedDate() {
     const today = new Date();
@@ -11,22 +19,19 @@ function getFormattedDate() {
 const currentDate = getFormattedDate(); // আজকের রিয়েল তারিখ ডাইনামিকালি নেবে
 
 let products = [
-    { name: "টি-শার্ট", price: 400, oldPrice: "৫০০ টাকা", category: "tshirt", date: currentDate }, // এটি আজকের প্রোডাক্ট
-    { name: "ঘড়ি", price: 1500, oldPrice: "", category: "watch", date: "2026-06-25" } // এটি আগের দিনের (পুরাতন)
+    { name: "টি-শার্ট", price: 400, oldPrice: "৫০০ টাকা", category: "tshirt", date: currentDate, image: "" }, // এটি আজকের প্রোডাক্ট
+    { name: "ঘড়ি", price: 1500, oldPrice: "", category: "watch", date: "2026-06-25", image: "" } // এটি আগের দিনের (পুরাতন)
 ];
 
 let cart = [];
+let isAdminLoggedIn = true; // ফেইক অ্যাডমিন লগইন চেক
 
-// ফেইক অ্যাডমিন লগইন চেক
-let isAdminLoggedIn = true; 
-
-// ২. প্রোডাক্ট রেন্ডার করার মেইন ফাংশน
+// প্রোডাক্ট রেন্ডার করার মেইন ফাংশন
 function renderProducts(productsToShow = products) {
     const grid = document.getElementById('productGrid');
     if (!grid) return;
     grid.innerHTML = '';
     
-    // লজিক: যদি কোনো প্রোডাক্ট না থাকে তবে সুন্দর করে মেসেজ দেখাবে
     if (productsToShow.length === 0) {
         grid.innerHTML = `
             <div style="text-align:center; width:100%; color:#e74c3c; font-weight:bold; padding: 20px;">
@@ -40,7 +45,11 @@ function renderProducts(productsToShow = products) {
         card.className = `product-card ${p.category}`;
         card.style.position = 'relative'; 
         
+        // ছবি থাকলে তা দেখানোর লজিক
+        const productImage = p.image ? `<img src="${p.image}" alt="${p.name}" style="width:100%; max-height:200px; object-fit:cover; border-radius:5px;">` : '';
+        
         card.innerHTML = `
+            ${productImage}
             <h3>${p.name}</h3>
             <p>
                 ${p.oldPrice ? `<span class="old-price">${p.oldPrice}</span>` : ''}
@@ -51,7 +60,7 @@ function renderProducts(productsToShow = products) {
             <button class="delete-btn" id="delete-${index}" style="display: none; position: absolute; top: 5px; right: 5px; background: red; color: white; border: none; padding: 2px 6px; cursor: pointer; border-radius: 3px; font-size: 12px;" onclick="deleteProduct(${index})">ডিলিট করুন</button>
         `;
         
-        // ৩. শুধুমাত্র অ্যাডমিন লগইন থাকলে লং প্রেস লজিক
+        // শুধুমাত্র অ্যাডমিন লগইন থাকলে লং প্রেস লজিক
         if (isAdminLoggedIn) {
             let pressTimer;
 
@@ -79,14 +88,10 @@ function renderProducts(productsToShow = products) {
     });
 }
 
-// ================= মেইন লজিক: আজকের নতুন প্রোডাক্ট ফিল্টার করার ফাংশন =================
+// আজকের নতুন প্রোডাক্ট ফিল্টার করার ফাংশন
 function showTodayProducts() {
     const formattedToday = getFormattedDate(); 
-    
-    // লজিক: শুধু সেই প্রোডাক্টগুলো ফিল্টার হবে যেগুলোর তারিখ আজকের তারিখের সমান
     const todayProducts = products.filter(product => product.date === formattedToday);
-    
-    // স্ক্রিনে শুধু আজকের প্রোডাক্টগুলো দেখাবে
     renderProducts(todayProducts);
 }
 
@@ -95,21 +100,50 @@ function showAllProducts() {
     renderProducts(products);
 }
 
-// অ্যাডমিন প্যানেল থেকে নতুন প্রোডাক্ট আপলোড করার কাল্পনিক ফাংশন (লজিক সুরক্ষার জন্য)
-function adminUploadProduct(name, price, oldPrice, category) {
+// ================= Supabase ছবি আপলোড লজিক =================
+// অন্য ডিভাইস থেকে ছবি দেখতে চাইলে প্রথমে Supabase ড্যাশবোর্ডে গিয়ে 'products' নামে একটি পাবলিক Storage Bucket তৈরি করে নিতে হবে।
+async function uploadProductImage(file) {
+    if (!file) return null;
+    
+    const fileName = `${Date.now()}_${file.name}`;
+    const { data, error } = await supabase.storage
+        .from('products') // আপনার তৈরি করা বাকেটের নাম
+        .upload(fileName, file);
+
+    if (error) {
+        console.error("ছবি আপলোড করতে সমস্যা হয়েছে:", error.message);
+        return null;
+    }
+
+    // ছবির পাবলিক ইউআরএল তৈরি
+    const { data: publicUrlData } = supabase.storage
+        .from('products')
+        .getPublicUrl(fileName);
+
+    return publicUrlData.publicUrl;
+}
+
+// অ্যাডমিন প্যানেল থেকে নতুন প্রোডাক্ট আপলোড করার ফাংশন (ছবিসহ)
+async function adminUploadProduct(name, price, oldPrice, category, imageFile) {
+    let imageUrl = "";
+    if (imageFile) {
+        imageUrl = await uploadProductImage(imageFile);
+    }
+
     const newProduct = {
         name: name,
         price: price,
         oldPrice: oldPrice,
         category: category,
-        date: getFormattedDate() // আপলোড করার সাথে সাথে আজকের ডেট অটোমেটিক বসে যাবে
+        date: getFormattedDate(),
+        image: imageUrl // ডাটাবেজ বা লোকাল লিস্টে ছবির ইউআরএল সেভ হবে
     };
+
     products.push(newProduct);
     renderProducts();
 }
-// ============================================================================
 
-// ৪. প্রোডাক্ট ডিলিট করার ফাংশন
+// প্রোডাক্ট ডিলিট করার ফাংশন
 function deleteProduct(index) {
     if (confirm("আপনি কি নিশ্চিতভাবে এই প্রোডাক্টটি ডিলিট করতে চান?")) {
         products.splice(index, 1); 
@@ -117,7 +151,7 @@ function deleteProduct(index) {
     }
 }
 
-// ৫. কার্ট ফাংশনসমূহ
+// কার্ট ফাংশনসমূহ
 function addToCart(name, price) {
     cart.push({ name, price });
     alert(name + " কার্টে যোগ করা হয়েছে!");
@@ -128,13 +162,11 @@ function displayCart() {
     const cartContainer = document.getElementById('cartItems');
     const totalContainer = document.getElementById('totalPrice');
     
-    // যদি কার্ট পেজে সরাসরি আজকের আপলোড করা প্রোডাক্টের ডাটা দেখাতে চান:
     if (!cartContainer || !totalContainer) return;
 
     cartContainer.innerHTML = '';
     let total = 0;
 
-    // কার্ট পেজেও শুধু আজকের দিনের যুক্ত করা প্রোডাক্ট ভ্যালিডেশন লজিক
     if (cart.length === 0) {
         cartContainer.innerHTML = `
             <p style="color: red; text-align: center; font-weight: bold;">
@@ -158,7 +190,7 @@ function displayCart() {
     totalContainer.innerText = total + " টাকা";
 }
 
-// ৬. চেকআউট ফাংশন
+// চেকআউট ফাংশন
 function checkout() {
     if (cart.length === 0) {
         alert("আপনার কার্ট খালি! দয়া করে প্রথমে প্রোডাক্ট কার্টে যোগ করুন।");
@@ -172,5 +204,4 @@ function checkout() {
 }
 
 // অ্যাপ রান করার জন্য প্রথম কল
-// লজিক: গ্রাহক যখনই পেজে আসবে, সে শুরুতেই শুধু আজকের আপলোড করা প্রোডাক্টগুলো দেখতে পাবে।
 showTodayProducts();
