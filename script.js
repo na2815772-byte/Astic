@@ -18,13 +18,32 @@ function getFormattedDate() {
 
 const currentDate = getFormattedDate(); // আজকের রিয়েল তারিখ ডাইনামিকালি নেবে
 
-let products = [
-    { name: "টি-শার্ট", price: 400, oldPrice: "৫০০ টাকা", category: "tshirt", date: currentDate, image: "" }, // এটি আজকের প্রোডাক্ট
-    { name: "ঘড়ি", price: 1500, oldPrice: "", category: "watch", date: "2026-06-25", image: "" } // এটি আগের দিনের (পুরাতন)
-];
-
+let products = []; // এখন প্রোডাক্টগুলো ডাটাবেজ থেকে এসে এখানে জমা হবে
 let cart = [];
-let isAdminLoggedIn = true; // ফেইক অ্যাডমিন লগইন চেক
+let isAdminLoggedIn = true; // ফেইক অ্যাডমিন লগইন চেক (প্রয়োজন অনুযায়ী false করতে পারেন)
+
+// Supabase থেকে সব প্রোডাক্ট নিয়ে আসার ফাংশন
+async function fetchProducts(filterToday = true) {
+    try {
+        let { data, error } = await supabase
+            .from('products') // Supabase-এ টেবিল এর নাম অবশ্যই 'products' হতে হবে
+            .select('*');
+
+        if (error) throw error;
+
+        products = data || [];
+
+        if (filterToday) {
+            showTodayProducts();
+        } else {
+            showAllProducts();
+        }
+    } catch (error) {
+        console.error("প্রোডাক্ট লোড করতে সমস্যা হয়েছে:", error.message);
+        // ডাটাবেজ কানেক্ট না হলে লোকাল ব্ল্যাংক স্ক্রিন দেখাবে
+        renderProducts([]);
+    }
+}
 
 // প্রোডাক্ট রেন্ডার করার মেইন ফাংশন
 function renderProducts(productsToShow = products) {
@@ -40,7 +59,7 @@ function renderProducts(productsToShow = products) {
         return;
     }
     
-    productsToShow.forEach((p, index) => {
+    productsToShow.forEach((p) => {
         const card = document.createElement('div');
         card.className = `product-card ${p.category}`;
         card.style.position = 'relative'; 
@@ -52,12 +71,12 @@ function renderProducts(productsToShow = products) {
             ${productImage}
             <h3>${p.name}</h3>
             <p>
-                ${p.oldPrice ? `<span class="old-price">${p.oldPrice}</span>` : ''}
+                ${p.oldPrice ? `<span class="old-price">${p.oldPrice} টাকা</span>` : ''}
                 <span class="price">${p.price} টাকা</span>
             </p>
             <button class="order-btn" onclick="addToCart('${p.name}', ${p.price})">কার্টে যোগ করুন</button>
             
-            <button class="delete-btn" id="delete-${index}" style="display: none; position: absolute; top: 5px; right: 5px; background: red; color: white; border: none; padding: 2px 6px; cursor: pointer; border-radius: 3px; font-size: 12px;" onclick="deleteProduct(${index})">ডিলিট করুন</button>
+            <button class="delete-btn" id="delete-${p.id}" style="display: none; position: absolute; top: 5px; right: 5px; background: red; color: white; border: none; padding: 2px 6px; cursor: pointer; border-radius: 3px; font-size: 12px;" onclick="deleteProduct(${p.id})">ডিলিট করুন</button>
         `;
         
         // শুধুমাত্র অ্যাডমিন লগইন থাকলে লং প্রেস লজিক
@@ -101,13 +120,12 @@ function showAllProducts() {
 }
 
 // ================= Supabase ছবি আপলোড লজিক =================
-// অন্য ডিভাইস থেকে ছবি দেখতে চাইলে প্রথমে Supabase ড্যাশবোর্ডে গিয়ে 'products' নামে একটি পাবলিক Storage Bucket তৈরি করে নিতে হবে।
 async function uploadProductImage(file) {
     if (!file) return null;
     
     const fileName = `${Date.now()}_${file.name}`;
     const { data, error } = await supabase.storage
-        .from('products') // আপনার তৈরি করা বাকেটের নাম
+        .from('products') // Supabase Storage Bucket এর নাম 'products'
         .upload(fileName, file);
 
     if (error) {
@@ -123,7 +141,7 @@ async function uploadProductImage(file) {
     return publicUrlData.publicUrl;
 }
 
-// অ্যাডমিন প্যানেল থেকে নতুন প্রোডাক্ট আপলোড করার ফাংশন (ছবিসহ)
+// অ্যাডমিন প্যানেল থেকে নতুন প্রোডাক্ট আপলোড করার ফাংশন (সরাসরি Supabase-এ সেভ হবে)
 async function adminUploadProduct(name, price, oldPrice, category, imageFile) {
     let imageUrl = "";
     if (imageFile) {
@@ -132,26 +150,48 @@ async function adminUploadProduct(name, price, oldPrice, category, imageFile) {
 
     const newProduct = {
         name: name,
-        price: price,
-        oldPrice: oldPrice,
+        price: Number(price), // নাম্বার ফরম্যাটে সেভ করার জন্য
+        oldPrice: oldPrice ? String(oldPrice) : null,
         category: category,
         date: getFormattedDate(),
-        image: imageUrl // ডাটাবেজ বা লোকাল লিস্টে ছবির ইউআরএল সেভ হবে
+        image: imageUrl
     };
 
-    products.push(newProduct);
-    renderProducts();
-}
+    try {
+        const { data, error } = await supabase
+            .from('products')
+            .insert([newProduct]);
 
-// প্রোডাক্ট ডিলিট করার ফাংশন
-function deleteProduct(index) {
-    if (confirm("আপনি কি নিশ্চিতভাবে এই প্রোডাক্টটি ডিলিট করতে চান?")) {
-        products.splice(index, 1); 
-        renderProducts(); 
+        if (error) throw error;
+
+        alert("প্রোডাক্ট সফলভাবে আপলোড হয়েছে!");
+        fetchProducts(true); // আপলোড শেষে আবার আজকের প্রোডাক্ট রিফ্রেশ করবে
+    } catch (error) {
+        console.error("প্রোডাক্ট ডাটাবেজে সেভ করতে সমস্যা হয়েছে:", error.message);
+        alert("প্রোডাক্ট আপলোড ব্যর্থ হয়েছে।");
     }
 }
 
-// কার্ট ফাংশনসমূহ
+// প্রোডাক্ট ডিলিট করার ফাংশন (Supabase থেকে ডিলিট হবে)
+async function deleteProduct(id) {
+    if (confirm("আপনি কি নিশ্চিতভাবে এই প্রোডাক্টটি ডিলিট করতে চান?")) {
+        try {
+            const { error } = await supabase
+                .from('products')
+                .delete()
+                .eq('id', id);
+
+            if (error) throw error;
+
+            alert("প্রোডাক্টটি ডিলিট করা হয়েছে।");
+            fetchProducts(true); // ডিলিট শেষে ডাটা আপডেট করবে
+        } catch (error) {
+            console.error("প্রোডাক্ট ডিলিট করতে সমস্যা হয়েছে:", error.message);
+        }
+    }
+}
+
+// ================= কার্ট ফাংশনসমূহ =================
 function addToCart(name, price) {
     cart.push({ name, price });
     alert(name + " কার্টে যোগ করা হয়েছে!");
@@ -170,7 +210,7 @@ function displayCart() {
     if (cart.length === 0) {
         cartContainer.innerHTML = `
             <p style="color: red; text-align: center; font-weight: bold;">
-                আপনার কোন প্রোডাক্ট নেই অথবা আজকে কোন প্রোডাক্ট আপলোড হয়নি।
+                আপনার কার্ট খালি।
             </p>`;
         totalContainer.innerText = "০ টাকা";
         return;
@@ -203,5 +243,5 @@ function checkout() {
     window.location.href = "checkout.html";
 }
 
-// অ্যাপ রান করার জন্য প্রথম কল
-showTodayProducts();
+// অ্যাপ রান করার জন্য প্রথম কল (ডাটাবেজ থেকে ডাটা আনবে)
+fetchProducts(true);
