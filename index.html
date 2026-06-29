@@ -7,6 +7,8 @@
     <meta name="google-site-verification" content="IMb7MgqSTUegXy7l5rwad6jEChES7J_Cdw-m_XXLLx0" />
     
     <title>এস্টিক - অনলাইন শপ</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; display: flex; flex-direction: column; background-color: #f8fafc; overflow-x: hidden; color: #334155; }
         
@@ -322,6 +324,107 @@
         .success-title { color: #10b981; font-size: 24px; font-weight: 800; margin: 0 0 15px 0; }
         .success-msg { font-size: 18px; font-weight: 700; color: #1e293b; line-height: 1.5; margin-bottom: 10px; padding: 0 10px; }
 
+        /* ========================================================
+           নতুন যোগ করা প্রিমিয়াম চ্যাট উইজেট (মেসেঞ্জার ও হোয়াটসঅ্যাপ) CSS
+           ======================================================== */
+        .premium-chat-wrapper {
+            display: flex;
+            justify-content: flex-end;
+            padding: 0 15px;
+            margin-top: -10px; /* সাদা ফাঁকা জায়গায় নিখুঁত পজিশনের জন্য */
+            margin-bottom: 15px;
+        }
+
+        .premium-chat-container {
+            position: relative;
+            z-index: 99;
+            font-family: inherit;
+        }
+
+        /* মেইন চ্যাট বাটন (অফিশিয়াল মেসেঞ্জার গ্রেডিয়েন্ট ও প্রিমিয়াম গ্লো ইফেক্ট) */
+        .chat-main-btn {
+            background: linear-gradient(135deg, #006AFF, #00B2FE, #00FFF0);
+            background-size: 200% 200%;
+            animation: premiumGradientMove 4s ease infinite;
+            color: white;
+            border: none;
+            width: 54px;
+            height: 54px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 8px 25px rgba(0, 106, 255, 0.35);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            outline: none;
+        }
+
+        .chat-main-btn:hover {
+            transform: scale(1.08) rotate(15deg);
+            box-shadow: 0 12px 30px rgba(0, 106, 255, 0.5);
+        }
+
+        @keyframes premiumGradientMove {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* অপশন পপ-আপ মেনু */
+        .chat-options {
+            position: absolute;
+            bottom: 65px;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(15px) scale(0.8);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        /* একটিভ হলে যেভাবে স্মুথলি ভেসে উঠবে */
+        .chat-options.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0) scale(1);
+        }
+
+        .chat-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            color: white;
+            font-size: 20px;
+            text-decoration: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+        }
+
+        /* ডাইরেক্ট মেসেঞ্জার বাটন */
+        .messenger-btn {
+            background: linear-gradient(135deg, #1877F2, #00FFF0);
+        }
+        .messenger-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(24, 119, 242, 0.4);
+        }
+
+        /* ডাইরেক্ট হোয়াটসঅ্যাপ বাটন */
+        .whatsapp-btn {
+            background: linear-gradient(135deg, #25D366, #128C7E);
+        }
+        .whatsapp-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
+        }
+
         @media (max-width: 480px) { .header-title { display: none; } }
     </style>
 </head>
@@ -423,7 +526,7 @@
             
             <p>👉 যদি <span class="selected-method-text" style="font-weight: bold; color: blue;">বিকাশে</span> পেমেন্ট করতে চান তাহলে <span class="copyable-num" onclick="copyText('01753446444')">01753446444</span> এই নাম্বারটি কপি করুন।</p>
             
-            <p>👉 এরপর সেন্ড মানি এবং ক্যাশ আউট করে ট্রানজেকশন আইডি জমা দেন, অথবা যদি বিকাশ না থাকে তাহলে—</p>
+            <p>👉 এরপর সেন্ড মানি এবং ক্যাশ আউট করে ট্রানজেকশন আইডি জমা দেন, অথবা jika বিকাশ না থাকে তাহলে—</p>
             
             <p>👉 এই নাম্বারে আপনি বিকাশ, রকেট, নগদ এই তিনটার মাধ্যমে টাকা পাঠাইতে পারবেন।</p>
             
@@ -462,6 +565,22 @@
         </div>
 
         <div id="mainHomeView">
+            <div class="premium-chat-wrapper">
+                <div class="premium-chat-container">
+                    <div class="chat-options" id="customChatOptions">
+                        <a href="https://m.me/NELOY.2k.25" target="_blank" class="chat-item messenger-btn">
+                            <i class="fab fa-facebook-messenger"></i>
+                        </a>
+                        <a href="https://wa.me/8801315531124" target="_blank" class="chat-item whatsapp-btn">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+                    <button class="chat-main-btn" id="customChatMainBtn">
+                        <i class="fab fa-facebook-messenger"></i>
+                    </button>
+                </div>
+            </div>
+
             <h1 style="font-size: 22px; font-weight: 700; margin-bottom: 20px; color: #1e293b; padding-left: 5px;">আমাদের প্রোডাক্টগুলো</h1>
             <div class="product-grid" id="productGrid"></div>
         </div>
@@ -553,6 +672,35 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
+        // ========================================================
+        // চ্যাট উইজেট ওপেন/ক্লোজ এবং ক্রস অ্যানিমেশন স্ক্রিপ্ট
+        // ========================================================
+        const customMainBtn = document.getElementById('customChatMainBtn');
+        const customChatOptions = document.getElementById('customChatOptions');
+
+        customMainBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            customChatOptions.classList.toggle('active');
+            
+            const icon = customMainBtn.querySelector('i');
+            if(customChatOptions.classList.contains('active')) {
+                icon.className = 'fas fa-xmark';
+                customMainBtn.style.transform = 'scale(0.95)';
+            } else {
+                icon.className = 'fab fa-facebook-messenger';
+                customMainBtn.style.transform = '';
+            }
+        });
+
+        // বাইরে ক্লিক করলে মেনু অটো বন্ধ হবে
+        document.addEventListener('click', (e) => {
+            if (!customMainBtn.contains(e.target) && !customChatOptions.contains(e.target)) {
+                customChatOptions.classList.remove('active');
+                customMainBtn.querySelector('i').className = 'fab fa-facebook-messenger';
+                customMainBtn.style.transform = '';
+            }
+        });
+
         // প্রোফাইল পিকচার ওপেন করার ফাংশন
         function triggerProfilePicUpload() {
             document.getElementById('profilePicInput').click();
@@ -1030,7 +1178,7 @@
             const amount = document.getElementById('userAmountInput').value.trim();
             
             if(!trxId) {
-                alert("দয়া করে আপনার কাঙ্ক্ষিত ট্রানজেকশন আইডিটি বসান!");
+                alert("দয়া করে আপনার কাঙ্জ্জিত ট্রানজেকশন আইডিটি বসান!");
                 return;
             }
             
@@ -1056,4 +1204,4 @@
         checkLoginStatus();
     </script>
 </body>
-</html>
+                    </html>
