@@ -1,247 +1,146 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>মাই প্রোডাক্টস - এস্টিক</title>
+    <title>Today's Products - Aesthetic Shop</title>
+    <!-- Supabase CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-        body { background-color: #f7f9fc; padding: 20px; overflow-x: hidden; }
-        .container { max-width: 700px; margin: 0 auto; background: white; padding: 25px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); position: relative; }
-        h1 { color: #2c3e50; text-align: center; margin-bottom: 10px; font-size: 24px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Poppins', 'Segoe UI', sans-serif; }
+        body { background-color: #090d16; padding: 30px 20px; overflow-x: hidden; color: #f8fafc; }
         
-        /* ফিল্টার বাটনের স্টাইল */
-        .filter-container {
+        .container { 
+            max-width: 850px; 
+            margin: 0 auto; 
+            background: #111827; 
+            padding: 35px; 
+            border-radius: 16px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            border: 1px solid #1f2937;
+            position: relative; 
+        }
+        
+        /* 🎯 প্রিমিয়াম ভিজ্যুয়াল ইফেক্ট ও বর্ডারসহ নতুন হেডিং স্টাইল */
+        .premium-header {
             display: flex;
+            align-items: center;
             justify-content: center;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        .filter-btn {
-            background: #ecf0f1;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-            color: #7f8c8d;
-            transition: all 0.3s ease;
-        }
-        .filter-btn.active {
-            background: #3498db;
-            color: white;
-        }
-
-        /* প্রোডাক্ট আইটেম স্টাইল */
-        .product-item { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 15px; 
-            border-bottom: 1px solid #eee; 
-            cursor: pointer;
-            transition: background 0.3s, transform 0.5s, opacity 0.5s;
+            gap: 12px;
+            margin: 0 auto 40px auto;
+            padding: 15px 25px;
+            max-width: fit-content;
+            
+            /* গ্লাস ও ব্যাকগ্রাউন্ড ইফেক্ট */
+            background: rgba(31, 41, 55, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            
+            /* রাউন্ডেড এবং প্রিমিয়াম গ্রাডিয়েন্ট বর্ডার */
+            border: 2px solid transparent;
+            border-image: linear-gradient(45deg, #2563eb, #10b981, #3b82f6) 1;
+            border-radius: 12px; /* নোট: গ্রাডিয়েন্ট বর্ডার এর সাথে মাস্কিং ছাড়া সাধারণ রেডিয়াস ট্রিক */
             position: relative;
-            border-radius: 6px;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.15), inset 0 0 12px rgba(255,255,255,0.05);
         }
-        .product-item:hover { background-color: #fcfcfc; }
-        .product-item:last-child { border-bottom: none; }
-        
-        .prod-details h3 { color: #333; font-size: 18px; margin-bottom: 5px; }
-        .prod-details p { color: #7f8c8d; font-size: 14px; }
-        .status { background: #2ecc71; color: white; padding: 5px 10px; border-radius: 4px; font-size: 12px; font-weight: bold; transition: all 0.3s; }
-        .back-btn { display: inline-block; margin-top: 20px; text-decoration: none; color: #3498db; font-weight: bold; }
 
-        /* ডিলিট বাটন স্টাইল */
-        .delete-btn {
-            background: #e74c3c;
+        /* পারফেক্ট রাউন্ডেড কর্নার সহ গ্রাডিয়েন্ট বর্ডার ফিক্স */
+        .premium-header {
+            border-radius: 14px;
+            border: 2px solid transparent;
+            background: linear-gradient(#111827, #111827) padding-box,
+                        linear-gradient(45deg, #2563eb, #10b981) border-box;
+        }
+        
+        .premium-header h1 { 
+            font-size: 26px; 
+            font-weight: 800; 
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin: 0;
+            
+            /* টেক্সট গ্রাডিয়েন্ট কালার ইফেক্ট */
+            background: linear-gradient(135deg, #ffffff 30%, #60a5fa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 15px rgba(96, 165, 250, 0.2);
+        }
+        
+        .premium-header .icon {
+            font-size: 28px;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));
+        }
+
+        /* প্রোডাক্ট গ্রিড লেআউট */
+        .product-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 25px;
+            min-height: 250px;
+        }
+
+        /* প্রোডাক্ট কার্ড প্রিমিয়াম স্টাইল */
+        .product-card { 
+            background: #1f2937; 
+            border: 1px solid #374151;
+            padding: 20px; 
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+        .product-card h3 { color: #ffffff; font-size: 19px; margin: 12px 0 6px 0; font-weight: 600; }
+        .product-card p { color: #9ca3af; font-size: 14px; margin-bottom: 12px; }
+        .product-card .price { color: #10b981; font-weight: 700; font-size: 16px; }
+        .product-card .old-price { color: #6b7280; text-decoration: line-through; margin-right: 8px; font-size: 14px; }
+
+        .order-btn {
+            background: #2563eb;
             color: white;
             border: none;
-            padding: 8px 15px;
-            border-radius: 4px;
+            padding: 10px 16px;
+            border-radius: 8px;
             cursor: pointer;
-            font-weight: bold;
-            display: none;
-            opacity: 0;
-            transform: translateX(20px);
-            transition: all 0.3s ease;
+            font-weight: 600;
+            width: 100%;
+            margin-top: 10px;
+            transition: background 0.2s;
         }
-        
-        .product-item.show-delete .status {
-            display: none;
-        }
-        .product-item.show-delete .delete-btn {
-            display: block;
-            opacity: 1;
-            transform: translateX(0);
-        }
+        .order-btn:hover { background: #1d4ed8; }
 
-        .product-item.fade-out {
-            opacity: 0;
-            transform: scale(0.8);
-            pointer-events: none;
+        /* ব্যাক বাটন */
+        .back-btn { 
+            display: inline-block; 
+            margin-top: 25px; 
+            text-decoration: none; 
+            color: #2563eb; 
+            font-weight: 600; 
+            font-size: 15px;
+            transition: color 0.2s; 
         }
-
-        /* আলোর ক্র্যাশ (Particle) স্টাইল */
-        .particle {
-            position: fixed;
-            pointer-events: none;
-            border-radius: 50%;
-            background: radial-gradient(circle, #ffea00, #ff5722);
-            box-shadow: 0 0 10px #ffeb3b, 0 0 20px #ff5722;
-            animation: flash-crash 0.6s ease-out forwards;
-            z-index: 9999;
-        }
-
-        @keyframes flash-crash {
-            0% {
-                transform: translate(0, 0) scale(1);
-                opacity: 1;
-            }
-            100% {
-                transform: translate(var(--mx), var(--my)) scale(0);
-                opacity: 0;
-            }
-        }
+        .back-btn:hover { color: #60a5fa; }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>📦 আমার প্রোডাক্টসমূহ (My Products)</h1>
-        
-        <div class="filter-container">
-            <button class="filter-btn active" id="btnToday" onclick="filterProducts('today')">আজকের নতুন প্রোডাক্ট</button>
-            <button class="filter-btn" id="btnAll" onclick="filterProducts('all')">সব প্রোডাক্ট</button>
+        <!-- 🌟 গ্রাডিয়েন্ট বর্ডার ও নিওন ইফেক্টযুক্ত প্রিমিয়াম হেডিং বক্স -->
+        <div class="premium-header">
+            <span class="icon">📦</span>
+            <h1>Today's Products</h1>
         </div>
         
-        <div class="product-list" id="myProductList">
-            </div>
+        <!-- আপনার script.js এই গ্রিডেই প্রোডাক্ট অথবা নো প্রোডাক্ট প্রিমিয়াম ইফেক্ট লোড করবে -->
+        <div class="product-list" id="productGrid"></div>
 
-        <a href="index.html" class="back-btn">← মূল শপ-এ ফিরে যান</a>
+        <a href="index.html" class="back-btn">← Back to Shop</a>
     </div>
 
-    <script>
-        // ১. ডাটাবেজ বা ফাইল লজিক (এখানে প্রতিটি প্রোডাক্টের একটি নির্দিষ্ট তারিখ বা 'date' দেওয়া আছে)
-        // টেস্ট করার জন্য প্রথম প্রোডাক্টটির তারিখ আজকের বর্তমান তারিখ (২০২৬-০৬-২৭) দেওয়া হলো
-        const myOrderedProducts = [
-            { id: "#AST-9874", name: "প্রিমিয়াম টি-শার্ট", status: "ডেলিভারড", statusBg: "#2ecc71", date: "2026-06-27" },
-            { id: "#AST-9852", name: "স্মার্ট এনালগ ঘড়ি", status: "চলতি পথে", statusBg: "#f1c40f", date: "2026-06-25" } // এটি আগের দিনের
-        ];
-
-        // ২. স্ক্রিনে প্রোডাক্ট দেখানোর মূল ফাংশন
-        function renderOrderedProducts(productsToDisplay) {
-            const listContainer = document.getElementById('myProductList');
-            listContainer.innerHTML = '';
-
-            if (productsToDisplay.length === 0) {
-                listContainer.innerHTML = '<p style="text-align:center; color:#7f8c8d; padding: 20px;">এই তালিকায় কোনো প্রোডাক্ট নেই।</p>';
-                return;
-            }
-
-            productsToDisplay.forEach(p => {
-                const item = document.createElement('div');
-                item.className = 'product-item';
-                item.setAttribute('onclick', 'toggleDelete(this, event)');
-                
-                item.innerHTML = `
-                    <div class="prod-details">
-                        <h3>${p.name}</h3>
-                        <p>অর্ডার আইডি: ${p.id}</p>
-                    </div>
-                    <span class="status" style="background: ${p.statusBg};">${p.status}</span>
-                    <button class="delete-btn" onclick="deleteProduct(this, event)">ডিলিট করুন</button>
-                `;
-                listContainer.appendChild(item);
-            });
-        }
-
-        // ৩. মেইন ফিল্টারিং লজিক (আজকের বনাম সব প্রোডাক্ট)
-        function filterProducts(type) {
-            // বাটনগুলোর অ্যাক্টিভ কালার পরিবর্তন
-            document.getElementById('btnToday').classList.toggle('active', type === 'today');
-            document.getElementById('btnAll').classList.toggle('active', type === 'all');
-
-            if (type === 'all') {
-                renderOrderedProducts(myOrderedProducts);
-            } else {
-                // আজকের লাইভ তারিখ বের করার লজিক (YYYY-MM-DD ফরম্যাটে)
-                const today = new Date();
-                const yyyy = today.getFullYear();
-                const mm = String(today.getMonth() + 1).padStart(2, '0');
-                const dd = String(today.getDate()).padStart(2, '0');
-                const formattedToday = `${yyyy}-${mm}-${dd}`;
-
-                // লজিক ম্যাচিং: শুধু আজকের তারিখের প্রোডাক্টগুলো ফিল্টার হবে
-                const todayProducts = myOrderedProducts.filter(p => p.date === formattedToday);
-                renderOrderedProducts(todayProducts);
-            }
-        }
-
-        // ৪. ডিলিট বাটন টগল করার ফাংশন
-        function toggleDelete(element, event) {
-            if (event.target.classList.contains('delete-btn')) return;
-
-            document.querySelectorAll('.product-item').forEach(item => {
-                if (item !== element) item.classList.remove('show-delete');
-            });
-
-            element.classList.toggle('show-delete');
-        }
-
-        // ৫. আলোর ক্র্যাশ ইফেক্ট এবং ডিলিট করার লজিক
-        function deleteProduct(button, event) {
-            event.stopPropagation();
-            const productItem = button.closest('.product-item');
-            
-            const rect = button.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-
-            for (let i = 0; i < 30; i++) {
-                createParticle(centerX, centerY);
-            }
-
-            productItem.classList.add('fade-out');
-            
-            setTimeout(() => {
-                // মেইন অ্যারে থেকে ডাটা মুছে ফেলা (অর্ডার আইডি ম্যাচ করে)
-                const orderId = productItem.querySelector('.prod-details p').innerText.replace('অর্ডার আইডি: ', '');
-                const index = myOrderedProducts.findIndex(p => p.id === orderId);
-                if (index !== -1) myOrderedProducts.splice(index, 1);
-                
-                productItem.remove();
-            }, 500);
-        }
-
-        // আলোর কণা তৈরি করার সাব-ফাংশন
-        function createParticle(x, y) {
-            const particle = document.createElement('div');
-            particle.classList.add('particle');
-            document.body.appendChild(particle);
-
-            const size = Math.random() * 6 + 4;
-            particle.style.width = `${size}px`;
-            particle.style.height = `${size}px`;
-
-            particle.style.left = `${x - size / 2}px`;
-            particle.style.top = `${y - size / 2}px`;
-
-            const angle = Math.random() * Math.PI * 2;
-            const velocity = Math.random() * 80 + 40;
-            const mx = Math.cos(angle) * velocity;
-            const my = Math.sin(angle) * velocity;
-
-            particle.style.setProperty('--mx', `${mx}px`);
-            particle.style.setProperty('--my', `${my}px`);
-
-            setTimeout(() => {
-                particle.remove();
-            }, 600);
-        }
-
-        // পেজ লোড হওয়ার সাথে সাথে শুরুতে শুধু "আজকের প্রোডাক্ট" দেখাবে
-        filterProducts('today');
-    </script>
+    <!-- মেইন লজিক ফাইল কানেকশন -->
+    <script src="script.js"></script>
 </body>
 </html>
