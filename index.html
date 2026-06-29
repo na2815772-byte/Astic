@@ -331,7 +331,7 @@
             display: flex;
             justify-content: flex-end;
             padding: 0 15px;
-            margin-top: -10px; /* সাদা ফাঁকা জায়গায় নিখুঁত পজিশনের জন্য */
+            margin-top: -10px; 
             margin-bottom: 15px;
         }
 
@@ -339,9 +339,13 @@
             position: relative;
             z-index: 99;
             font-family: inherit;
+            display: flex;
+            align-items: center;
+            flex-direction: row-reverse; /* এর ফলে অপশনগুলো বাম পাশে আসবে */
+            gap: 10px;
         }
 
-        /* মেইন চ্যাট বাটন (অফিশিয়াল মেসেঞ্জার গ্রেডিয়েন্ট ও প্রিমিয়াম গ্লো ইফেক্ট) */
+        /* মেইন চ্যাট বাটন */
         .chat-main-btn {
             background: linear-gradient(135deg, #006AFF, #00B2FE, #00FFF0);
             background-size: 200% 200%;
@@ -359,6 +363,7 @@
             justify-content: center;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             outline: none;
+            flex-shrink: 0;
         }
 
         .chat-main-btn:hover {
@@ -372,25 +377,22 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* অপশন পপ-আপ মেনু */
+        /* অপশন পপ-আপ মেনু (বাম পাশে পাশাপাশি দেখানোর জন্য আপডেট করা হয়েছে) */
         .chat-options {
-            position: absolute;
-            bottom: 65px;
-            right: 0;
             display: flex;
-            flex-direction: column;
+            flex-direction: row; /* বাটনগুলো পাশাপাশি রাখার জন্য row করা হয়েছে */
             gap: 10px;
             opacity: 0;
             visibility: hidden;
-            transform: translateY(15px) scale(0.8);
+            transform: translateX(15px) scale(0.8); /* বাম দিকে অ্যানিমেশন হবে */
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* একটিভ হলে যেভাবে স্মুথলি ভেসে উঠবে */
+        /* একটিভ হলে যেভাবে স্মুথলি বাম পাশে ভেসে উঠবে */
         .chat-options.active {
             opacity: 1;
             visibility: visible;
-            transform: translateY(0) scale(1);
+            transform: translateX(0) scale(1);
         }
 
         .chat-item {
@@ -567,17 +569,17 @@
         <div id="mainHomeView">
             <div class="premium-chat-wrapper">
                 <div class="premium-chat-container">
-                    <div class="chat-options" id="customChatOptions">
-                        <a href="https://m.me/NELOY.2k.25" target="_blank" class="chat-item messenger-btn">
-                            <i class="fab fa-facebook-messenger"></i>
-                        </a>
-                        <a href="https://wa.me/8801315531124" target="_blank" class="chat-item whatsapp-btn">
-                            <i class="fab fa-whatsapp"></i>
-                        </a>
-                    </div>
                     <button class="chat-main-btn" id="customChatMainBtn">
                         <i class="fab fa-facebook-messenger"></i>
                     </button>
+                    <div class="chat-options" id="customChatOptions">
+                        <a href="https://m.me/NELOY.2k.25" target="_blank" class="chat-item messenger-btn" onclick="checkLoginAndRedirect(event, this.href)">
+                            <i class="fab fa-facebook-messenger"></i>
+                        </a>
+                        <a href="https://wa.me/8801315531124" target="_blank" class="chat-item whatsapp-btn" onclick="checkLoginAndRedirect(event, this.href)">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
 
@@ -700,6 +702,16 @@
                 customMainBtn.style.transform = '';
             }
         });
+
+        // ========================================================
+        // লগইন চেক এবং বড় করে ⚠️ চিহ্নে ইংরেজি সতর্কবার্তা ফাংশন
+        // ========================================================
+        function checkLoginAndRedirect(event, url) {
+            if (!isUserLoggedIn()) {
+                event.preventDefault(); // লিংকে ক্লিক করলেও মেসেঞ্জারে যাবে না
+                alert("⚠️ WARNING!\n\nPlease complete your registration first, then return to the home page.");
+            }
+        }
 
         // প্রোফাইল পিকচার ওপেন করার ফাংশন
         function triggerProfilePicUpload() {
