@@ -7,15 +7,18 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
-        /* মূল কন্টেইনার: এটিকে প্রোডাক্ট সেকশনের ঠিক ওপরের সাদা অংশের ডান কোণায় পজিশন করা হয়েছে */
+        /* মূল কন্টেইনার: ইনডেক্স পেজের সাথে মিল রেখে বাম পাশে পাশাপাশি দেখানোর জন্য আপডেট করা হয়েছে */
         .premium-chat-container {
             position: relative;
-            display: inline-block;
-            float: right; /* ডান কোণায় নেওয়ার জন্য */
-            margin-right: 20px; /* ডান পাশ থেকে কিছুটা জায়গা */
-            margin-top: 15px;  /* ওপরের সাদা অংশে অ্যাডজাস্ট করার জন্য */
             z-index: 999;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            align-items: center;
+            flex-direction: row-reverse; /* এর ফলে অপশনগুলো মেইন বাটনের বাম পাশে আসবে */
+            gap: 10px;
+            float: right; /* ডান কোণায় রাখার জন্য */
+            margin-right: 20px; 
+            margin-top: 15px;  
         }
 
         /* মেইন চ্যাট বাটন (ফেসবুক মেসেঞ্জার স্টাইল গ্রেডিয়েন্ট ও প্রিমিয়াম গ্লো ইফেক্ট) */
@@ -25,43 +28,41 @@
             animation: gradientMove 4s ease infinite;
             color: white;
             border: none;
-            width: 60px;
-            height: 60px;
+            width: 54px;
+            height: 54px;
             border-radius: 50%;
-            font-size: 28px;
+            font-size: 24px;
             cursor: pointer;
-            box-shadow: 0 8px 25px rgba(0, 106, 255, 0.4);
+            box-shadow: 0 8px 25px rgba(0, 106, 255, 0.35);
             display: flex;
             align-items: center;
             justify-content: center;
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             outline: none;
+            flex-shrink: 0;
         }
 
         /* বাটনের ওপর মাউস নিলে প্রিমিয়াম ভিজ্যুয়াল ইফেক্ট */
         .chat-main-btn:hover {
-            transform: scale(1.1) rotate(15deg);
-            box-shadow: 0 12px 30px rgba(0, 106, 255, 0.6);
+            transform: scale(1.08) rotate(15deg);
+            box-shadow: 0 12px 30px rgba(0, 106, 255, 0.5);
         }
 
-        /* ব্যাকগ্রাউন্ড গ্রেডিয়েন্ট অ্যানিমেশন */
+        /* ব্যাকগ্রাউন্ড গ্রেডিয়েন্ট动画 */
         @keyframes gradientMove {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
 
-        /* অপশন মেনু (শুরুতে লুকানো থাকবে) */
+        /* অপশন মেনু (বাম পাশে পাশাপাশি ভেসে ওঠার প্রিমিয়াম ডিজাইন) */
         .chat-options {
-            position: absolute;
-            bottom: 75px;
-            right: 0;
             display: flex;
-            flex-direction: column;
-            gap: 12px;
+            flex-direction: row; /* বাটনগুলো পাশাপাশি রাখার জন্য */
+            gap: 10px;
             opacity: 0;
             visibility: hidden;
-            transform: translateY(20px) scale(0.8);
+            transform: translateX(15px) scale(0.8); /* বাম দিকে অ্যানিমেশনের জন্য */
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
@@ -69,7 +70,7 @@
         .chat-options.active {
             opacity: 1;
             visibility: visible;
-            transform: translateY(0) scale(1);
+            transform: translateX(0) scale(1);
         }
 
         /* মেসেঞ্জার এবং হোয়াটসঅ্যাপ প্রতিটির আলাদা প্রিমিয়াম বাটন স্টাইল */
@@ -77,36 +78,14 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 50px;
-            height: 50px;
+            width: 48px;
+            height: 48px;
             border-radius: 50%;
             color: white;
-            font-size: 22px;
+            font-size: 20px;
             text-decoration: none;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
             transition: all 0.3s ease;
-            position: relative;
-        }
-
-        /* হোভার করলে হালকা টেক্সট পপ-আপ (টুলটিপ) */
-        .chat-item::before {
-            content: attr(data-tooltip);
-            position: absolute;
-            right: 65px;
-            background: rgba(0, 0, 0, 0.8);
-            color: #fff;
-            padding: 5px 10px;
-            font-size: 12px;
-            border-radius: 5px;
-            white-space: nowrap;
-            opacity: 0;
-            visibility: hidden;
-            transition: 0.3s;
-        }
-
-        .chat-item:hover::before {
-            opacity: 1;
-            visibility: visible;
         }
 
         /* ডিরেক্ট মেসেঞ্জার বাটন কালার ও গ্লো */
@@ -114,8 +93,8 @@
             background: linear-gradient(135deg, #1877F2, #00FFF0);
         }
         .messenger-btn:hover {
-            transform: translateX(-5px) scale(1.05);
-            box-shadow: 0 8px 20px rgba(24, 119, 242, 0.5);
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(24, 119, 242, 0.4);
         }
 
         /* ডিরেক্ট হোয়াটসঅ্যাপ বাটন কালার ও গ্লো */
@@ -123,8 +102,8 @@
             background: linear-gradient(135deg, #25D366, #128C7E);
         }
         .whatsapp-btn:hover {
-            transform: translateX(-5px) scale(1.05);
-            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.5);
+            transform: scale(1.1);
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
         }
     </style>
 </head>
@@ -133,10 +112,11 @@
     <div class="premium-chat-container">
         
         <div class="chat-options" id="chatOptions">
-            <a href="https://m.me/NELOY.2k.25" target="_blank" class="chat-item messenger-btn" data-tooltip="Messenger">
+            <!-- এখানে onclick ইভেন্টে আপনার লগইন ভ্যালিডেশন এবং ইংরেজি সতর্কবার্তা যুক্ত করা হয়েছে -->
+            <a href="https://m.me/NELOY.2k.25" target="_blank" class="chat-item messenger-btn" onclick="checkLoginAndRedirect(event, this.href)">
                 <i class="fab fa-facebook-messenger"></i>
             </a>
-            <a href="https://wa.me/8801315531124" target="_blank" class="chat-item whatsapp-btn" data-tooltip="WhatsApp">
+            <a href="https://wa.me/8801315531124" target="_blank" class="chat-item whatsapp-btn" onclick="checkLoginAndRedirect(event, this.href)">
                 <i class="fab fa-whatsapp"></i>
             </a>
         </div>
@@ -151,31 +131,40 @@
         const mainBtn = document.getElementById('mainChatBtn');
         const chatOptions = document.getElementById('chatOptions');
 
-        mainBtn.addEventListener('click', () => {
+        // মেইন বাটন ক্লিক ইভেন্ট
+        mainBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // ক্লিক ইভেন্ট প্রপাগেশন বন্ধ করার জন্য
             chatOptions.classList.toggle('active');
             
-            // ক্লিক করলে মেইন আইকনটি মেসেঞ্জার থেকে ক্লোজ (X) চিহ্নে অ্যানিমেট হবে
             const icon = mainBtn.querySelector('i');
             if(chatOptions.classList.contains('active')) {
-                icon.classList.remove('fab', 'fa-facebook-messenger');
-                icon.classList.add('fas', 'fa-xmark');
+                icon.className = 'fas fa-xmark';
                 mainBtn.style.transform = 'scale(0.95)';
             } else {
-                icon.classList.remove('fas', 'fa-xmark');
-                icon.classList.add('fab', 'fa-facebook-messenger');
+                icon.className = 'fab fa-facebook-messenger';
                 mainBtn.style.transform = '';
             }
         });
 
-        // উইজেটের বাইরে ক্লিক করলে মেনু স্বয়ংক্রিয়ভাবে বন্ধ হয়ে যাবে
+        // উইজেটের বাইরে ক্লিক করলে মেনু স্বয়ংক্রিয়ভাবে বন্ধ হওয়া এবং আইকন রিসেট বাগ ফিক্স
         document.addEventListener('click', (e) => {
             if (!mainBtn.contains(e.target) && !chatOptions.contains(e.target)) {
                 chatOptions.classList.remove('active');
-                const icon = mainBtn.querySelector('i');
-                icon.classList.remove('fas', 'fa-xmark');
-                icon.classList.add('fab', 'fa-facebook-messenger');
+                mainBtn.querySelector('i').className = 'fab fa-facebook-messenger';
+                mainBtn.style.transform = '';
             }
         });
+
+        // লগইন চেক এবং ইংরেজি সতর্কবার্তা (⚠️ WARNING) ফাংশন
+        function checkLoginAndRedirect(event, url) {
+            // ইনডেক্স ফাইলের সাথে মিল রেখে লোকাল স্টোরেজ চেক করা হচ্ছে
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            
+            if (!isLoggedIn) {
+                event.preventDefault(); // লিংকের ডিফল্ট অ্যাকশন বা রিডাইরেক্ট বন্ধ করবে
+                alert("⚠️ WARNING!\n\nPlease complete your registration first, then return to the home page.");
+            }
+        }
     </script>
 </body>
 </html>
