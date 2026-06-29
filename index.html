@@ -206,7 +206,7 @@
 
         .balance-box { background: #eff6ff; padding: 16px; border-radius: 12px; margin: 15px 0; font-size: 16px; font-weight: 700; text-align: center; color: #1e40af; border: 1px solid #bfdbfe; }
         
-        /* তথ্য ও যোগাযোগ যোগাযোগ বক্স */
+        /* তথ্য ও যোগাযোগ যোগাযোগ باکس */
         .contact-info-box { background: #fffde7; border-left: 5px solid #eab308; padding: 14px; margin: 15px 0; border-radius: 8px; font-size: 14px; line-height: 1.6; color: #713f12; }
         
         /* ট্যাব বাটন এবং সাব-মেনু */
@@ -583,7 +583,7 @@
                 </div>
             </div>
 
-            <h1 style="font-size: 22px; font-weight: 700; margin-bottom: 20px; color: #1e293b; padding-left: 5px;">আমাদের প্রোডাক্টগুলো</h1>
+            <h1 id="homeViewTitle" style="font-size: 22px; font-weight: 700; margin-bottom: 20px; color: #1e293b; padding-left: 5px;">আমাদের প্রোডাক্টগুলো</h1>
             <div class="product-grid" id="productGrid"></div>
         </div>
     </div>
@@ -763,14 +763,37 @@
 
         let products = JSON.parse(localStorage.getItem('myProducts')) || defaultProducts;
 
+        // 🎯 আজকের ডেট অনুযায়ী প্রোডাক্ট ফিল্টারিং ও কন্ডিশনাল রেন্ডার লজিক
         function renderProducts(productsToRender = products) {
             const grid = document.getElementById('productGrid');
+            const homeTitle = document.getElementById('homeViewTitle');
             grid.innerHTML = '';
-            if(productsToRender.length === 0) {
-                grid.innerHTML = '<div style="color:#64748b; padding: 20px; font-weight: 500;">কোনো প্রোডাক্ট পাওয়া যায়নি!</div>';
+            
+            // লাইভ বর্তমান ডেট নেওয়া হচ্ছে (YYYY-MM-DD ফরম্যাট)
+            const todayDateStr = getLiveFormattedDate();
+            
+            // শুধু আজকের তারিখের আপলোড করা প্রোডাক্টগুলো ফিল্টার করা হচ্ছে
+            const todaysProducts = productsToRender.filter(p => p.date === todayDateStr);
+
+            // ⚠️ লজিক: যদি আজকের কোনো প্রোডাক্ট আপলোড করা না থাকে
+            if (todaysProducts.length === 0) {
+                homeTitle.style.display = 'none'; // মেইন হেডিং হাইড হবে
+                grid.innerHTML = `
+                    <div style="text-align: center; width: 100%; margin: 40px auto; padding: 30px; background: #fff; border: 1px dashed #ef4444; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
+                        <span style="font-size: 50px; display: inline-block; margin-bottom: 10px;">⚠️</span>
+                        <h2 style="color: #ef4444; font-size: 18px; font-weight: 700; margin: 0 0 8px 0; font-family: 'Segoe UI', sans-serif;">No Products Uploaded Today</h2>
+                        <p style="color: #64748b; font-size: 13px; margin: 0;">আজকে নতুন কোনো প্রোডাক্ট আপলোড করা হয়নি। অনুগ্রহ করে পরবর্তীতে আবার চেক করুন।</p>
+                    </div>`;
                 return;
             }
-            productsToRender.forEach((p, index) => {
+
+            // যদি আজকে প্রোডাক্ট থাকে, তবে মেইন হেডিং টাইটেল শো করবে
+            homeTitle.style.display = 'block';
+            homeTitle.innerText = "Today's Products"; // আপনার রিকোয়ারমেন্ট অনুযায়ী টাইটেল আপডেট
+
+            // শুধুমাত্র আজকের প্রোডাক্টগুলো স্ক্রিনে লুপ হবে
+            todaysProducts.forEach((p, index) => {
+                const originalIndex = products.indexOf(p); // ডিলিটের জন্য সঠিক ইনডেক্স ট্র্যাক
                 const card = document.createElement('div');
                 card.className = `product-card ${p.category}`;
                 
@@ -812,7 +835,7 @@
                 `;
 
                 card.querySelector('.card-delete-icon').addEventListener('click', function(event) {
-                    triggerCrashDelete(this, event, index);
+                    triggerCrashDelete(this, event, originalIndex);
                 });
 
                 card.querySelector('.order-btn').addEventListener('click', function(event) {
@@ -1129,6 +1152,7 @@
             document.getElementById('homeNavBtn').classList.add('active');
             hideAllViews();
             document.getElementById('mainHomeView').style.display = 'block';
+            renderProducts(); // হোম ভিউতে এলে রি-রেন্ডার করবে আজকের প্রোডাক্ট
         }
 
         function resetNavActiveState() {
@@ -1173,7 +1197,7 @@
         function goToPaymentStep2() {
             const amount = document.getElementById('userAmountInput').value.trim();
             if(!amount) {
-                alert("দয়া করে আপনার হিসাবের ঘরে টাকার পরিমাণটি বসান!");
+                alert("দয়া করে আপনার হিসাবের ঘরে টাকার পরিমাণটি বসան!");
                 return;
             }
             hideAllViews();
@@ -1190,7 +1214,7 @@
             const amount = document.getElementById('userAmountInput').value.trim();
             
             if(!trxId) {
-                alert("দয়া করে আপনার কাঙ্জ্জিত ট্রানজেকশন আইডিটি বসান!");
+                alert("দয়া করে আপনার কাঙ্জ্জিত ট্রানজেকশন আইডিটি বসան!");
                 return;
             }
             
@@ -1216,4 +1240,4 @@
         checkLoginStatus();
     </script>
 </body>
-                    </html>
+</html>
