@@ -123,12 +123,12 @@ function renderProducts(productsToShow = products, isTodayFilter = false) {
                     text-align: center;
                     animation: fadeInUp 0.5s ease-out forwards, pulseGlow 3s infinite ease-in-out;
                 ">
-                    <div class="warning-badge">⚠️ SYSTEM WARNING</div>
+                    <div class="warning-badge">⚠️ NOTICE</div>
                     
                     <div class="shimmer-animated-text">NO PRODUCTS UPLOADED TODAY</div>
                     
                     <p style="color: #9ca3af; font-size: 14px; margin: 0; font-family: sans-serif;">
-                        The database is currently empty for today. Please check back later.
+                        আজকের জন্য কোনো প্রোডাক্ট আপলোড করা হয়নি। দয়া করে পরে আবার চেষ্টা করুন।
                     </p>
                 </div>
             </div>`;
@@ -141,15 +141,15 @@ function renderProducts(productsToShow = products, isTodayFilter = false) {
         card.className = `product-card ${p.category || ''}`;
         card.style.position = 'relative'; 
         
-        // 📷 আপনার কথামতো প্রোডাক্টের ইমেজ/ছবি দেখানোর পারফেক্ট লজিক
-        const productImage = p.image ? `<img src="${p.image}" alt="${p.name}" style="width:100%; height:200px; object-fit:cover; border-radius:8px; margin-bottom:12px; border: 1px solid #374151;">` : `<div style="width:100%; height:200px; background:#374151; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#9ca3af; margin-bottom:12px;">No Image Available</div>`;
+        // 📷 প্রোডাক্টের ইমেজ/ছবি দেখানোর পারফেক্ট লজিক
+        const productImage = p.image ? `<img src="${p.image}" alt="${p.name}">` : `<div style="width:100%; height:180px; background:#374151; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#9ca3af; margin-bottom:12px;">No Image Available</div>`;
         
         card.innerHTML = `
             ${productImage}
             <h3>${p.name}</h3>
             <p style="margin-top: 5px;">
-                ${p.oldPrice ? `<span class="old-price" style="color: #6b7280; text-decoration: line-through; margin-right: 8px;">${p.oldPrice} টাকা</span>` : ''}
-                <span class="price" style="color: #10b981; font-weight:700;">${p.price} টাকা</span>
+                ${p.oldPrice ? `<span class="old-price">${p.oldPrice} টাকা</span>` : ''}
+                <span class="price">${p.price} টাকা</span>
             </p>
             <button class="order-btn" onclick="addToCart('${p.name}', ${p.price})">Add to Cart</button>
             <button class="delete-btn" id="delete-${p.id}" style="display: none; position: absolute; top: 10px; right: 10px; background: #ef4444; color: white; border: none; padding: 4px 10px; cursor: pointer; border-radius: 5px; font-size: 12px; font-weight:600;" onclick="deleteProduct(${p.id})">Delete</button>
@@ -177,7 +177,7 @@ function renderProducts(productsToShow = products, isTodayFilter = false) {
     });
 }
 
-// আজকের নতুন প্রোডাক্ট ফিল্টার করার ফাংশน
+// আজকের নতুন প্রোডাক্ট ফিল্টার করার ফাংশন
 function showTodayProducts() {
     const formattedToday = getFormattedDate(); 
     const todayProducts = products.filter(product => {
