@@ -51,10 +51,88 @@ function renderProducts(productsToShow = products) {
     if (!grid) return;
     grid.innerHTML = '';
     
+    // ================= প্রিমিয়াম 'No Products' ভিজুয়াল ইফেক্ট লজিক =================
     if (productsToShow.length === 0) {
+        // অ্যানিমেশনের জন্য স্টাইল ট্যাগ ডাইনামিকালি যোগ করা
+        if (!document.getElementById('premium-error-styles')) {
+            const style = document.createElement('style');
+            style.id = 'premium-error-styles';
+            style.innerHTML = `
+                @keyframes pulseGlow {
+                    0% { box-shadow: 0 8px 32px 0 rgba(231, 76, 60, 0.2); }
+                    50% { box-shadow: 0 8px 32px 0 rgba(231, 76, 60, 0.5); }
+                    100% { box-shadow: 0 8px 32px 0 rgba(231, 76, 60, 0.2); }
+                }
+                @keyframes fadeInUp {
+                    from { opacity: 0; transform: translateY(20px) scale(0.95); }
+                    to { opacity: 1; transform: translateY(0) scale(1); }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // প্রিমিয়াম ডিজাইনের মেইন কন্টেইনার
         grid.innerHTML = `
-            <div style="text-align:center; width:100%; color:#e74c3c; font-weight:bold; padding: 20px;">
-                আপনার কোন প্রোডাক্ট নেই অথবা আজকে কোন প্রোডাক্ট আপলোড হয়নি।
+            <div style="
+                width: 100%; 
+                display: flex; 
+                justify-content: center; 
+                align-items: center; 
+                padding: 40px 20px;
+                box-sizing: border-box;
+            ">
+                <div style="
+                    background: rgba(255, 255, 255, 0.08);
+                    backdrop-filter: blur(12px);
+                    -webkit-backdrop-filter: blur(12px);
+                    border: 1px solid rgba(231, 76, 60, 0.3);
+                    border-radius: 16px;
+                    padding: 40px 30px;
+                    max-width: 450px;
+                    width: 100%;
+                    text-align: center;
+                    animation: fadeInUp 0.6s ease-out forwards, pulseGlow 3s infinite ease-in-out;
+                    box-sizing: border-box;
+                ">
+                    <div style="
+                        width: 70px;
+                        height: 70px;
+                        background: rgba(231, 76, 60, 0.1);
+                        border: 2px dashed #e74c3c;
+                        border-radius: 50%;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        margin: 0 auto 20px auto;
+                    ">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                    </div>
+                    
+                    <h2 style="
+                        color: #e74c3c;
+                        font-family: 'Poppins', 'Segoe UI', sans-serif;
+                        font-size: 22px;
+                        font-weight: 700;
+                        letter-spacing: 0.5px;
+                        margin: 0 0 10px 0;
+                        text-transform: uppercase;
+                    ">
+                        No Products Uploaded Today
+                    </h2>
+                    
+                    <p style="
+                        color: #7f8c8d;
+                        font-size: 14px;
+                        margin: 0;
+                        font-family: sans-serif;
+                    ">
+                        Please check back later or explore other categories.
+                    </p>
+                </div>
             </div>`;
         return;
     }
