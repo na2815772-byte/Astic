@@ -2,7 +2,6 @@
 const SUPABASE_URL = "https://mbxkickfugdkgsabizrr.supabase.co";
 const SUPABASE_KEY = "sb_publishable_ButTVVb8ZxL7QeaL919qJg_gZ2HDjfb";
 
-// CDN ব্যবহার করে ইনডেক্স ফাইলে Supabase লোড করা থাকলে এটি কাজ করবে
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // ================= প্রোডাক্ট ও কার্ট লজিক =================
@@ -16,17 +15,17 @@ function getFormattedDate() {
     return `${yyyy}-${mm}-${dd}`;
 }
 
-const currentDate = getFormattedDate(); // আজকের রিয়েল তারিখ ডাইনামিকালি নেবে
+const currentDate = getFormattedDate(); // আজকের রিয়েল তারিখ
 
-let products = []; // এখন প্রোডাক্টগুলো ডাটাবেজ থেকে এসে এখানে জমা হবে
+let products = []; 
 let cart = [];
-let isAdminLoggedIn = true; // ফেইক অ্যাডমিন লগইন চেক (প্রয়োজন অনুযায়ী false করতে পারেন)
+let isAdminLoggedIn = true; // অ্যাডমিন লগইন চেক
 
 // Supabase থেকে সব প্রোডাক্ট নিয়ে আসার ফাংশন
 async function fetchProducts(filterToday = true) {
     try {
         let { data, error } = await supabase
-            .from('products') // Supabase-এ টেবিল এর নাম অবশ্যই 'products' হতে হবে
+            .from('products') 
             .select('*');
 
         if (error) throw error;
@@ -40,142 +39,135 @@ async function fetchProducts(filterToday = true) {
         }
     } catch (error) {
         console.error("প্রোডাক্ট লোড করতে সমস্যা হয়েছে:", error.message);
-        // ডাটাবেজ কানেক্ট না হলে লোকাল ব্ল্যাংক স্ক্রিন দেখাবে
         renderProducts([]);
     }
 }
 
 // প্রোডাক্ট রেন্ডার করার মেইন ফাংশন
-function renderProducts(productsToShow = products) {
-    const grid = document.getElementById('productGrid');
+function renderProducts(productsToShow = products, isTodayFilter = false) {
+    const grid = document.getElementById('productGrid') || document.getElementById('myProductList');
     if (!grid) return;
     grid.innerHTML = '';
     
-    // ================= প্রিমিয়াম 'No Products' ভিজুয়াল ইফেক্ট লজিক =================
+    // ================= 🌟 আপনার কথামতো চলমান ভিজ্যুয়াল ইফেক্ট ও ওয়ার্নিং লজিক 🌟 =================
     if (productsToShow.length === 0) {
-        // অ্যানিমেশনের জন্য স্টাইল ট্যাগ ডাইনামিকালি যোগ করা
-        if (!document.getElementById('premium-error-styles')) {
+        if (!document.getElementById('premium-animated-styles')) {
             const style = document.createElement('style');
-            style.id = 'premium-error-styles';
+            style.id = 'premium-animated-styles';
             style.innerHTML = `
+                /* কার্ড ও গ্লো অ্যানিমেশন */
                 @keyframes pulseGlow {
-                    0% { box-shadow: 0 8px 32px 0 rgba(231, 76, 60, 0.2); }
-                    50% { box-shadow: 0 8px 32px 0 rgba(231, 76, 60, 0.5); }
-                    100% { box-shadow: 0 8px 32px 0 rgba(231, 76, 60, 0.2); }
+                    0%, 100% { box-shadow: 0 8px 32px 0 rgba(239, 68, 68, 0.15); border-color: rgba(239, 68, 68, 0.2); }
+                    50% { box-shadow: 0 8px 32px 0 rgba(239, 68, 68, 0.4); border-color: rgba(239, 68, 68, 0.6); }
                 }
                 @keyframes fadeInUp {
-                    from { opacity: 0; transform: translateY(20px) scale(0.95); }
-                    to { opacity: 1; transform: translateY(0) scale(1); }
+                    from { opacity: 0; transform: translateY(20px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                /* 🎯 টেক্সটের ভেতর দিয়ে আলোর রেখা এপার-ওপার যাওয়ার চলমান ইফেক্ট */
+                @keyframes textShimmer {
+                    0% { background-position: -200% center; }
+                    100% { background-position: 200% center; }
+                }
+                .shimmer-animated-text {
+                    text-transform: uppercase;
+                    font-family: 'Poppins', sans-serif;
+                    font-size: 22px;
+                    font-weight: 800;
+                    letter-spacing: 1px;
+                    margin-bottom: 10px;
+                    
+                    /* চলমান আলোর কালার সেটআপ */
+                    background: linear-gradient(to right, #ef4444 20%, #fca5a5 40%, #ffffff 50%, #fca5a5 60%, #ef4444 80%);
+                    background-size: 200% auto;
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                    animation: textShimmer 3s linear infinite;
+                }
+                .warning-badge {
+                    background: rgba(239, 68, 68, 0.15);
+                    color: #ef4444;
+                    padding: 5px 15px;
+                    border-radius: 20px;
+                    font-size: 12px;
+                    font-weight: 700;
+                    letter-spacing: 2px;
+                    text-transform: uppercase;
+                    border: 1px solid rgba(239, 68, 68, 0.3);
+                    margin-bottom: 15px;
+                    display: inline-block;
                 }
             `;
             document.head.appendChild(style);
         }
 
-        // প্রিমিয়াম ডিজাইনের মেইন কন্টেইনার
+        // আজকের দিনে কোনো প্রোডাক্ট না থাকলে এই চলমান প্রিমিয়াম নোটিফিকেশনটি শো করবে
         grid.innerHTML = `
             <div style="
+                grid-column: 1 / -1;
                 width: 100%; 
                 display: flex; 
                 justify-content: center; 
                 align-items: center; 
-                padding: 40px 20px;
-                box-sizing: border-box;
+                padding: 50px 0;
             ">
                 <div style="
-                    background: rgba(255, 255, 255, 0.08);
+                    background: rgba(17, 24, 39, 0.7);
                     backdrop-filter: blur(12px);
                     -webkit-backdrop-filter: blur(12px);
-                    border: 1px solid rgba(231, 76, 60, 0.3);
+                    border: 1px solid rgba(239, 68, 68, 0.2);
                     border-radius: 16px;
-                    padding: 40px 30px;
-                    max-width: 450px;
+                    padding: 40px;
+                    max-width: 480px;
                     width: 100%;
                     text-align: center;
-                    animation: fadeInUp 0.6s ease-out forwards, pulseGlow 3s infinite ease-in-out;
-                    box-sizing: border-box;
+                    animation: fadeInUp 0.5s ease-out forwards, pulseGlow 3s infinite ease-in-out;
                 ">
-                    <div style="
-                        width: 70px;
-                        height: 70px;
-                        background: rgba(231, 76, 60, 0.1);
-                        border: 2px dashed #e74c3c;
-                        border-radius: 50%;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        margin: 0 auto 20px auto;
-                    ">
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="12" y1="8" x2="12" y2="12"></line>
-                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                        </svg>
-                    </div>
+                    <div class="warning-badge">⚠️ SYSTEM WARNING</div>
                     
-                    <h2 style="
-                        color: #e74c3c;
-                        font-family: 'Poppins', 'Segoe UI', sans-serif;
-                        font-size: 22px;
-                        font-weight: 700;
-                        letter-spacing: 0.5px;
-                        margin: 0 0 10px 0;
-                        text-transform: uppercase;
-                    ">
-                        No Products Uploaded Today
-                    </h2>
+                    <div class="shimmer-animated-text">NO PRODUCTS UPLOADED TODAY</div>
                     
-                    <p style="
-                        color: #7f8c8d;
-                        font-size: 14px;
-                        margin: 0;
-                        font-family: sans-serif;
-                    ">
-                        Please check back later or explore other categories.
+                    <p style="color: #9ca3af; font-size: 14px; margin: 0; font-family: sans-serif;">
+                        The database is currently empty for today. Please check back later.
                     </p>
                 </div>
             </div>`;
         return;
     }
     
+    // 📦 প্রোডাক্ট থাকলে ছবিসহ সুন্দর গ্রিড লেআউট তৈরি হবে
     productsToShow.forEach((p) => {
         const card = document.createElement('div');
-        card.className = `product-card ${p.category}`;
+        card.className = `product-card ${p.category || ''}`;
         card.style.position = 'relative'; 
         
-        // ছবি থাকলে তা দেখানোর লজিক
-        const productImage = p.image ? `<img src="${p.image}" alt="${p.name}" style="width:100%; max-height:200px; object-fit:cover; border-radius:5px;">` : '';
+        // 📷 আপনার কথামতো প্রোডাক্টের ইমেজ/ছবি দেখানোর পারফেক্ট লজিক
+        const productImage = p.image ? `<img src="${p.image}" alt="${p.name}" style="width:100%; height:200px; object-fit:cover; border-radius:8px; margin-bottom:12px; border: 1px solid #374151;">` : `<div style="width:100%; height:200px; background:#374151; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#9ca3af; margin-bottom:12px;">No Image Available</div>`;
         
         card.innerHTML = `
             ${productImage}
             <h3>${p.name}</h3>
-            <p>
-                ${p.oldPrice ? `<span class="old-price">${p.oldPrice} টাকা</span>` : ''}
-                <span class="price">${p.price} টাকা</span>
+            <p style="margin-top: 5px;">
+                ${p.oldPrice ? `<span class="old-price" style="color: #6b7280; text-decoration: line-through; margin-right: 8px;">${p.oldPrice} টাকা</span>` : ''}
+                <span class="price" style="color: #10b981; font-weight:700;">${p.price} টাকা</span>
             </p>
-            <button class="order-btn" onclick="addToCart('${p.name}', ${p.price})">কার্টে যোগ করুন</button>
-            
-            <button class="delete-btn" id="delete-${p.id}" style="display: none; position: absolute; top: 5px; right: 5px; background: red; color: white; border: none; padding: 2px 6px; cursor: pointer; border-radius: 3px; font-size: 12px;" onclick="deleteProduct(${p.id})">ডিলিট করুন</button>
+            <button class="order-btn" onclick="addToCart('${p.name}', ${p.price})">Add to Cart</button>
+            <button class="delete-btn" id="delete-${p.id}" style="display: none; position: absolute; top: 10px; right: 10px; background: #ef4444; color: white; border: none; padding: 4px 10px; cursor: pointer; border-radius: 5px; font-size: 12px; font-weight:600;" onclick="deleteProduct(${p.id})">Delete</button>
         `;
         
-        // শুধুমাত্র অ্যাডমিন লগইন থাকলে লং প্রেস লজিক
         if (isAdminLoggedIn) {
             let pressTimer;
-
             const startPress = () => {
                 pressTimer = window.setTimeout(() => {
                     const deleteBtn = card.querySelector('.delete-btn');
                     if (deleteBtn) deleteBtn.style.display = 'block';
                 }, 1000); 
             };
-
-            const cancelPress = () => {
-                clearTimeout(pressTimer);
-            };
+            const cancelPress = () => clearTimeout(pressTimer);
 
             card.addEventListener('mousedown', startPress);
             card.addEventListener('mouseup', cancelPress);
             card.addEventListener('mouseleave', cancelPress);
-
             card.addEventListener('touchstart', startPress);
             card.addEventListener('touchend', cancelPress);
             card.addEventListener('touchcancel', cancelPress);
@@ -185,16 +177,19 @@ function renderProducts(productsToShow = products) {
     });
 }
 
-// আজকের নতুন প্রোডাক্ট ফিল্টার করার ফাংশন
+// আজকের নতুন প্রোডাক্ট ফিল্টার করার ফাংশน
 function showTodayProducts() {
     const formattedToday = getFormattedDate(); 
-    const todayProducts = products.filter(product => product.date === formattedToday);
-    renderProducts(todayProducts);
+    const todayProducts = products.filter(product => {
+        const productDate = product.date ? product.date.substring(0, 10) : "";
+        return productDate === formattedToday;
+    });
+    renderProducts(todayProducts, true);
 }
 
 // সমস্ত প্রোডাক্ট একসাথে দেখার জন্য ফাংশন
 function showAllProducts() {
-    renderProducts(products);
+    renderProducts(products, false);
 }
 
 // ================= Supabase ছবি আপলোড লজিক =================
@@ -203,7 +198,7 @@ async function uploadProductImage(file) {
     
     const fileName = `${Date.now()}_${file.name}`;
     const { data, error } = await supabase.storage
-        .from('products') // Supabase Storage Bucket এর নাম 'products'
+        .from('products')
         .upload(fileName, file);
 
     if (error) {
@@ -211,7 +206,6 @@ async function uploadProductImage(file) {
         return null;
     }
 
-    // ছবির পাবলিক ইউআরএল তৈরি
     const { data: publicUrlData } = supabase.storage
         .from('products')
         .getPublicUrl(fileName);
@@ -219,7 +213,7 @@ async function uploadProductImage(file) {
     return publicUrlData.publicUrl;
 }
 
-// অ্যাডমিন প্যানেল থেকে নতুন প্রোডাক্ট আপলোড করার ফাংশন (সরাসরি Supabase-এ সেভ হবে)
+// নতুন প্রোডাক্ট আপলোড ফাংশন
 async function adminUploadProduct(name, price, oldPrice, category, imageFile) {
     let imageUrl = "";
     if (imageFile) {
@@ -228,7 +222,7 @@ async function adminUploadProduct(name, price, oldPrice, category, imageFile) {
 
     const newProduct = {
         name: name,
-        price: Number(price), // নাম্বার ফরম্যাটে সেভ করার জন্য
+        price: Number(price),
         oldPrice: oldPrice ? String(oldPrice) : null,
         category: category,
         date: getFormattedDate(),
@@ -243,14 +237,14 @@ async function adminUploadProduct(name, price, oldPrice, category, imageFile) {
         if (error) throw error;
 
         alert("প্রোডাক্ট সফলভাবে আপলোড হয়েছে!");
-        fetchProducts(true); // আপলোড শেষে আবার আজকের প্রোডাক্ট রিফ্রেশ করবে
+        fetchProducts(true);
     } catch (error) {
         console.error("প্রোডাক্ট ডাটাবেজে সেভ করতে সমস্যা হয়েছে:", error.message);
         alert("প্রোডাক্ট আপলোড ব্যর্থ হয়েছে।");
     }
 }
 
-// প্রোডাক্ট ডিলিট করার ফাংশন (Supabase থেকে ডিলিট হবে)
+// প্রোডাক্ট ডিলিট করার ফাংশন
 async function deleteProduct(id) {
     if (confirm("আপনি কি নিশ্চিতভাবে এই প্রোডাক্টটি ডিলিট করতে চান?")) {
         try {
@@ -262,7 +256,7 @@ async function deleteProduct(id) {
             if (error) throw error;
 
             alert("প্রোডাক্টটি ডিলিট করা হয়েছে।");
-            fetchProducts(true); // ডিলিট শেষে ডাটা আপডেট করবে
+            fetchProducts(true);
         } catch (error) {
             console.error("প্রোডাক্ট ডিলিট করতে সমস্যা হয়েছে:", error.message);
         }
@@ -286,10 +280,7 @@ function displayCart() {
     let total = 0;
 
     if (cart.length === 0) {
-        cartContainer.innerHTML = `
-            <p style="color: red; text-align: center; font-weight: bold;">
-                আপনার কার্ট খালি।
-            </p>`;
+        cartContainer.innerHTML = `<p style="color: red; text-align: center; font-weight: bold;">আপনার কার্ট খালি।</p>`;
         totalContainer.innerText = "০ টাকা";
         return;
     }
@@ -321,5 +312,5 @@ function checkout() {
     window.location.href = "checkout.html";
 }
 
-// অ্যাপ রান করার জন্য প্রথম কল (ডাটাবেজ থেকে ডাটা আনবে)
+// অ্যাপ চালুর মেইন মেথড
 fetchProducts(true);
