@@ -595,6 +595,47 @@
         .warning-ok-btn { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; border: none; padding: 13px 35px; font-size: 16px; font-weight: 700; border-radius: 12px; cursor: pointer; width: 100%; box-shadow: 0 6px 18px rgba(239, 68, 68, 0.35); transition: all 0.3s ease; }
         .warning-ok-btn:hover { background: linear-gradient(135deg, #dc2626, #b91c1c); transform: translateY(-2px); box-shadow: 0 8px 22px rgba(239, 68, 68, 0.5); }
 
+        /* ========================================================
+           ✨ নতুন যোগ করা প্রিমিয়াম সাকসেস নোটিশ মডাল (সবুজ টিক চিহ্ন) CSS
+           ======================================================== */
+        .custom-success-modal {
+            display: none; 
+            position: fixed; 
+            top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            background: rgba(15, 23, 42, 0.75); 
+            backdrop-filter: blur(8px); 
+            -webkit-backdrop-filter: blur(8px);
+            justify-content: center; 
+            align-items: center; 
+            z-index: 99999; 
+        }
+        .success-box {
+            background: linear-gradient(135deg, #ffffff, #f0fff4);
+            border: 3px solid #2ed573;
+            padding: 35px 25px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 380px;
+            box-shadow: 0 20px 45px rgba(46, 213, 115, 0.25);
+            text-align: center;
+            box-sizing: border-box;
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .success-icon-animate {
+            font-size: 60px;
+            background: linear-gradient(135deg, #2ed573, #1dd1a1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+            display: inline-block;
+            animation: popIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        .success-box h2 { color: #10b981; margin: 0 0 12px 0; font-size: 22px; font-weight: 800; letter-spacing: 1px; }
+        .success-box p { color: #334155; font-size: 15px; line-height: 1.6; margin: 0 0 25px 0; font-weight: 600; }
+        .success-ok-btn { background: linear-gradient(135deg, #2ed573, #1dd1a1); color: white; border: none; padding: 13px 35px; font-size: 16px; font-weight: 700; border-radius: 12px; cursor: pointer; width: 100%; box-shadow: 0 6px 18px rgba(46, 213, 115, 0.35); transition: all 0.3s ease; }
+        .success-ok-btn:hover { background: linear-gradient(135deg, #26b963, #17b38a); transform: translateY(-2px); box-shadow: 0 8px 22px rgba(46, 213, 115, 0.5); }
+
         @media (max-width: 480px) { .header-title { display: none; } }
     </style>
 </head>
@@ -606,6 +647,15 @@
             <h2>WARNING!</h2>
             <p>Please complete your registration first, then enter the page.</p>
             <button class="warning-ok-btn" onclick="redirectToLogin()">OK</button>
+        </div>
+    </div>
+
+    <div id="customSuccessModal" class="custom-success-modal">
+        <div class="success-box">
+            <div class="success-icon-animate">✓</div>
+            <h2>SUCCESSFUL!</h2>
+            <p>Your login has been completed successfully! Click OK to go to the Homepage.</p>
+            <button class="success-ok-btn" onclick="closeSuccessAndGoHome()">OK</button>
         </div>
     </div>
 
@@ -1295,13 +1345,24 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
+        /* 🛠️ মডিফাইড চেক লগইন স্ট্যাটাস লজিক */
         function checkLoginStatus() {
             const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
             const userBalance = localStorage.getItem('userBalance') || '0.00';
+            const hasSeenSuccess = localStorage.getItem('hasSeenSuccessNotice') === 'true';
             
             if (isLoggedIn) {
-                // ১. যদি ইউজার সফলভাবে লগইন করে আসে, তবে স্ক্রিনের ওয়ার্নিং মডালটি একদম হাইড করে দেবো।
+                // ১. যদি ইউজার সফলভাবে লগইন করে আসে, তবে লাল রঙের ওয়ার্নিং মডালটি একদম হাইড থাকবে।
                 document.getElementById('customWarningModal').style.display = 'none';
+
+                // ২. যদি সে এই ফার্স্ট টাইম লগইন করে পেইজে ঢুকে থাকে (অর্থাৎ আগে নোটিশটি না দেখে থাকে)
+                if (!hasSeenSuccess) {
+                    document.getElementById('customSuccessModal').style.display = 'flex'; // সবুজ সাকসেস মডাল দেখাবে
+                    document.getElementById('mainHomeView').style.display = 'none'; // মেইন হোম ভিউ ব্যাকগ্রাউন্ডে লক থাকবে
+                } else {
+                    document.getElementById('customSuccessModal').style.display = 'none';
+                    document.getElementById('mainHomeView').style.display = 'block';
+                }
 
                 const savedUserString = localStorage.getItem('loggedInUser');
                 let displayEmail = 'User';
@@ -1323,10 +1384,21 @@
                 document.getElementById('userProfileImg').src = profileImgUrl;
                 document.getElementById('userBalance').innerText = userBalance;
             } else {
-                // ২. যদি লগইন না করা থাকে, তবেই কেবল ফার্স্ট ভিজিটে অটো ওয়ার্নিং পপআপ ট্রিপ হবে।
+                // ৩. যদি লগইন না করা থাকে, তবেই কেবল লাল ওয়ার্নিং পপআপ ট্রিপ হবে।
                 triggerWarningPopup();
+                document.getElementById('customSuccessModal').style.display = 'none';
             }
             return isLoggedIn;
+        }
+
+        /* সবুজ সাকসেস মডালের OK বাটনের ফাংশন */
+        function closeSuccessAndGoHome() {
+            // নোটিশটি একবার দেখা হয়ে গেছে তা স্টোরেজে সেভ করে রাখছি
+            localStorage.setItem('hasSeenSuccessNotice', 'true');
+            // সাকসেস মডাল বন্ধ করা হচ্ছে
+            document.getElementById('customSuccessModal').style.display = 'none';
+            // এখন ইউজারকে মেইন হোম পেজে নিয়ে যাওয়া হচ্ছে
+            showHomeView();
         }
 
         function handleAccountNavigation(e) {
@@ -1348,8 +1420,18 @@
             resetNavActiveState();
             document.getElementById('homeNavBtn').classList.add('active');
             hideAllViews();
-            document.getElementById('mainHomeView').style.display = 'block';
-            renderProducts(); 
+            
+            // সাকসেস নোটিশ দেখা শেষ না হওয়া পর্যন্ত হোম পেজ সম্পূর্ণ ওপেন হবে না
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const hasSeenSuccess = localStorage.getItem('hasSeenSuccessNotice') === 'true';
+            
+            if (isLoggedIn && !hasSeenSuccess) {
+                document.getElementById('customSuccessModal').style.display = 'flex';
+                document.getElementById('mainHomeView').style.display = 'none';
+            } else {
+                document.getElementById('mainHomeView').style.display = 'block';
+                renderProducts(); 
+            }
         }
 
         function resetNavActiveState() {
@@ -1429,6 +1511,8 @@
             localStorage.removeItem('isLoggedIn');
             localStorage.removeItem('loggedInUser');
             localStorage.removeItem('userBalance');
+            // লগআউট করলে নোটিশের লজিক রিসেট করে দিচ্ছি যাতে পরবর্তীতে আবার লগইন করলে নোটিশ আসে
+            localStorage.removeItem('hasSeenSuccessNotice'); 
             alert('Logout successful!');
             showHomeView(); 
         }
