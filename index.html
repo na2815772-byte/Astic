@@ -247,32 +247,143 @@
         .method-item { background: #fff; border: 1px solid #ccc; padding: 10px; border-radius: 5px; cursor: pointer; font-weight: bold; display: flex; justify-content: center; align-items: center; gap: 10px; transition: background 0.2s; }
         .method-item:hover { background: #f0f0f0; }
 
-        /* পেমেন্ট পেজ ভিউ */
-        .payment-step-page { display: none; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 450px; margin: 20px auto; font-size: 14px; line-height: 1.8; }
-        .copyable-num { background: #eee; padding: 2px 8px; border-radius: 4px; font-weight: bold; font-family: monospace; cursor: pointer; border: 1px dashed #777; }
-        
-        /* ইনপুট গ্রুপ এবং টেক্সট বক্স */
-        .payment-input-group { margin-top: 20px; border-top: 1px dashed #ccc; padding-top: 15px; }
-        .payment-input-group label { display: block; font-weight: bold; margin-bottom: 5px; }
-        .payment-input-group input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 15px; outline: none; }
-        .next-btn { background: green; color: white; border: none; padding: 10px 20px; border-radius: 5px; width: 100%; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 15px; }
-        .back-btn { background: #777; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px; margin-bottom: 15px; }
+        /* ========================================================
+           ✨ নতুন আল্ট্রা-প্রিমিয়াম পেমেন্ট গেটওয়ে ১ ডিজাইন এবং ইফেক্টস
+           ======================================================== */
+        .payment-step-page { 
+            display: none; 
+            background: #ffffff; 
+            padding: 25px; 
+            border-radius: 20px; 
+            box-shadow: 0 15px 35px rgba(15, 23, 42, 0.08), 0 5px 15px rgba(0, 0, 0, 0.04); 
+            max-width: 450px; 
+            margin: 20px auto; 
+            font-size: 14px; 
+            line-height: 1.6;
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
 
-        /* প্রিমিয়াম বারটি */
+        .payment-instruction-card {
+            background: linear-gradient(145deg, #f8fafc, #f1f5f9);
+            border-left: 5px solid #3b82f6;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+            text-align: left;
+        }
+
+        .payment-instruction-card.bkash-theme {
+            background: linear-gradient(145deg, #fff1f6, #ffe4ee);
+            border-left-color: #d12053;
+        }
+
+        .instruction-icon {
+            font-size: 18px;
+            margin-top: 2px;
+        }
+
+        .instruction-text {
+            color: #334155;
+            font-weight: 500;
+        }
+
+        .copyable-num { 
+            background: linear-gradient(135deg, #1e293b, #0f172a); 
+            color: #38ef7d;
+            padding: 4px 12px; 
+            border-radius: 30px; 
+            font-weight: 700; 
+            font-family: 'Courier New', monospace; 
+            cursor: pointer; 
+            display: inline-block;
+            border: 1px solid rgba(56, 239, 125, 0.3);
+            margin: 4px 4px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            animation: pulseGlow 2s infinite;
+        }
+        
+        .copyable-num:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(56, 239, 125, 0.4);
+            color: #ffffff;
+        }
+
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 0 0 rgba(56, 239, 125, 0.4); }
+            70% { box-shadow: 0 0 0 10px rgba(56, 239, 125, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(56, 239, 125, 0); }
+        }
+        
+        .payment-input-group { 
+            margin-top: 25px; 
+            border-top: 2px dashed #e2e8f0; 
+            padding-top: 20px; 
+            text-align: left;
+        }
+        .payment-input-group label { display: block; font-weight: 700; color: #1e293b; font-size: 15px; margin-bottom: 8px; }
+        .payment-input-group input { 
+            width: 100%; 
+            padding: 14px 16px; 
+            border: 2px solid #cbd5e1; 
+            border-radius: 12px; 
+            box-sizing: border-box; 
+            font-size: 16px; 
+            font-weight: 600;
+            background-color: #f8fafc;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+        .payment-input-group input:focus {
+            border-color: #3b82f6;
+            background-color: #ffffff;
+            box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15);
+        }
+
+        .next-btn { 
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8); 
+            color: white; 
+            border: none; 
+            padding: 14px; 
+            border-radius: 12px; 
+            width: 100%; 
+            font-size: 16px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            margin-top: 18px; 
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+            transition: all 0.3s ease;
+        }
+        .next-btn:hover {
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.4);
+        }
+
+        .back-btn { background: #64748b; color: white; border: none; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; margin-bottom: 15px; font-weight: 600; transition: background 0.2s; display: inline-block; float: left; }
+        .back-btn:hover { background: #475569; }
+
+        /* ========================================================
+           🛠️ আপডেট করা প্রিমিয়াম বটম নেভিগেশন বার CSS (সাইজ বড় করা হয়েছে)
+           ======================================================== */
         .bottom-nav { 
             position: fixed; 
             bottom: 0; 
             left: 0; 
             width: 100%; 
-            background: rgba(255, 255, 255, 0.85); 
+            background: rgba(255, 255, 255, 0.95); 
             backdrop-filter: blur(20px); 
             -webkit-backdrop-filter: blur(20px);
             display: flex; 
             justify-content: space-around; 
             align-items: center; 
-            padding: 8px 0 12px 0; 
-            box-shadow: 0 -8px 32px rgba(15, 23, 42, 0.08); 
-            border-top: 1px solid rgba(226, 232, 240, 0.8);
+            padding: 12px 0 16px 0; 
+            box-shadow: 0 -8px 32px rgba(15, 23, 42, 0.12); 
+            border-top: 1px solid rgba(226, 232, 240, 0.9);
             z-index: 1000; 
             box-sizing: border-box; 
         }
@@ -283,8 +394,8 @@
             align-items: center; 
             color: #64748b; 
             text-decoration: none; 
-            font-size: 11px; 
-            font-weight: 600;
+            font-size: 14px; 
+            font-weight: 700; 
             cursor: pointer; 
             background: none; 
             border: none; 
@@ -293,12 +404,19 @@
             text-align: center; 
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
-            padding: 4px 0;
+            padding: 6px 0;
+        }
+
+        .nav-item .nav-icon {
+            font-size: 24px; 
+            display: inline-block;
+            margin-bottom: 5px; 
+            transition: transform 0.3s ease;
         }
         
         .nav-item:hover, .nav-item.active { color: #2563eb; }
-        .nav-item:hover .nav-icon, .nav-item.active .nav-icon { transform: translateY(-4px) scale(1.1); }
-        .nav-item.active::after { content: ''; position: absolute; bottom: -4px; width: 5px; height: 5px; background-color: #2563eb; border-radius: 50%; box-shadow: 0 0 10px #2563eb; }
+        .nav-item:hover .nav-icon, .nav-item.active .nav-icon { transform: translateY(-4px) scale(1.15); }
+        .nav-item.active::after { content: ''; position: absolute; bottom: -8px; width: 6px; height: 6px; background-color: #2563eb; border-radius: 50%; box-shadow: 0 0 10px #2563eb; }
 
         /* অ্যাডমিন লগইন মডাল স্টাইল */
         .admin-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 9999; }
@@ -326,7 +444,7 @@
         .daraz-buy-now { flex: 1; background: #f57224; color: white; border: none; padding: 15px; border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 15px; transition: all 0.3s; box-shadow: 0 4px 14px rgba(245, 114, 36, 0.3); }
         .daraz-buy-now:hover { background: #e05e13; transform: translateY(-2px); }
         
-        /* ডাইনামিক নোটিশ বক্স ও বাটন ডিজাইন */
+        /* ডাইনামিক নোটিশ باکس ও বাটন ডিজাইন */
         .daraz-order-tabs { display: flex; gap: 10px; margin-bottom: 15px; margin-top: 5px; }
         .daraz-tab-btn { flex: 1; padding: 10px; border: 2px solid #f57224; background: #fff; color: #f57224; font-weight: bold; border-radius: 10px; cursor: pointer; font-size: 14px; transition: all 0.2s; }
         .daraz-tab-btn.active { background: #f57224; color: #fff; }
@@ -349,9 +467,7 @@
         .success-title { color: #10b981; font-size: 24px; font-weight: 800; margin: 0 0 15px 0; }
         .success-msg { font-size: 18px; font-weight: 700; color: #1e293b; line-height: 1.5; margin-bottom: 10px; padding: 0 10px; }
 
-        /* ========================================================
-           নতুন যোগ করা প্রিমিয়াম চ্যাট উইজেট (মেসেঞ্জার ও হোয়াটসঅ্যাপ) CSS
-           ======================================================== */
+        /* নতুন যোগ করা প্রিমিয়াম চ্যাট উইজেট (মেসেঞ্জার ও হোয়াটসঅ্যাপ) CSS */
         .premium-chat-wrapper {
             display: flex;
             justify-content: flex-end;
@@ -370,7 +486,6 @@
             gap: 10px;
         }
 
-        /* মেইন চ্যাট বাটন */
         .chat-main-btn {
             background: linear-gradient(135deg, #006AFF, #00B2FE, #00FFF0);
             background-size: 200% 200%;
@@ -402,7 +517,6 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* অপশন পপ-আপ মেনু */
         .chat-options {
             display: flex;
             flex-direction: row; 
@@ -413,7 +527,6 @@
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        /* একটিভ হলে যেভাবে স্মুথলি বাম পাশে ভেসে উঠবে */
         .chat-options.active {
             opacity: 1;
             visibility: visible;
@@ -434,27 +547,13 @@
             transition: all 0.3s ease;
         }
 
-        /* ডাইরেক্ট মেসেঞ্জার বাটন */
-        .messenger-btn {
-            background: linear-gradient(135deg, #1877F2, #00FFF0);
-        }
-        .messenger-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 20px rgba(24, 119, 242, 0.4);
-        }
+        .messenger-btn { background: linear-gradient(135deg, #1877F2, #00FFF0); }
+        .messenger-btn:hover { transform: scale(1.1); box-shadow: 0 8px 20px rgba(24, 119, 242, 0.4); }
 
-        /* ডাইরেক্ট হোয়াটসঅ্যাপ বাটন */
-        .whatsapp-btn {
-            background: linear-gradient(135deg, #25D366, #128C7E);
-        }
-        .whatsapp-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
-        }
+        .whatsapp-btn { background: linear-gradient(135deg, #25D366, #128C7E); }
+        .whatsapp-btn:hover { transform: scale(1.1); box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4); }
 
-        /* ========================================================
-           ✨ নতুন যোগ করা কাস্টম ওয়ার্নিং মডাল (Custom Warning Popup) CSS
-           ======================================================== */
+        /* Custom Warning Popup CSS */
         .custom-warning-modal {
             display: none; 
             position: fixed; 
@@ -491,39 +590,10 @@
             50% { transform: scale(1.15); text-shadow: 0 0 20px rgba(239, 68, 68, 0.6); }
             100% { transform: scale(1); }
         }
-        .warning-box h2 {
-            color: #b91c1c;
-            margin: 0 0 12px 0;
-            font-size: 22px;
-            font-weight: 800;
-            letter-spacing: 1px;
-            font-family: 'Segoe UI', Arial, sans-serif;
-        }
-        .warning-box p {
-            color: #475569;
-            font-size: 15px;
-            line-height: 1.6;
-            margin: 0 0 25px 0;
-            font-weight: 600;
-        }
-        .warning-ok-btn {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            color: white;
-            border: none;
-            padding: 13px 35px;
-            font-size: 16px;
-            font-weight: 700;
-            border-radius: 12px;
-            cursor: pointer;
-            width: 100%;
-            box-shadow: 0 6px 18px rgba(239, 68, 68, 0.35);
-            transition: all 0.3s ease;
-        }
-        .warning-ok-btn:hover {
-            background: linear-gradient(135deg, #dc2626, #b91c1c);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 22px rgba(239, 68, 68, 0.5);
-        }
+        .warning-box h2 { color: #b91c1c; margin: 0 0 12px 0; font-size: 22px; font-weight: 800; letter-spacing: 1px; font-family: 'Segoe UI', Arial, sans-serif; }
+        .warning-box p { color: #475569; font-size: 15px; line-height: 1.6; margin: 0 0 25px 0; font-weight: 600; }
+        .warning-ok-btn { background: linear-gradient(135deg, #ef4444, #dc2626); color: white; border: none; padding: 13px 35px; font-size: 16px; font-weight: 700; border-radius: 12px; cursor: pointer; width: 100%; box-shadow: 0 6px 18px rgba(239, 68, 68, 0.35); transition: all 0.3s ease; }
+        .warning-ok-btn:hover { background: linear-gradient(135deg, #dc2626, #b91c1c); transform: translateY(-2px); box-shadow: 0 8px 22px rgba(239, 68, 68, 0.5); }
 
         @media (max-width: 480px) { .header-title { display: none; } }
     </style>
@@ -630,38 +700,60 @@
         </div>
 
         <div class="payment-step-page" id="paymentStepPage1">
-            <button class="back-btn" onclick="backToProfile()">⬅️ Go Back</button>
-            <h3 style="margin-top: 0; color: #0288d1;" id="selectedMethodTitle">Payment Gateway</h3>
+            <div style="overflow: hidden; margin-bottom: 15px;">
+                <button class="back-btn" onclick="backToProfile()">⬅️ Go Back</button>
+            </div>
+            <h3 style="margin-top: 10px; color: #1e293b; font-size: 20px; font-weight: 800; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;" id="selectedMethodTitle">Payment Gateway</h3>
             
-            <p>👉 If you want to pay with <span class="selected-method-text" style="font-weight: bold; color: blue;">bKash</span>, please copy this number: <span class="copyable-num" onclick="copyText('01753446444')">01753446444</span></p>
-            
-            <p>👉 Then send money or cash out and submit your Transaction ID. If you don't have bKash account—</p>
-            
-            <p>👉 You can send money to this number through bKash, Rocket or Nagad.</p>
-            
-            <p>🔄 Copy this number: <span class="copyable-num" onclick="copyText('01315531124')">01315531124</span></p>
-            
-            <p>👉 Then open your <span class="selected-method-text">payment</span> app and select Send Money or Cash Out option.</p>
-            
-            <p>🏧 Finally, enter your Transaction ID below to update and check your balance.</p>
+            <div class="payment-instruction-card bkash-theme">
+                <div class="instruction-icon">👉</div>
+                <div class="instruction-text">
+                    If you want to pay with <span class="selected-method-text" style="font-weight: bold; color: #d12053;">bKash</span>, please copy this number: 
+                    <span class="copyable-num" onclick="copyText('01753446444')">01753446444</span>
+                </div>
+            </div>
+
+            <div class="payment-instruction-card">
+                <div class="instruction-icon">💡</div>
+                <div class="instruction-text">
+                    Then send money or cash out and submit your Transaction ID. If you don't have a <span class="selected-method-text">bKash</span> account—
+                </div>
+            </div>
+
+            <div class="payment-instruction-card">
+                <div class="instruction-icon">🔄</div>
+                <div class="instruction-text">
+                    You can send money to this number through bKash, Rocket or Nagad. <br>
+                    Copy number: <span class="copyable-num" onclick="copyText('01315531124')">01315531124</span>
+                </div>
+            </div>
+
+            <div class="payment-instruction-card">
+                <div class="instruction-icon">🏧</div>
+                <div class="instruction-text">
+                    Finally, enter your Transaction ID below to update and check your balance.
+                </div>
+            </div>
             
             <div class="payment-input-group">
-                <label>Your Amount:</label>
+                <label>Your Amount (TK):</label>
                 <input type="number" id="userAmountInput" placeholder="Enter amount (e.g. 500)">
-                <button class="next-btn" onclick="goToPaymentStep2()">Next ➔</button>
+                <button class="next-btn" onclick="goToPaymentStep2()">Next Step ➔</button>
             </div>
         </div>
 
         <div class="payment-step-page" id="paymentStepPage2">
-            <button class="back-btn" onclick="backToStep1()">⬅️ Back</button>
-            <h3 style="margin-top: 0; color: green;">🔒 Transaction Verification</h3>
+            <div style="overflow: hidden; margin-bottom: 15px;">
+                <button class="back-btn" onclick="backToStep1()">⬅️ Back</button>
+            </div>
+            <h3 style="margin-top: 10px; color: green; font-size: 20px; font-weight: 800; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;">🔒 Transaction Verification</h3>
             
-            <p style="font-size: 15px; font-weight: bold;">👉 Please enter your Transaction ID to check balance</p>
+            <p style="font-size: 15px; font-weight: bold; text-align: left;">👉 Please enter your Transaction ID to check balance</p>
             
             <div class="payment-input-group" style="border: none; padding-top: 0;">
                 <label>Transaction ID (TrxID):</label>
                 <input type="text" id="trxIdInput" placeholder="8X92KJD76A">
-                <button class="next-btn" style="background: blue;" onclick="verifyTransaction()">Check Balance 🔍</button>
+                <button class="next-btn" style="background: linear-gradient(135deg, #2563eb, #1d4ed8);" onclick="verifyTransaction()">Check Balance 🔍</button>
             </div>
         </div>
 
@@ -781,9 +873,6 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <script>
-        // ========================================================
-        // চ্যাট উইজেট ওপেন/ক্লোজ এবং ক্রস অ্যানিমেশন স্ক্রিপ্ট
-        // ========================================================
         const customMainBtn = document.getElementById('customChatMainBtn');
         const customChatOptions = document.getElementById('customChatOptions');
 
@@ -801,7 +890,6 @@
             }
         });
 
-        // বাইরে ক্লিক করলে মেনু অটো বন্ধ হবে
         document.addEventListener('click', (e) => {
             if (!customMainBtn.contains(e.target) && !customChatOptions.contains(e.target)) {
                 customChatOptions.classList.remove('active');
@@ -810,9 +898,6 @@
             }
         });
 
-        // ========================================================
-        // ✨ নতুন কাস্টম নোটিশ পপ-আপ ওপেন এবং রিডাইরেক্ট ফাংশন
-        // ========================================================
         function triggerWarningPopup() {
             document.getElementById('customWarningModal').style.display = 'flex';
         }
@@ -821,15 +906,13 @@
             window.location.href = 'login.html';
         }
 
-        // লগইন চেক এবং বড় করে ⚠️ চিহ্নে ইংরেজি সতর্কবার্তা ফাংশন
         function checkLoginAndRedirect(event, url) {
             if (!isUserLoggedIn()) {
-                event.preventDefault(); // লিংকে ক্লিক করলেও চ্যাট ওপেন হবে না
-                triggerWarningPopup(); // কাস্টম প্রিমিয়াম পপ-আপ দেখাবে
+                event.preventDefault(); 
+                triggerWarningPopup(); 
             }
         }
 
-        // প্রোফাইল পিকচার ওপেন করার ফাংশন
         function triggerProfilePicUpload() {
             document.getElementById('profilePicInput').click();
         }
@@ -879,7 +962,6 @@
 
         let products = JSON.parse(localStorage.getItem('myProducts')) || defaultProducts;
 
-        // 🎯 প্রোডাক্ট ফিল্টারিং ও কন্ডিশনাল রেন্ডার লজিক
         function renderProducts(productsToRender = products) {
             const grid = document.getElementById('productGrid');
             const homeTitle = document.getElementById('homeViewTitle');
@@ -1041,7 +1123,6 @@
         function clearInputs() { document.getElementById('pName').value = ''; document.getElementById('pPrice').value = ''; document.getElementById('pOldPrice').value = ''; document.getElementById('pImage').value = ''; }
         function filterCategory(category) { document.getElementById('searchInput').value = ''; const filtered = products.filter(p => p.category === category); renderProducts(filtered); showHomeView(); toggleSidebar(); }
         function searchProducts() { const query = document.getElementById('searchInput').value.toLowerCase().trim(); if (query === '') { renderProducts(products); return; } const filtered = products.filter(p => p.name.toLowerCase().includes(query)); renderProducts(filtered); }
-        function showSection(section) { alert(section + " section will be made dynamic later."); }
 
         function isUserLoggedIn() {
             return localStorage.getItem('isLoggedIn') === 'true';
@@ -1052,7 +1133,6 @@
                 return;
             }
 
-            // যদি ইউজার লগইন না থাকে, তবে কাস্টম পপ-আপ দেখাবে
             if (!isUserLoggedIn()) {
                 triggerWarningPopup();
                 return;
@@ -1240,7 +1320,6 @@
                 document.getElementById('userProfileImg').src = profileImgUrl;
                 document.getElementById('userBalance').innerText = userBalance;
             } else {
-                // ⚠️ লজিক: ইউজার লগইন না থাকলে পেজে ঢোকার সাথে সাথেই কাস্টম পপ-আপ দেখাবে
                 triggerWarningPopup();
             }
             return isLoggedIn;
@@ -1354,4 +1433,4 @@
         checkLoginStatus();
     </script>
 </body>
-    </html>
+</html>
