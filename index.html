@@ -368,7 +368,7 @@
         .back-btn:hover { background: #475569; }
 
         /* ========================================================
-           🛠️ আপডেট করা প্রিমিয়াম বটম নেভিগেশন বার CSS (সাইজ বড় করা হয়েছে)
+           🛠️ আপডেট করা প্রিমিয়াম বটম নেভিগেশন বার CSS (মিডিয়াম সাইজ সেট করা হয়েছে)
            ======================================================== */
         .bottom-nav { 
             position: fixed; 
@@ -381,7 +381,7 @@
             display: flex; 
             justify-content: space-around; 
             align-items: center; 
-            padding: 12px 0 16px 0; 
+            padding: 8px 0 10px 0; /* মিডিয়াম হাইট প্যাডিং */
             box-shadow: 0 -8px 32px rgba(15, 23, 42, 0.12); 
             border-top: 1px solid rgba(226, 232, 240, 0.9);
             z-index: 1000; 
@@ -394,7 +394,7 @@
             align-items: center; 
             color: #64748b; 
             text-decoration: none; 
-            font-size: 14px; 
+            font-size: 12px; /* মিডিয়াম টেক্সট সাইজ */
             font-weight: 700; 
             cursor: pointer; 
             background: none; 
@@ -404,19 +404,19 @@
             text-align: center; 
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
-            padding: 6px 0;
+            padding: 4px 0;
         }
 
         .nav-item .nav-icon {
-            font-size: 24px; 
+            font-size: 20px; /* পারফেক্ট মিডিয়াম আইকন সাইজ */
             display: inline-block;
-            margin-bottom: 5px; 
+            margin-bottom: 3px; 
             transition: transform 0.3s ease;
         }
         
         .nav-item:hover, .nav-item.active { color: #2563eb; }
-        .nav-item:hover .nav-icon, .nav-item.active .nav-icon { transform: translateY(-4px) scale(1.15); }
-        .nav-item.active::after { content: ''; position: absolute; bottom: -8px; width: 6px; height: 6px; background-color: #2563eb; border-radius: 50%; box-shadow: 0 0 10px #2563eb; }
+        .nav-item:hover .nav-icon, .nav-item.active .nav-icon { transform: translateY(-3px) scale(1.1); }
+        .nav-item.active::after { content: ''; position: absolute; bottom: -4px; width: 5px; height: 5px; background-color: #2563eb; border-radius: 50%; box-shadow: 0 0 10px #2563eb; }
 
         /* অ্যাডমিন লগইন মডাল স্টাইল */
         .admin-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(8px); justify-content: center; align-items: center; z-index: 9999; }
