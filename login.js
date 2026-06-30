@@ -25,17 +25,20 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
         if (users && users.length > 0) {
             const user = users[0];
 
+            // ডাটাবেসের পাসওয়ার্ডের সাথে ইউজারের দেওয়া পাসওয়ার্ড মিললে তবেই বার্তাটি দেখাবে
             if (user.password === loginPassword) {
                 // ব্রাউজারে ইউজার ডাটা সেভ করা
                 localStorage.setItem('loggedInUser', JSON.stringify(user));
                 
-                // ইমেজ (54772.jpg) অনুযায়ী নতুন কাস্টম সাকসেস মডাল দেখানো
+                // তথ্য সঠিক হলে এখানে এসে কাস্টম সাকসেস মডাল (পপআপ) কল হবে
                 showSuccessModal(user.fullName || 'User');
                 
             } else {
+                // পাসওয়ার্ড ভুল হলে পপআপ আসবে না, এই অ্যালার্ট দেখাবে
                 alert('ভুল পাসওয়ার্ড! দয়া করে আবার চেষ্টা করুন।');
             }
         } else {
+            // অ্যাকাউন্ট না থাকলে এই অ্যালার্ট দেখাবে
             alert('এই ইমেইল বা ফোন নাম্বার দিয়ে কোনো অ্যাকাউন্ট পাওয়া যায়নি! আগে রেজিস্ট্রেশন করুন।');
         }
 
@@ -45,7 +48,7 @@ document.getElementById('loginForm').addEventListener('submit', async function(e
     }
 });
 
-// ৪. সফলতার বার্তা এবং হোম পেজে রিডাইরেক্ট করার ফাংশন (54772.jpg ডিজাইন অনুযায়ী)
+// ৪. সফলতার বার্তা দেখানোর ফাংশন (যা সম্পূর্ণ 54772.jpg এর কালার ও লেআউট ম্যাচ করা)
 function showSuccessModal(userName) {
     const modalHtml = `
         <div id="successModal" style="
@@ -61,7 +64,7 @@ function showSuccessModal(userName) {
                 animation: popupTransform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
                 box-sizing: border-box;
             ">
-                <!-- সবুজ টিক চিহ্নের আইকন -->
+                <!-- ইমেজ অনুযায়ী গোল বৃত্তের ভেতর সবুজ টিক চিহ্ন -->
                 <div style="
                     width: 80px; height: 80px; background: #e8fbf1; 
                     border-radius: 50%; display: flex; justify-content: center; 
@@ -73,13 +76,13 @@ function showSuccessModal(userName) {
                     </svg>
                 </div>
 
-                <!-- সফলতার মূল টাইটেল (ইংরেজি) -->
+                <!-- ইংরেজি সাকসেস টাইটেল -->
                 <h2 style="
                     margin: 0 0 15px 0; color: #14b8a6; font-size: 28px; 
                     font-weight: 800; letter-spacing: 1px; text-transform: uppercase;
                 ">SUCCESS!</h2>
 
-                <!-- ছোট সাবটাইটেল বা বিবরণ -->
+                <!-- ছোট বিবরণ (ইংরেজি) -->
                 <p style="
                     margin: 0 0 30px 0; color: #475569; font-size: 15px; 
                     line-height: 1.6; font-weight: 500; padding: 0 10px;
@@ -87,7 +90,7 @@ function showSuccessModal(userName) {
                     Login successful! Welcome back, <span style="color: #0f172a; font-weight: 700;">${userName}</span>. You can now enter the page.
                 </p>
 
-                <!-- ইমেজ অনুযায়ী কাস্টম ডিজাইনড ওকে বাটন -->
+                <!-- ইমেজের মতো সুন্দর সবুজ OK বাটন -->
                 <button id="modalOkBtn" style="
                     background: #14b8a6; color: white; border: none; 
                     padding: 14px 0; font-size: 16px; border-radius: 16px; 
@@ -116,7 +119,7 @@ function showSuccessModal(userName) {
     // স্ক্রিনে পপআপটি যুক্ত করা
     document.body.insertAdjacentHTML('beforeend', modalHtml);
 
-    // OK বাটনে ক্লিক করলে হোম পেজে রিডাইরেক্ট হবে
+    // OK বাটনে ক্লিক করলে একবারে মেইন হোম পেজে নিয়ে যাবে
     document.getElementById('modalOkBtn').addEventListener('click', function() {
         window.location.href = "index.html"; 
     });
