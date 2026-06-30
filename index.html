@@ -1300,6 +1300,9 @@
             const userBalance = localStorage.getItem('userBalance') || '0.00';
             
             if (isLoggedIn) {
+                // ১. যদি ইউজার সফলভাবে লগইন করে আসে, তবে স্ক্রিনের ওয়ার্নিং মডালটি একদম হাইড করে দেবো।
+                document.getElementById('customWarningModal').style.display = 'none';
+
                 const savedUserString = localStorage.getItem('loggedInUser');
                 let displayEmail = 'User';
                 let profileImgUrl = 'https://via.placeholder.com/80?text=User'; 
@@ -1320,6 +1323,7 @@
                 document.getElementById('userProfileImg').src = profileImgUrl;
                 document.getElementById('userBalance').innerText = userBalance;
             } else {
+                // ২. যদি লগইন না করা থাকে, তবেই কেবল ফার্স্ট ভিজিটে অটো ওয়ার্নিং পপআপ ট্রিপ হবে।
                 triggerWarningPopup();
             }
             return isLoggedIn;
