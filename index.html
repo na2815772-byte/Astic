@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="bn">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <meta name="google-site-verification" content="IMb7MgqSTUegXy7l5rwad6jEChES7J_Cdw-m_XXLLx0" />
     
-    <title>এস্টিক - অনলাইন শপ</title>
+    <title>Aesthetic - Online Shop</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -40,7 +40,25 @@
 
         .header-left { display: flex; align-items: center; flex-shrink: 0; }
         .menu-toggle { font-size: 24px; cursor: pointer; margin-right: 15px; user-select: none; color: #cbd5e1; }
-        .header-title { font-size: 19px; font-weight: 700; white-space: nowrap; letter-spacing: 0.5px; background: linear-gradient(to right, #38ef7d, #11998e); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        /* ভিজুয়াল ইফেক্ট সহ হেডার টাইটেল */
+        .header-title { 
+            font-size: 20px; 
+            font-weight: 800; 
+            white-space: nowrap; 
+            letter-spacing: 1px; 
+            background: linear-gradient(45deg, #ff007f, #7928ca, #00dfd8);
+            background-size: 200% auto;
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+            animation: textShine 4s linear infinite;
+            text-shadow: 0px 2px 10px rgba(0,0,0,0.2);
+        }
+        @keyframes textShine {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
 
         /* সার্চ বক্স ডিজাইন */
         .search-container {
@@ -204,7 +222,20 @@
         .upload-plus-btn { position: absolute; bottom: 2px; right: 2px; background: #3b82f6; color: white; width: 24px; height: 24px; border-radius: 50%; border: 2px solid white; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: background 0.2s; }
         .avatar-container:hover .upload-plus-btn { background: #1d4ed8; }
 
-        .balance-box { background: #eff6ff; padding: 16px; border-radius: 12px; margin: 15px 0; font-size: 16px; font-weight: 700; text-align: center; color: #1e40af; border: 1px solid #bfdbfe; }
+        /* ব্যালেন্স এবং টেক্সট ভিজুয়াল ইফেক্ট */
+        .balance-box { 
+            background: linear-gradient(135deg, #e0f2fe, #dbeafe); 
+            padding: 16px; 
+            border-radius: 12px; 
+            margin: 15px 0; 
+            font-size: 17px; 
+            font-weight: 800; 
+            text-align: center; 
+            color: #1e40af; 
+            border: 1px solid #bfdbfe; 
+            text-shadow: 1px 1px 2px rgba(255,255,255,0.8);
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+        }
         
         /* তথ্য ও যোগাযোগ যোগাযোগ باکس */
         .contact-info-box { background: #fffde7; border-left: 5px solid #eab308; padding: 14px; margin: 15px 0; border-radius: 8px; font-size: 14px; line-height: 1.6; color: #713f12; }
@@ -263,12 +294,6 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             padding: 4px 0;
-        }
-        
-        .nav-icon { 
-            font-size: 22px; 
-            margin-bottom: 4px; 
-            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
         
         .nav-item:hover, .nav-item.active { color: #2563eb; }
@@ -518,10 +543,10 @@
         <div class="header-top">
             <div class="header-left">
                 <div class="menu-toggle" onclick="toggleSidebar()">☰</div>
-                <div class="header-title">এস্টিক শপ</div>
+                <div class="header-title">Aesthetic Shop</div>
             </div>
             <div class="search-container">
-                <input type="text" id="searchInput" class="search-input" placeholder="প্রোডাক্ট খুঁজুন..." oninput="searchProducts()">
+                <input type="text" id="searchInput" class="search-input" placeholder="Search product..." oninput="searchProducts()">
                 <span class="search-icon">🔍</span>
             </div>
         </div>
@@ -532,7 +557,7 @@
 
     <div class="sidebar" id="sidebar">
         <ul>
-            <li onclick="toggleSubmenu(event, 'collectionMenu')">📁 কালেকশন ▾
+            <li onclick="toggleSubmenu(event, 'collectionMenu')">📁 Collection ▾
                 <ul class="submenu" id="collectionMenu">
                     <li onclick="filterCategory('tshirt')">👕 টি-শার্ট</li>
                     <li onclick="filterCategory('watch')">⌚ ঘড়ি</li>
@@ -540,12 +565,12 @@
                     <li onclick="filterCategory('car')">🚗 গাড়ি</li>
                 </ul>
             </li>
-            <li><a href="offers.html">🎁 স্পেশাল অফার</a></li>
-            <li><a href="refer.html">👥 রেফার অ্যান্ড আর্ন</a></li>
-            <li><a href="notifications.html">🔔 নোটিফিকেশন</a></li>
-            <li><a href="prescriptions.html">📄 প্রেসক্রিপশন আপলোড</a></li>
-            <li><a href="suggest-products.html">💡 প্রোডাক্ট সাজেস্ট</a></li>
-            <li><a href="reports.html">⚠️ রিপোর্ট ও অভিযোগ</a></li>
+            <li><a href="offers.html">🎁 Special Offers</a></li>
+            <li><a href="refer.html">👥 Refer & Earn</a></li>
+            <li><a href="notifications.html">🔔 Notifications</a></li>
+            <li><a href="prescriptions.html">📄 Upload Prescription</a></li>
+            <li><a href="suggest-products.html">💡 Suggest Product</a></li>
+            <li><a href="reports.html">⚠️ Reports & Complaints</a></li>
         </ul>
     </div>
 
@@ -575,77 +600,77 @@
                 </div>
                 <input type="file" id="profilePicInput" accept="image/*" style="display: none;" onchange="previewProfilePic(event)">
                 
-                <h2 id="profileWelcome" style="margin: 10px 0 5px 0;">স্বাগতম আপনাকে!</h2>
+                <h2 id="profileWelcome" style="margin: 10px 0 5px 0;">Welcome to our shop!</h2>
             </div>
             
             <div class="balance-box">
-                আপনার পর্যাপ্ত ব্যালেন্স: <span id="userBalance" style="color: green;">০.০০</span> টাকা
+                Your Available Balance: <span id="userBalance" style="color: green; font-weight: 800;">0.00</span> TK
             </div>
 
             <div class="contact-info-box">
-                👉 <strong>পেমেন্ট করতে আমাদের সাথে যোগাযোগ করুন:</strong><br>
+                👉 <strong>Contact us to make a payment:</strong><br>
                 📞 <span class="copyable-num" onclick="copyText('01315531124')">01315531124</span>, 
                 <span class="copyable-num" onclick="copyText('01753446444')">01753446444</span><br>
-                💳 বিকাশ, রকেট, নগদ 
+                💳 bKash, Rocket, Nagad 
             </div>
             
-            <button class="tab-menu-btn" onclick="togglePaymentTab()">💰 ব্যালেন্স যোগ করতে এখানে ক্লিক করুন ▾</button>
+            <button class="tab-menu-btn" onclick="togglePaymentTab()">💰 Click here to add balance ▾</button>
             
             <div class="payment-selection" id="paymentSelection">
-                <p style="font-weight: bold; margin-top: 0;">আপনি কিসে পেমেন্ট করতে চান?</p>
+                <p style="font-weight: bold; margin-top: 0;">Which payment method do you want to use?</p>
                 <div class="method-list">
-                    <div class="method-item" onclick="openPaymentStepPage('বিকাশ')">➔ বিকাশ</div>
-                    <div class="method-item" onclick="openPaymentStepPage('রকেট')">➔ রকেট</div>
-                    <div class="method-item" onclick="openPaymentStepPage('নগদ')">➔ নগদ</div>
+                    <div class="method-item" onclick="openPaymentStepPage('bKash')">➔ bKash</div>
+                    <div class="method-item" onclick="openPaymentStepPage('Rocket')">➔ Rocket</div>
+                    <div class="method-item" onclick="openPaymentStepPage('Nagad')">➔ Nagad</div>
                 </div>
             </div>
 
             <br><br>
-            <button style="background: #ff4d4d; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold;" onclick="handleLogout()">লগআউট করুন</button>
+            <button style="background: #ff4d4d; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold;" onclick="handleLogout()">Logout</button>
         </div>
 
         <div class="payment-step-page" id="paymentStepPage1">
-            <button class="back-btn" onclick="backToProfile()">⬅️ ফিরে যান</button>
-            <h3 style="margin-top: 0; color: #0288d1;" id="selectedMethodTitle">পেমেন্ট গেটওয়ে</h3>
+            <button class="back-btn" onclick="backToProfile()">⬅️ Go Back</button>
+            <h3 style="margin-top: 0; color: #0288d1;" id="selectedMethodTitle">Payment Gateway</h3>
             
-            <p>👉 যদি <span class="selected-method-text" style="font-weight: bold; color: blue;">বিকাশে</span> পেমেন্ট করতে চান তাহলে <span class="copyable-num" onclick="copyText('01753446444')">01753446444</span> এই নাম্বারটি কপি করুন।</p>
+            <p>👉 If you want to pay with <span class="selected-method-text" style="font-weight: bold; color: blue;">bKash</span>, please copy this number: <span class="copyable-num" onclick="copyText('01753446444')">01753446444</span></p>
             
-            <p>👉 এরপর সেন্ড মানি এবং ক্যাশ আউট করে ট্রানজেকশন আইডি জমা দেন, অথবা jika বিকাশ না থাকে তাহলে—</p>
+            <p>👉 Then send money or cash out and submit your Transaction ID. If you don't have bKash account—</p>
             
-            <p>👉 এই নাম্বারে আপনি বিকাশ, রকেট, নগদ এই তিনটার মাধ্যমে টাকা পাঠাইতে পারবেন।</p>
+            <p>👉 You can send money to this number through bKash, Rocket or Nagad.</p>
             
-            <p>🔄 তাই নাম্বারটি কপি করুন <span class="copyable-num" onclick="copyText('01315531124')">01315531124</span></p>
+            <p>🔄 Copy this number: <span class="copyable-num" onclick="copyText('01315531124')">01315531124</span></p>
             
-            <p>👉 তারপর <span class="selected-method-text">বিকাশে</span> গিয়ে সেন্ড মানি এবং ক্যাশ আউট বোতামে ট্যাব করুন।</p>
+            <p>👉 Then open your <span class="selected-method-text">payment</span> app and select Send Money or Cash Out option.</p>
             
-            <p>🏧 তারপর ট্রানজেকশনটি বসিয়ে দিয়ে আপনার ব্যালেন্স টি চেক করুন।</p>
+            <p>🏧 Finally, enter your Transaction ID below to update and check your balance.</p>
             
             <div class="payment-input-group">
-                <label>আপনার হিসাব:</label>
-                <input type="number" id="userAmountInput" placeholder="টাকার পরিমাণ লিখুন (উদাঃ ৫০০)">
-                <button class="next-btn" onclick="goToPaymentStep2()">নেক্সট ➔</button>
+                <label>Your Amount:</label>
+                <input type="number" id="userAmountInput" placeholder="Enter amount (e.g. 500)">
+                <button class="next-btn" onclick="goToPaymentStep2()">Next ➔</button>
             </div>
         </div>
 
         <div class="payment-step-page" id="paymentStepPage2">
-            <button class="back-btn" onclick="backToStep1()">⬅️ পিছনে যান</button>
-            <h3 style="margin-top: 0; color: green;">🔒 ট্রানজেকশন ভেরিফিকেশন</h3>
+            <button class="back-btn" onclick="backToStep1()">⬅️ Back</button>
+            <h3 style="margin-top: 0; color: green;">🔒 Transaction Verification</h3>
             
-            <p style="font-size: 15px; font-weight: bold;">👉 আপনার কাঙ্জ্জিত ট্রানজেকশনটি বসিয়ে ব্যালেন্স চেক করুন</p>
+            <p style="font-size: 15px; font-weight: bold;">👉 Please enter your Transaction ID to check balance</p>
             
             <div class="payment-input-group" style="border: none; padding-top: 0;">
                 <label>Transaction ID (TrxID):</label>
                 <input type="text" id="trxIdInput" placeholder="8X92KJD76A">
-                <button class="next-btn" style="background: blue;" onclick="verifyTransaction()">ব্যালেন্স চেক করুন 🔍</button>
+                <button class="next-btn" style="background: blue;" onclick="verifyTransaction()">Check Balance 🔍</button>
             </div>
         </div>
 
         <div class="order-success-view" id="orderSuccessView">
             <div class="success-icon">✦ ✓ ✦</div>
-            <h2 class="success-title">অর্ডার সফল হয়েছে!</h2>
-            <p class="success-msg" id="successCustomMessage">আপনার প্রোডাক্টটি সফলভাবে নিশ্চিত হয়েছে, হ্যাঁ, আপনি তাড়াতাড়ি পেয়ে যাবেন।</p>
-            <p style="color: #64748b; font-size: 14px; margin-top: 15px;">এস্টিক শপ-এর সাথে থাকার জন্য আপনাকে অসংখ্য ধন্যবাদ।</p>
-            <button class="order-btn" style="background: linear-gradient(135deg, #2ed573, #1dd1a1); margin-top: 25px; font-size: 15px; padding: 12px; border-radius: 12px; box-shadow: 0 6px 15px rgba(46, 213, 115, 0.3);" onclick="showHomeView()">হোম পেজে ফিরে যান</button>
+            <h2 class="success-title">Order Successful!</h2>
+            <p class="success-msg" id="successCustomMessage">Your order has been verified successfully, yes, you will receive it very soon.</p>
+            <p style="color: #64748b; font-size: 14px; margin-top: 15px;">Thank you very much for staying with Aesthetic Shop.</p>
+            <button class="order-btn" style="background: linear-gradient(135deg, #2ed573, #1dd1a1); margin-top: 25px; font-size: 15px; padding: 12px; border-radius: 12px; box-shadow: 0 6px 15px rgba(46, 213, 115, 0.3);" onclick="showHomeView()">Back to Homepage</button>
         </div>
 
         <div id="mainHomeView">
@@ -665,7 +690,7 @@
                 </div>
             </div>
 
-            <h1 id="homeViewTitle" style="font-size: 22px; font-weight: 700; margin-bottom: 20px; color: #1e293b; padding-left: 5px;">আমাদের প্রোডাক্টগুলো</h1>
+            <h1 id="homeViewTitle" style="font-size: 22px; font-weight: 700; margin-bottom: 20px; color: #1e293b; padding-left: 5px;">Our Products</h1>
             <div class="product-grid" id="productGrid"></div>
         </div>
     </div>
@@ -675,45 +700,45 @@
             <div class="daraz-product-info">
                 <img src="" id="darazModalImg" class="daraz-modal-img" alt="Product Image">
                 <div class="daraz-modal-details">
-                    <h2 id="darazModalName">প্রোডাক্টের নাম</h2>
-                    <p id="darazModalPrice" class="daraz-modal-price">০.০০ টাকা</p>
+                    <h2 id="darazModalName">Product Name</h2>
+                    <p id="darazModalPrice" class="daraz-modal-price">0.00 TK</p>
                 </div>
             </div>
 
             <div class="daraz-btn-group" id="darazInitialButtons">
-                <button class="daraz-add-cart" onclick="alert('প্রোডাক্টটি কার্টে যোগ করা হয়েছে!')">Add to Cart</button>
+                <button class="daraz-add-cart" onclick="alert('Product added to cart successfully!')">Add to Cart</button>
                 <button class="daraz-buy-now" onclick="showDarazCheckoutForm()">Buy Now</button>
             </div>
 
             <div class="daraz-checkout-form" id="darazCheckoutForm">
                 
                 <div class="daraz-order-tabs">
-                    <button type="button" class="daraz-tab-btn active" id="modalPaidTab" onclick="switchModalOrderType('paid')">পেমেন্ট করে অর্ডার</button>
-                    <button type="button" class="daraz-tab-btn" id="modalFreeTab" onclick="switchModalOrderType('free')">ফ্রি অর্ডার করুন</button>
+                    <button type="button" class="daraz-tab-btn active" id="modalPaidTab" onclick="switchModalOrderType('paid')">Pay & Order</button>
+                    <button type="button" class="daraz-tab-btn" id="modalFreeTab" onclick="switchModalOrderType('free')">Order for Free</button>
                 </div>
 
                 <div class="daraz-notice-box" id="modalPaymentNotice">
-                    <strong>পেমেন্ট নিয়ম:</strong> নিচের নম্বরটি কপি করে আপনার ইচ্ছামতো ক্যাশআউট অথবা সেন্ড মানি করুন। এরপর আপনার কাঙ্ক্ষিত তথ্য দিয়ে সাবমিট করুন। <br>
-                    নম্বর (কপি করতে ক্লিক করুন): <span class="daraz-copy-num" onclick="copyText('01315531124')">01315531124</span>
+                    <strong>Payment Rules:</strong> Copy the number below and complete Cash Out or Send Money. Then submit the form with your valid transaction details. <br>
+                    Number (Click to copy): <span class="daraz-copy-num" onclick="copyText('01315531124')">01315531124</span>
                 </div>
 
-                <h3>📍 ডেলিভারি ঠিকানা দিন</h3>
-                <input type="text" id="custName" placeholder="আপনার সম্পূর্ণ নাম" required>
-                <input type="text" id="custPhone" placeholder="মোবাইল নম্বর (১১ ডিজিট)" required>
-                <input type="text" id="custAddress" placeholder="গ্রাম / রাস্তা / থানা এবং বাড়ির ঠিকানা" required>
-                <input type="text" id="custCity" placeholder="শহর / জেলা" required>
+                <h3>📍 Delivery Address</h3>
+                <input type="text" id="custName" placeholder="Your Full Name" required>
+                <input type="text" id="custPhone" placeholder="Mobile Number (11 Digits)" required>
+                <input type="text" id="custAddress" placeholder="Village / Road / Thana and Home Details" required>
+                <input type="text" id="custCity" placeholder="City / District" required>
                 
                 <div id="modalPaymentFields">
                     <select id="custMethod" style="margin-bottom: 14px;" required>
-                        <option value="">কোন মাধ্যমে টাকা পাঠিয়েছেন?</option>
-                        <option value="bKash">বিকাশ (bKash)</option>
-                        <option value="Nagad">নগদ (Nagad)</option>
-                        <option value="Rocket">রকেট (Rocket)</option>
+                        <option value="">Select Payment Method</option>
+                        <option value="bKash">bKash</option>
+                        <option value="Nagad">Nagad</option>
+                        <option value="Rocket">Rocket</option>
                     </select>
-                    <input type="text" id="custTxnId" placeholder="ট্রানজেকশন আইডি (TxnID)" required>
+                    <input type="text" id="custTxnId" placeholder="Transaction ID (TxnID)" required>
                 </div>
 
-                <button class="daraz-confirm-btn" id="modalSubmitBtn" onclick="submitDarazOrder()">পেমেন্ট নিশ্চিত করুন ➔</button>
+                <button class="daraz-confirm-btn" id="modalSubmitBtn" onclick="submitDarazOrder()">Confirm Payment ➔</button>
             </div>
         </div>
     </div>
@@ -721,35 +746,35 @@
     <div class="bottom-nav">
         <button class="nav-item active" id="homeNavBtn" onclick="showHomeView()">
             <span class="nav-icon">🏠</span>
-            <span>হোম</span>
+            <span>Home</span>
         </button>
         <button class="nav-item" onclick="handleOrderNavClick()">
             <span class="nav-icon">🛍️</span>
-            <span>অর্ডার</span>
+            <span>Orders</span>
         </button>
         <button class="nav-item" onclick="window.location.href = 'inbox.html';">
             <span class="nav-icon">💬</span>
-            <span>ইনবক্স</span>
+            <span>Inbox</span>
         </button>
         <button class="nav-item" id="accountNavBtn" onclick="handleAccountNavigation(event)">
             <span class="nav-icon">👤</span>
-            <span>অ্যাকাউন্ট</span>
+            <span>Account</span>
         </button>
     </div>
 
     <div id="adminModal" class="admin-modal">
         <div class="admin-box">
             <span class="close-btn" onclick="closeAdminModal()">&times;</span>
-            <h3>অ্যাডমিন লগইন</h3>
+            <h3>Admin Login</h3>
             <div class="input-group">
                 <label style="color: #fff;">Phone Number</label>
                 <input type="text" id="adminPhone" value="01315531124" readonly style="background: rgba(255,255,255,0.2); color: #fff; font-weight: bold;">
             </div>
             <div class="input-group">
                 <label style="color: #fff;">Password</label>
-                <input type="password" id="adminPassword" placeholder="অ্যাডমিন পাসওয়ার্ড দিন" style="background: #fff; color: #333;">
+                <input type="password" id="adminPassword" placeholder="Enter Admin Password" style="background: #fff; color: #333;">
             </div>
-            <button type="button" style="background: linear-gradient(135deg, #11998e, #38ef7d); color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px;" onclick="handleAdminLogin()">ভেরিফাই ও লগইন</button>
+            <button type="button" style="background: linear-gradient(135deg, #11998e, #38ef7d); color: white; border: none; padding: 12px; width: 100%; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px;" onclick="handleAdminLogin()">Verify & Login</button>
         </div>
     </div>
 
@@ -832,13 +857,13 @@
             const inputPass = document.getElementById('adminPassword').value.trim();
             const secretPassword = "Admin#@2026!$"; 
             if (inputPass === secretPassword) {
-                alert('অ্যাডমিন লগইন সফল!');
+                alert('Admin login successful!');
                 closeAdminModal();
                 document.getElementById('mainAdminPanel').style.display = 'block'; 
                 renderProducts(); 
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } else {
-                alert('দুঃখিত! ভুল পাসওয়ার্ড।');
+                alert('Sorry! Invalid password.');
             }
         }
 
@@ -869,7 +894,7 @@
                     <div style="text-align: center; width: 100%; margin: 40px auto; padding: 30px; background: #fff; border: 1px dashed #ef4444; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.02);">
                         <span style="font-size: 50px; display: inline-block; margin-bottom: 10px;">⚠️</span>
                         <h2 style="color: #ef4444; font-size: 18px; font-weight: 700; margin: 0 0 8px 0; font-family: 'Segoe UI', sans-serif;">No Products Uploaded Today</h2>
-                        <p style="color: #64748b; font-size: 13px; margin: 0;">আজকে নতুন কোনো প্রোডাক্ট আপলোড করা হয়নি। অনুগ্রহ করে পরবর্তীতে আবার চেক করুন।</p>
+                        <p style="color: #64748b; font-size: 13px; margin: 0;">No new products have been uploaded today. Please check back later.</p>
                     </div>`;
                 return;
             }
@@ -909,14 +934,14 @@
                 card.addEventListener('touchend', cancelPress);
                 card.addEventListener('touchcancel', cancelPress);
 
-                const imgTag = p.image ? `<img src="${p.image}" class="product-img" alt="${p.name}">` : `<div class="product-img" style="display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:13px;">ছবি নেই</div>`;
+                const imgTag = p.image ? `<img src="${p.image}" class="product-img" alt="${p.name}">` : `<div class="product-img" style="display:flex;align-items:center;justify-content:center;color:#94a3b8;font-size:13px;">No Image</div>`;
                 
                 card.innerHTML = `
                     <button class="card-delete-icon">🗑️</button>
                     <h3>${p.name}</h3>
                     ${imgTag}
                     <p style="margin: 5px 0;"><span class="price">${p.price}</span>${p.oldPrice ? ` <span class="old-price">${p.oldPrice}</span>` : ''}</p>
-                    <button class="order-btn">অর্ডার করুন</button>
+                    <button class="order-btn">Order Now</button>
                 `;
 
                 card.querySelector('.card-delete-icon').addEventListener('click', function(event) {
@@ -1016,7 +1041,7 @@
         function clearInputs() { document.getElementById('pName').value = ''; document.getElementById('pPrice').value = ''; document.getElementById('pOldPrice').value = ''; document.getElementById('pImage').value = ''; }
         function filterCategory(category) { document.getElementById('searchInput').value = ''; const filtered = products.filter(p => p.category === category); renderProducts(filtered); showHomeView(); toggleSidebar(); }
         function searchProducts() { const query = document.getElementById('searchInput').value.toLowerCase().trim(); if (query === '') { renderProducts(products); return; } const filtered = products.filter(p => p.name.toLowerCase().includes(query)); renderProducts(filtered); }
-        function showSection(section) { alert(section + " সেকশনটি পরবর্তীতে ডাইনামিক করা হবে।"); }
+        function showSection(section) { alert(section + " section will be made dynamic later."); }
 
         function isUserLoggedIn() {
             return localStorage.getItem('isLoggedIn') === 'true';
@@ -1093,13 +1118,13 @@
                 freeTab.classList.add('active');
                 noticeBox.style.display = 'none';
                 paymentFields.style.display = 'none';
-                submitBtn.innerText = "ফ্রি অর্ডার নিশ্চিত করুন ➔";
+                submitBtn.innerText = "Confirm Free Order ➔";
             } else {
                 freeTab.classList.remove('active');
                 paidTab.classList.add('active');
                 noticeBox.style.display = 'block';
                 paymentFields.style.display = 'block';
-                submitBtn.innerText = "পেমেন্ট নিশ্চিত করুন ➔";
+                submitBtn.innerText = "Confirm Payment ➔";
             }
         }
 
@@ -1114,19 +1139,19 @@
             const phonePattern = /^01[3-9]\d{8}$/;
 
             if (name.length < 3 || invalidPatterns.test(name) || onlyNumbers.test(name)) {
-                alert("দয়া করে সঠিক সম্পূর্ণ নাম লিখুন! কোনো আজেবাজে অক্ষর গ্রহণযোগ্য নয়।");
+                alert("Please enter a valid full name! Random characters are not allowed.");
                 return;
             }
             if (phone.length !== 11 || !phonePattern.test(phone)) {
-                alert("ভুল মোবাইল নম্বর! সঠিক ১১ ডিজিটের মোবাইল নম্বর দিন।");
+                alert("Invalid mobile number! Please enter a valid 11-digit number.");
                 return;
             }
             if (address.length < 5 || invalidPatterns.test(address) || onlyNumbers.test(address)) {
-                alert("অনুগ্রহ করে আপনার সঠিক গ্রাম এবং সম্পূর্ণ ঠিকানার তথ্য প্রদান করুন।");
+                alert("Please enter your correct village and full address information.");
                 return;
             }
             if (city.length < 3 || invalidPatterns.test(city) || onlyNumbers.test(city)) {
-                alert("অনুগ্রহ করে আপনার সঠিক শহরের বা জেলার নাম লিখুন।");
+                alert("Please enter your correct city or district name.");
                 return;
             }
 
@@ -1138,21 +1163,21 @@
                 pTxnId = document.getElementById('custTxnId').value.trim();
 
                 if (!pMethod) {
-                    alert("অনুগ্রহ করে পেমেন্ট মাধ্যম (বিকাশ/নগদ/রকেট) সিলেক্ট করুন।");
+                    alert("Please select a payment method (bKash/Nagad/Rocket).");
                     return;
                 }
                 if (pTxnId.length < 6 || invalidPatterns.test(pTxnId)) {
-                    alert("অনুগ্রহ করে সঠিক ট্রানজেকশন আইডি (TxnID) প্রদান করুন।");
+                    alert("Please provide a valid Transaction ID (TxnID).");
                     return;
                 }
-                document.getElementById('successCustomMessage').innerText = "আপনার পেমেন্টটি সফল হয়েছে এবং তথ্য সম্পূর্ণ হয়েছে। অর্ডারটি নিশ্চিত করার জন্য ধন্যবাদ!";
+                document.getElementById('successCustomMessage').innerText = "Your payment has been successfully completed and verified. Thank you for confirming your order!";
             } else {
-                document.getElementById('successCustomMessage').innerText = "আপনার ফ্রি অর্ডারটি সফলভাবে গ্রহণ করা হয়েছে। আমাদের সাথে থাকার জন্য ধন্যবাদ!";
+                document.getElementById('successCustomMessage').innerText = "Your free order has been placed successfully. Thank you for staying with us!";
             }
 
             const orderId = "#ORD-" + Math.floor(10000 + Math.random() * 90000);
-            const pName = currentSelectedProduct ? currentSelectedProduct.name : "প্রিমিয়াম প্রোডাক্ট";
-            const pPrice = currentSelectedProduct ? currentSelectedProduct.price : "০ টাকা";
+            const pName = currentSelectedProduct ? currentSelectedProduct.name : "Premium Product";
+            const pPrice = currentSelectedProduct ? currentSelectedProduct.price : "0 TK";
             const pImg = currentSelectedProduct ? (currentSelectedProduct.image || "https://via.placeholder.com/200x150?text=Product") : "https://via.placeholder.com/200x150?text=Product";
 
             const newOrderData = {
@@ -1171,8 +1196,8 @@
 
             const oldOrderMail = {
                 sender: name, 
-                subject: `নতুন ${currentModalOrderType === 'paid' ? 'পেইড' : 'ফ্রি'} অর্ডার ${orderId}`,
-                snippet: `প্রোডাক্ট: ${pName} | মোবাইল: ${phone} | মাধ্যম: ${pMethod} | আইডি: ${pTxnId}`,
+                subject: `New ${currentModalOrderType === 'paid' ? 'Paid' : 'Free'} Order ${orderId}`,
+                snippet: `Product: ${pName} | Mobile: ${phone} | Method: ${pMethod} | ID: ${pTxnId}`,
                 time: "Just Now",
                 productName: pName,
                 productPrice: pPrice,
@@ -1192,11 +1217,11 @@
 
         function checkLoginStatus() {
             const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
-            const userBalance = localStorage.getItem('userBalance') || '০.০০';
+            const userBalance = localStorage.getItem('userBalance') || '0.00';
             
             if (isLoggedIn) {
                 const savedUserString = localStorage.getItem('loggedInUser');
-                let displayEmail = 'ইউজার';
+                let displayEmail = 'User';
                 let profileImgUrl = 'https://via.placeholder.com/80?text=User'; 
 
                 if (savedUserString) {
@@ -1211,7 +1236,7 @@
                     }
                 }
 
-                document.getElementById('profileWelcome').innerHTML = `স্বাগতম আপনাকে!<br><span style="font-size:14px;color:#64748b;font-weight:normal;">${displayEmail}</span>`;
+                document.getElementById('profileWelcome').innerHTML = `Welcome back!<br><span style="font-size:14px;color:#64748b;font-weight:normal;">${displayEmail}</span>`;
                 document.getElementById('userProfileImg').src = profileImgUrl;
                 document.getElementById('userBalance').innerText = userBalance;
             } else {
@@ -1258,7 +1283,7 @@
 
         function copyText(text) {
             navigator.clipboard.writeText(text).then(() => {
-                alert("নাম্বারটি কপি করা হয়েছে: " + text);
+                alert("Number copied successfully: " + text);
             });
         }
 
@@ -1270,7 +1295,7 @@
         function openPaymentStepPage(method) {
             hideAllViews();
             document.getElementById('paymentStepPage1').style.display = 'block';
-            document.getElementById('selectedMethodTitle').innerText = method + " পেমেন্ট প্রোসেস";
+            document.getElementById('selectedMethodTitle').innerText = method + " Payment Process";
             
             const elements = document.getElementsByClassName('selected-method-text');
             for(let el of elements) {
@@ -1286,7 +1311,7 @@
         function goToPaymentStep2() {
             const amount = document.getElementById('userAmountInput').value.trim();
             if(!amount) {
-                alert("দয়া করে আপনার হিসাবের ঘরে টাকার পরিমাণটি বসան!");
+                alert("Please enter the payment amount in the input box!");
                 return;
             }
             hideAllViews();
@@ -1303,12 +1328,12 @@
             const amount = document.getElementById('userAmountInput').value.trim();
             
             if(!trxId) {
-                alert("দয়া করে আপনার কাঙ্জ্জিত ট্রানজেকশন আইডিটি বসান!");
+                alert("Please enter your Transaction ID!");
                 return;
             }
             
-            localStorage.setItem('userBalance', amount + ".০০");
-            alert("আপনার ট্রানজেকশনটি যাচাইয়ের জন্য পাঠানো হয়েছে। সফল হলে " + amount + " টাকা ব্যালেন্স যোগ হবে।");
+            localStorage.setItem('userBalance', amount + ".00");
+            alert("Your transaction has been submitted for verification. Upon approval, " + amount + " TK will be added to your balance.");
             
             checkLoginStatus();
             backToProfile();
@@ -1321,7 +1346,7 @@
             localStorage.removeItem('isLoggedIn');
             localStorage.removeItem('loggedInUser');
             localStorage.removeItem('userBalance');
-            alert('আপনার লগআউট সফল হয়েছে!');
+            alert('Logout successful!');
             showHomeView(); 
         }
 
@@ -1329,4 +1354,4 @@
         checkLoginStatus();
     </script>
 </body>
-</html>
+    </html>
